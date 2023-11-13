@@ -1,0 +1,40 @@
+spring:
+  mail:
+    default-encoding: UTF-8
+    host: smtp.gmail.com
+    port: 587
+    username: cobedt123@gmail.com
+    password: vfignjpobmboaojt
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: true
+        debug: false
+    test-connection: false
+    protocol: smtp
+deliverableMail:
+  api_key: d09bc137b8214699a71fd73981082f8a
+
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          my-client:
+#            provider: google
+#            client-id: 369535059679-vai6j67tu5bc9r74uqufemej3pqs3h33.apps.googleusercontent.com
+#            client-secret: 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
+#            scope:
+#              - openid
+#              - profile
+#              - email
+#        provider:
+#          google:
+#            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+#            token-uri: https://www.googleapis.com/oauth2/v4/token
+#            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+#            jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
+#            user-name-attribute: sub
+
+
