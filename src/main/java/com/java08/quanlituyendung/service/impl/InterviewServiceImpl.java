@@ -15,10 +15,7 @@ import com.java08.quanlituyendung.dto.ResponseObject;
 import com.java08.quanlituyendung.dto.ResponseObjectT;
 import com.java08.quanlituyendung.entity.*;
 import com.java08.quanlituyendung.helper.InterviewHelper;
-import com.java08.quanlituyendung.repository.InterviewDetailRepository;
-import com.java08.quanlituyendung.repository.InterviewRepository;
-import com.java08.quanlituyendung.repository.JobPostingRepository;
-import com.java08.quanlituyendung.repository.UserAccountRepository;
+import com.java08.quanlituyendung.repository.*;
 import com.java08.quanlituyendung.service.IInterviewService;
 import com.java08.quanlituyendung.utils.Constant;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +48,8 @@ public class InterviewServiceImpl implements IInterviewService {
     private PasswordEncoder passwordEncoder;
     private UserAccountConverter userAccountConverter;
 
+    private UserInfoRepository userInfoRepository;
+
     @Autowired
     public InterviewServiceImpl(InterviewRepository interviewRepository,
                                 InterviewConverter interviewConverter,
@@ -58,7 +57,11 @@ public class InterviewServiceImpl implements IInterviewService {
                                 JobPostingRepository jobPostingRepository,
                                 InterviewHelper interviewHelper,
                                 InterviewDetailRepository interviewDetailRepository,
-                                CalendarGoogleService calendarGoogleService, UserAccountRetriever userAccountRetriever, UserAccountConverter userAccountConverter, PasswordEncoder passwordEncoder) {
+                                CalendarGoogleService calendarGoogleService,
+                                UserAccountRetriever userAccountRetriever,
+                                UserAccountConverter userAccountConverter,
+                                PasswordEncoder passwordEncoder,
+                                UserInfoRepository userInfoRepository) {
         this.interviewRepository = interviewRepository;
         this.interviewConverter = interviewConverter;
         this.userAccountRepository = userAccountRepository;
@@ -69,6 +72,7 @@ public class InterviewServiceImpl implements IInterviewService {
         this.userAccountRetriever = userAccountRetriever;
         this.userAccountConverter = userAccountConverter;
         this.passwordEncoder = passwordEncoder;
+        this.userInfoRepository = userInfoRepository;
     }
     @Override
     public ResponseEntity<ResponseObjectT<List<RoomResponseDTO>>> getAllT(Authentication authentication) {
@@ -101,13 +105,11 @@ public class InterviewServiceImpl implements IInterviewService {
     @Override
     public ResponseEntity<ResponseObject> createInterviewer(CreateAccountInterviewerDTO request, Authentication authentication) {
         UserAccountEntity userAccountEntity = userAccountRetriever.getUserAccountEntityFromAuthentication(authentication);
-//        if(userAccountEntity.getRole()!=Role.RECRUITER) {
-//            return ResponseEntity.ok(ResponseObject.builder().status("BAD_REQUEST").message("just reccer can add interviewer").build());
-//        }
 
         if(userAccountRepository.existsByEmail(request.getEmail())) {
             return ResponseEntity.ok(ResponseObject.builder().status("BAD_REQUEST").message("email is exist").build());
         }
+
 
         UserAccountEntity interviewer = UserAccountEntity.builder()
                 .email(request.getEmail())
@@ -118,6 +120,8 @@ public class InterviewServiceImpl implements IInterviewService {
                 .authenticationProvider(AuthenticationProvider.LOCAL)
                 .build();
         userAccountRepository.save(interviewer);
+        UserInfoEntity userInfo = UserInfoEntity.builder().userAccountInfo(interviewer).build();
+        userInfoRepository.save(userInfo);
         return ResponseEntity.ok(ResponseObject
                 .builder()
                         .status("OK")

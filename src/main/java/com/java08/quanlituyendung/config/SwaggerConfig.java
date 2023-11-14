@@ -44,8 +44,8 @@ public class SwaggerConfig {
         return new OpenAPI()
                 .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
                 .components(new Components().addSecuritySchemes("Bearer Authentication", createAPIKeyScheme()))
-                .info(new Info().title("FPT recruitment Api")
-                        .description("Quản Lý Tuyển Dụng Java08")
+                .info(new Info().title(" recruitment Api")
+                        .description("Quản Lý Tuyển Dụng ")
                         .version("1.0").contact(new Contact().name("Nguyen Le Quoc Khanh")
                                 .email("nguyenkhanh2kpi@gmail.com")).license(new License()
                                 .name("license Api").url("https://www.facebook.com/profile.php?id=100058506963756")));
