@@ -17,4 +17,6 @@ public interface IEventService {
     ResponseEntity<ResponseObject> getAllEvent();
 
     ResponseEntity<ResponseObject> updateEvent(EventDTO request,long id, Authentication authentication);
+
+    ResponseEntity<ResponseObject> getMyEvent(Authentication authentication);
 }

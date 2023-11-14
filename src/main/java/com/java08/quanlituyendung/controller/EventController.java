@@ -30,6 +30,13 @@ public class EventController {
         return eventService.getAllEvent();
     }
 
+
+    @Operation(summary = "Lấy event cua toi")
+    @GetMapping("/myEvent")
+    public  ResponseEntity<ResponseObject> getMyEvent(Authentication authentication) {
+        return eventService.getMyEvent(authentication);
+    }
+
     @Operation(summary = "Lấy Event thông qua ID ")
     @GetMapping("/{id}")
     public ResponseEntity<ResponseObject> getEvent(@PathVariable Long id, Authentication authentication) {
@@ -53,6 +60,7 @@ public class EventController {
     public ResponseEntity<ResponseObject> delete(@PathVariable Long eventId, Authentication authentication) {
         return eventService.deleteEvent(eventId, authentication);
     }
+
 
 
     @PostMapping("/{id}/upload/image")

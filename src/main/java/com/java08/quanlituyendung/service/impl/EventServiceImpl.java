@@ -102,6 +102,22 @@ public class EventServiceImpl implements IEventService {
     }
 
     @Override
+    public ResponseEntity<ResponseObject> getMyEvent(Authentication authentication) {
+        UserAccountEntity userAccountEntity = userAccountRetriever.getUserAccountEntityFromAuthentication(authentication);
+        List<EventEntity> events = eventRepository.findAll();
+        List<EventDTO> eventDTOS = events.stream()
+                .filter(event -> event.getUserAccountEntity()==userAccountEntity)
+                .map(eventRequestConverter::responseEventObject)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(ResponseObject.builder()
+                .status(HttpStatus.OK.toString())
+                .data(eventDTOS)
+                .message(Constant.SUCCESS)
+                .build());
+
+    }
+
+    @Override
     public ResponseEntity<ResponseObject> deleteEvent(Long eventId, Authentication authentication) {
         UserAccountEntity userAccountEntity = userAccountRetriever.getUserAccountEntityFromAuthentication(authentication);
         Optional<EventEntity> event = eventRepository.findById(eventId);
