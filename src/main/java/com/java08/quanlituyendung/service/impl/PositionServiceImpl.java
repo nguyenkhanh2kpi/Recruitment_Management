@@ -33,7 +33,7 @@ public class PositionServiceImpl implements IPositionService {
     public ResponseEntity<ResponseObject> create(PositionDTORequest request, Authentication authentication) {
         try {
             if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
-                if (request.getName().equals("")||request.getName()==null) {
+                if (request.getName().equals("") || request.getName() == null) {
                     return ResponseEntity.status(HttpStatus.OK).body(
                             ResponseObject.builder()
                                     .status(HttpStatus.BAD_REQUEST.toString())
@@ -55,20 +55,20 @@ public class PositionServiceImpl implements IPositionService {
                         .build());
                 return ResponseEntity.status(HttpStatus.OK).body(
                         ResponseObject.builder()
-                        .status(HttpStatus.OK.toString())
+                                .status(HttpStatus.OK.toString())
                                 .message(Constant.SUCCESS)
                                 .build());
 
             }
             return ResponseEntity.status(HttpStatus.OK).body(
                     ResponseObject.builder()
-                    .status(HttpStatus.FORBIDDEN.toString())
+                            .status(HttpStatus.FORBIDDEN.toString())
                             .message(Constant.NOT_AUTHENTICATED)
                             .build());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     ResponseObject.builder()
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
                             .message(e.getMessage())
                             .build());
         }
@@ -81,11 +81,11 @@ public class PositionServiceImpl implements IPositionService {
                 if (positionRepository.findPositionEntitiesByPositionName(request.getName()).isPresent()) {
                     return ResponseEntity.status(HttpStatus.OK).body(
                             ResponseObject.builder()
-                            .status(HttpStatus.NOT_IMPLEMENTED.toString())
+                                    .status(HttpStatus.NOT_IMPLEMENTED.toString())
                                     .message(Constant.CONTENT_IS_EXIST)
                                     .build());
                 }
-                if (request.getName().equals("")||request.getName()==null) {
+                if (request.getName().equals("") || request.getName() == null) {
                     return ResponseEntity.status(HttpStatus.OK).body(
                             ResponseObject.builder()
                                     .status(HttpStatus.BAD_REQUEST.toString())
@@ -101,25 +101,25 @@ public class PositionServiceImpl implements IPositionService {
                     positionRepository.save(positionEntity);
                     return ResponseEntity.status(HttpStatus.OK).body(
                             ResponseObject.builder()
-                            .status(HttpStatus.OK.toString())
+                                    .status(HttpStatus.OK.toString())
                                     .message(Constant.SUCCESS)
                                     .build());
                 }
                 return ResponseEntity.status(HttpStatus.OK).body(
                         ResponseObject.builder()
-                        .status(HttpStatus.NOT_FOUND.toString())
+                                .status(HttpStatus.NOT_FOUND.toString())
                                 .message(Constant.FAIL)
                                 .build());
             }
             return ResponseEntity.status(HttpStatus.OK).body(
                     ResponseObject.builder()
-                    .status(HttpStatus.FORBIDDEN.toString())
+                            .status(HttpStatus.FORBIDDEN.toString())
                             .message(Constant.NOT_AUTHENTICATED)
                             .build());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     ResponseObject.builder()
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
                             .message(e.getMessage())
                             .build());
         }
@@ -137,25 +137,25 @@ public class PositionServiceImpl implements IPositionService {
                     positionRepository.save(positionEntity);
                     return ResponseEntity.status(HttpStatus.OK).body(
                             ResponseObject.builder()
-                            .status(HttpStatus.OK.toString())
+                                    .status(HttpStatus.OK.toString())
                                     .message(Constant.SUCCESS)
                                     .build());
                 }
                 return ResponseEntity.status(HttpStatus.OK).body(
                         ResponseObject.builder()
-                        .status(HttpStatus.NOT_FOUND.toString())
+                                .status(HttpStatus.NOT_FOUND.toString())
                                 .message(Constant.FAIL)
                                 .build());
             }
             return ResponseEntity.status(HttpStatus.OK).body(
                     ResponseObject.builder()
-                    .status(HttpStatus.FORBIDDEN.toString())
+                            .status(HttpStatus.FORBIDDEN.toString())
                             .message(Constant.NOT_AUTHENTICATED)
                             .build());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     ResponseObject.builder()
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
                             .message(e.getMessage())
                             .build());
         }
@@ -163,18 +163,45 @@ public class PositionServiceImpl implements IPositionService {
 
     @Override
     public ResponseEntity<ResponseObject> getAll() {
-        try{
+        try {
             List<PositionEntity> positionEntities = positionRepository.findAll();
             return ResponseEntity.status(HttpStatus.OK).body(
                     ResponseObject.builder()
-                    .status(HttpStatus.OK.toString())
+                            .status(HttpStatus.OK.toString())
                             .message(Constant.SUCCESS)
                             .data(positionConverter.toListPositionDTO(positionEntities))
                             .build());
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     ResponseObject.builder()
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
+                            .message(Constant.NOT_AUTHENTICATED)
+                            .build());
+        }
+    }
+
+    @Override
+    public ResponseEntity<ResponseObject> getById(Long id) {
+        try {
+            Optional<PositionEntity> positionEntities = positionRepository.findById(id);
+            if (positionEntities.isPresent()) {
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        ResponseObject.builder()
+                                .status(HttpStatus.OK.toString())
+                                .message(Constant.SUCCESS)
+                                .data(positionConverter.toPositionDTO(positionEntities.get()))
+                                .build());
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    ResponseObject.builder()
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
+                            .message("Cannot find position")
+                            .build());
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    ResponseObject.builder()
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
                             .message(Constant.NOT_AUTHENTICATED)
                             .build());
         }

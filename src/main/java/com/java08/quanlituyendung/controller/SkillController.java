@@ -46,4 +46,10 @@ public class SkillController {
         return skillService.getAll();
     }
 
+    @Operation(summary = "Lấy skill theo id")
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseObject> getById(@PathVariable Long id) {
+        return skillService.getById(id);
+    }
+
 }

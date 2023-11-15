@@ -14,4 +14,5 @@ public interface IPositionService {
 
     ResponseEntity<ResponseObject> getAll();
 
+    ResponseEntity<ResponseObject> getById(Long id);
 }

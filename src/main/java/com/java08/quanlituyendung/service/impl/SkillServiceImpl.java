@@ -33,14 +33,14 @@ public class SkillServiceImpl implements ISkillService {
     public ResponseEntity<ResponseObject> create(SkillRequestDTO request, Authentication authentication) {
         try {
             if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
-                if (request.getName().equals("") || request.getName() == null) {
+                if (request.getSkillName().equals("") || request.getSkillName() == null) {
                     return ResponseEntity.status(HttpStatus.OK).body(
                             ResponseObject.builder()
                                     .status(HttpStatus.BAD_REQUEST.toString())
                                     .message("Null Name")
                                     .build());
                 }
-                if (skillRepository.findSkillEntitiesBySkillName(request.getName()).isPresent()) {
+                if (skillRepository.findSkillEntitiesBySkillName(request.getSkillName()).isPresent()) {
                     return ResponseEntity.ok(
                             ResponseObject.builder()
                                     .status(HttpStatus.CONFLICT.toString())
@@ -48,7 +48,7 @@ public class SkillServiceImpl implements ISkillService {
                                     .build());
                 }
                 skillRepository.save(SkillEntity.builder()
-                        .skillName(request.getName())
+                        .skillName(request.getSkillName())
                         .isDeleted(false)
                         .createdBy(authentication.getName())
                         .updateTime(LocalDateTime.now().atOffset(ZoneOffset.ofHours(7)).toLocalDateTime())
@@ -78,14 +78,14 @@ public class SkillServiceImpl implements ISkillService {
     public ResponseEntity<ResponseObject> update(Long id, SkillRequestDTO request, Authentication authentication) {
         try {
             if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
-                if (skillRepository.findSkillEntitiesBySkillName(request.getName()).isPresent()) {
+                if (skillRepository.findSkillEntitiesBySkillName(request.getSkillName()).isPresent()) {
                     return ResponseEntity.ok(
                             ResponseObject.builder()
                                     .status(HttpStatus.CONFLICT.toString())
                                     .message(Constant.CONTENT_IS_EXIST)
                                     .build());
                 }
-                if (request.getName().equals("") || request.getName() == null) {
+                if (request.getSkillName().equals("") || request.getSkillName() == null) {
                     return ResponseEntity.status(HttpStatus.OK).body(
                             ResponseObject.builder()
                                     .status(HttpStatus.BAD_REQUEST.toString())
@@ -95,7 +95,7 @@ public class SkillServiceImpl implements ISkillService {
                 Optional<SkillEntity> skillEntityOptional = skillRepository.findById(id);
                 if (skillEntityOptional.isPresent()) {
                     SkillEntity skillEntity = skillEntityOptional.get();
-                    skillEntity.setSkillName(request.getName());
+                    skillEntity.setSkillName(request.getSkillName());
                     skillEntity.setUpdateTime(LocalDateTime.now().atOffset(ZoneOffset.ofHours(7)).toLocalDateTime());
                     skillEntity.setCreatedBy(authentication.getName());
                     skillRepository.save(skillEntity);
@@ -137,6 +137,33 @@ public class SkillServiceImpl implements ISkillService {
                             .message(Constant.SUCCESS)
                             .data(skillConverter.toSkillsDTOList(skillEntities))
                             .build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    ResponseObject.builder()
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
+                            .message(Constant.NOT_AUTHENTICATED)
+                            .build());
+        }
+    }
+
+    @Override
+    public ResponseEntity<ResponseObject> getById(Long id) {
+        try {
+            Optional<SkillEntity> skillEntities = skillRepository.findById(id);
+            if (skillEntities.isPresent()) {
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        ResponseObject.builder()
+                                .status(HttpStatus.OK.toString())
+                                .message(Constant.SUCCESS)
+                                .data(skillConverter.toSkillDto(skillEntities.get()))
+                                .build());
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    ResponseObject.builder()
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
+                            .message(Constant.NOT_AUTHENTICATED)
+                            .build());
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     ResponseObject.builder()

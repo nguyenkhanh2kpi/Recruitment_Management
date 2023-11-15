@@ -39,7 +39,8 @@ public class PositionConverter {
         entity.setPositionName(requestDTO.getName());
         return entity;
     }
-    public PositionDTORequest toDTOReq(PositionEntity positionEntity){
+
+    public PositionDTORequest toDTOReq(PositionEntity positionEntity) {
         return PositionDTORequest.builder()
                 .name(positionEntity.getPositionName())
                 .build();
@@ -58,6 +59,12 @@ public class PositionConverter {
             positionDTOList.add(toDTO(p));
         }
         return positionDTOList;
+    }
+
+    public PositionDTOResponse toPositionDTO(PositionEntity positionEntity) {
+        PositionDTOResponse positionDTO = new PositionDTOResponse();
+        positionDTO = toDTO(positionEntity);
+        return positionDTO;
     }
 
 }

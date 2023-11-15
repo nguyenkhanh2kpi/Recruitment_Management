@@ -21,10 +21,10 @@ public class PositionController {
     private final IPositionService positionService;
 
     @Operation(summary = "Tạo Position mới")
-   @PostMapping
-   public ResponseEntity<ResponseObject> createPosition(@RequestBody PositionDTORequest request, Authentication authentication) {
-         return positionService.create(request, authentication);
-   }
+    @PostMapping
+    public ResponseEntity<ResponseObject> createPosition(@RequestBody PositionDTORequest request, Authentication authentication) {
+        return positionService.create(request, authentication);
+    }
 
     @Operation(summary = "Lấy tất cả Position trong database")
     @GetMapping
@@ -32,15 +32,22 @@ public class PositionController {
         return positionService.getAll();
     }
 
+    @Operation(summary = "Lấy Position theo ID")
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseObject> getByID(@PathVariable Long id) {
+        return positionService.getById(id);
+    }
+
+
     @Operation(summary = "Xóa  Position thông qua ID")
-   @DeleteMapping(value = "/{id}")
-   public ResponseEntity<ResponseObject> deletePosition(@PathVariable long id, Authentication authentication) {
-          return positionService.delete(id,authentication);
-   }
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<ResponseObject> deletePosition(@PathVariable long id, Authentication authentication) {
+        return positionService.delete(id, authentication);
+    }
 
     @Operation(summary = "Cập nhật thông tin Position thông qua ID")
-   @PutMapping(value = "/{id}")
-    public ResponseEntity<ResponseObject> updatePosition(@RequestBody PositionDTORequest request, @PathVariable long id, Authentication authentication){
-            return positionService.update(request,id,authentication);
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<ResponseObject> updatePosition(@RequestBody PositionDTORequest request, @PathVariable long id, Authentication authentication) {
+        return positionService.update(request, id, authentication);
     }
 }

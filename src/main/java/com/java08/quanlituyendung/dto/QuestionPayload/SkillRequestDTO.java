@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SkillRequestDTO {
     long id;
-    String name;
+    String skillName;
 }

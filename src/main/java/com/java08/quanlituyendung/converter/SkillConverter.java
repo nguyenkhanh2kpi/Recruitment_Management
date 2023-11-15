@@ -29,5 +29,12 @@ public class SkillConverter {
         }
         return skillsDTOList;
     }
+
+
+    public SkillResponseDTO toSkillDto(SkillEntity skillEntity) {
+        SkillResponseDTO responseDTO = new SkillResponseDTO();
+        responseDTO = toDTO(skillEntity);
+        return  responseDTO;
+    }
 }
 
