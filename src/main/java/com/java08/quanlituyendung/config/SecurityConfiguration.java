@@ -44,7 +44,11 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                 .authorizeRequests()
                 .requestMatchers("/auth/**", "/v3/**", "/swagger-ui/**","/recover/**")
                 .permitAll()
-                .requestMatchers(HttpMethod.GET,"/event/**","/job-posting/**")
+                .requestMatchers(HttpMethod.GET,
+                        "/event/**",
+                        "/job-posting/**",
+                        "/company/**"
+                )
                 .permitAll()
 
                 .requestMatchers(HttpMethod.GET,

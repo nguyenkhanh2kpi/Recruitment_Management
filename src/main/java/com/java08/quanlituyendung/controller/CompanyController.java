@@ -1,0 +1,61 @@
+package com.java08.quanlituyendung.controller;
+
+
+import com.java08.quanlituyendung.dto.ResponseObject;
+import com.java08.quanlituyendung.dto.company.CompanyDTO;
+import com.java08.quanlituyendung.exception.CompanyException;
+import com.java08.quanlituyendung.service.ICompanyService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("company")
+@RequiredArgsConstructor
+@Tag(name = "Company")
+public class CompanyController {
+
+    @Autowired
+    ICompanyService iCompanyService;
+    @Operation(summary = "Lấy tất cả thông tin công ty")
+    @GetMapping("")
+    public ResponseEntity<ResponseObject> getAllCompany() {
+        return iCompanyService.getAllCompany();
+    }
+
+    @Operation(summary = "Lấy cty theo id")
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseObject> getById(@PathVariable Long id) {
+        return iCompanyService.getById(id);
+    }
+
+
+    @Operation(summary = "Lấy cty cua toi")
+    @GetMapping("/my-company")
+    public ResponseEntity<ResponseObject> getMy(Authentication authentication) {
+        return iCompanyService.getMyCompany(authentication);
+    }
+
+    @Operation(summary = "Init cong ty")
+    @PostMapping("/init")
+    public ResponseEntity<ResponseObject> getAllCompany(Authentication authentication) {
+        return iCompanyService.init(authentication);
+    }
+
+    @Operation(summary = "Cap nhat thong tin cong ty")
+    @PostMapping("")
+    public ResponseEntity<ResponseObject> update(@Valid @RequestBody CompanyDTO companyDTO, Authentication authentication) {
+        try {
+            return iCompanyService.update(companyDTO, authentication);
+        } catch (CompanyException ex) {
+            String errorMessage = "An error occurred while updating the company information: " + ex.getMessage();
+            return ResponseEntity.internalServerError().body(ResponseObject.builder().message(errorMessage).build());
+        }
+    }
+
+}
