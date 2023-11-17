@@ -11,4 +11,5 @@ public interface IJobPostingService {
     ResponseEntity<ResponseObject> getDetailJobPosting(long id) throws ParseException;
     ResponseEntity<ResponseObject> save(JobPostingDTO jobPostingDTO, Authentication authentication);
     ResponseEntity<ResponseObject> delete(Long id);
+    ResponseEntity<ResponseObject> getCompanyJobs(Long id);
 }

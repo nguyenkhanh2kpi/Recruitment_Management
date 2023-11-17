@@ -5,6 +5,7 @@ import com.java08.quanlituyendung.dto.ResponseObject;
 import com.java08.quanlituyendung.dto.company.CompanyDTO;
 import com.java08.quanlituyendung.exception.CompanyException;
 import com.java08.quanlituyendung.service.ICompanyService;
+import com.java08.quanlituyendung.service.IJobPostingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -22,6 +23,10 @@ public class CompanyController {
 
     @Autowired
     ICompanyService iCompanyService;
+
+    @Autowired
+    IJobPostingService iJobPostingService;
+
     @Operation(summary = "Lấy tất cả thông tin công ty")
     @GetMapping("")
     public ResponseEntity<ResponseObject> getAllCompany() {
@@ -32,6 +37,13 @@ public class CompanyController {
     @GetMapping("/{id}")
     public ResponseEntity<ResponseObject> getById(@PathVariable Long id) {
         return iCompanyService.getById(id);
+    }
+
+
+    @Operation(summary = "Lấy jd của công ty")
+    @GetMapping("/jobs/{companyId}")
+    public ResponseEntity<ResponseObject> getCompanyJd(@PathVariable Long companyId) {
+        return iJobPostingService.getCompanyJobs(companyId);
     }
 
 
