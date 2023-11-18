@@ -12,6 +12,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CalendarAddRequestDTO {
+    private boolean isOffline;
+    private String location;
     private String summary;
     private String description;
     private String startTime;

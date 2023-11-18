@@ -1,6 +1,5 @@
 package com.java08.quanlituyendung.service.impl;
 
-import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.Event;
 import com.java08.quanlituyendung.auth.UserAccountRetriever;
 import com.java08.quanlituyendung.calendar.CalendarGoogleService;
@@ -28,7 +27,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -74,10 +72,11 @@ public class InterviewServiceImpl implements IInterviewService {
         this.passwordEncoder = passwordEncoder;
         this.userInfoRepository = userInfoRepository;
     }
+
     @Override
     public ResponseEntity<ResponseObjectT<List<RoomResponseDTO>>> getAllT(Authentication authentication) {
         UserAccountEntity userAccountEntity = userAccountRetriever.getUserAccountEntityFromAuthentication(authentication);
-        if(userAccountEntity.getRole().equals(Role.ADMIN) || userAccountEntity.getRole().equals(Role.RECRUITER) ) {
+        if (userAccountEntity.getRole().equals(Role.ADMIN) || userAccountEntity.getRole().equals(Role.RECRUITER)) {
             List<RoomResponseDTO> data = interviewRepository.findAll()
                     .stream()
                     .map(interviewConverter::toDto)
@@ -86,7 +85,7 @@ public class InterviewServiceImpl implements IInterviewService {
                     new ResponseObjectT<>(HttpStatus.OK.toString(), Constant.SUCCESS, data)
             );
         }
-        if(userAccountEntity.getRole().equals(Role.INTERVIEWER)) {
+        if (userAccountEntity.getRole().equals(Role.INTERVIEWER)) {
             List<RoomResponseDTO> data = interviewRepository.findAll()
                     .stream()
                     .filter(interview -> interview.getInterviewers().contains(userAccountEntity))
@@ -101,12 +100,25 @@ public class InterviewServiceImpl implements IInterviewService {
     }
 
 
+    @Override
+    public ResponseEntity<ResponseObjectT<RoomResponseDTO>> getById(Long interviewId) {
+        var data = interviewRepository.findById(interviewId);
+        if (data.isPresent()) {
+            return ResponseEntity.ok(
+                    new ResponseObjectT<>(HttpStatus.OK.toString(), Constant.SUCCESS,interviewConverter.toDto(data.get()))
+            );
+        }
+        return ResponseEntity.ok(
+                new ResponseObjectT<>(HttpStatus.FORBIDDEN.toString(), Constant.YOU_DONT_HAVE_PERMISION, null));
+    }
+
+
     // tao tai khoan interview
     @Override
     public ResponseEntity<ResponseObject> createInterviewer(CreateAccountInterviewerDTO request, Authentication authentication) {
         UserAccountEntity userAccountEntity = userAccountRetriever.getUserAccountEntityFromAuthentication(authentication);
 
-        if(userAccountRepository.existsByEmail(request.getEmail())) {
+        if (userAccountRepository.existsByEmail(request.getEmail())) {
             return ResponseEntity.ok(ResponseObject.builder().status("BAD_REQUEST").message("email is exist").build());
         }
 
@@ -124,28 +136,28 @@ public class InterviewServiceImpl implements IInterviewService {
         userInfoRepository.save(userInfo);
         return ResponseEntity.ok(ResponseObject
                 .builder()
-                        .status("OK")
-                        .data(ResponseCreateAcountInterviewDTO.builder()
-                                .email(request.getEmail())
-                                .password(request.getPassword())
-                                .reccer(userAccountEntity.getUsername())
-                                .build())
-                        .message("Success")
+                .status("OK")
+                .data(ResponseCreateAcountInterviewDTO.builder()
+                        .email(request.getEmail())
+                        .password(request.getPassword())
+                        .reccer(userAccountEntity.getUsername())
+                        .build())
+                .message("Success")
                 .build());
     }
+
 
     @Override
     public ResponseEntity<ResponseObjectT<List<RoomResponseDTO>>> getByJobPostId(Long jobPostId, Authentication authentication) {
         UserAccountEntity userAccountEntity = userAccountRetriever.getUserAccountEntityFromAuthentication(authentication);
         Role role = userAccountEntity.getRole();
         List<RoomResponseDTO> data;
-        if(role == Role.ADMIN || role == Role.RECRUITER) {
+        if (role == Role.ADMIN || role == Role.RECRUITER) {
             data = interviewRepository.findByJobPostingEntityId(jobPostId)
                     .stream()
                     .map(interviewConverter::toDto)
                     .collect(Collectors.toList());
-        }
-        else {
+        } else {
             data = interviewRepository.findByJobPostingEntityId(jobPostId)
                     .stream()
                     .filter(interview -> interview.getInterviewers().contains(userAccountEntity))
@@ -153,7 +165,7 @@ public class InterviewServiceImpl implements IInterviewService {
                     .collect(Collectors.toList());
         }
         return ResponseEntity.ok(
-                new  ResponseObjectT<>(HttpStatus.OK.toString(),Constant.SUCCESS,data));
+                new ResponseObjectT<>(HttpStatus.OK.toString(), Constant.SUCCESS, data));
     }
 
     @Override
@@ -175,7 +187,7 @@ public class InterviewServiceImpl implements IInterviewService {
         if (jd.isPresent()) {
             var listCV = jd.get().getCvEntities();
             List<CandidateItemDTO> listCandidate = listCV.stream()
-                    .map(c->interviewConverter.UserAccountToCandidateItem(c.getUserAccountEntity(),jobPostId))
+                    .map(c -> interviewConverter.UserAccountToCandidateItem(c.getUserAccountEntity(), jobPostId, c.getUrl()))
                     .collect(Collectors.toList());
             return ResponseEntity.ok(ResponseObject.builder()
                     .status(HttpStatus.OK.toString())
@@ -191,24 +203,22 @@ public class InterviewServiceImpl implements IInterviewService {
     }
 
 
-
-
     /// tao interview|| tao room
     @Override
     public ResponseEntity<ResponseObject> addInterview(InterviewCreateDTO interview) {
         Optional<JobPostingEntity> jobPostingEntity = jobPostingRepository.findById(Long.parseLong(interview.getJobPostId()));
         if (jobPostingEntity.isPresent()) {
             return ResponseEntity.ok(ResponseObject.builder()
-                            .status(HttpStatus.OK.toString())
+                    .status(HttpStatus.OK.toString())
                     .message(Constant.SUCCESS)
                     .data(interviewConverter
-                        .toDto(interviewRepository
-                        .save(interviewConverter
-                        .toEntity(interview, jobPostingEntity.get()))))
+                            .toDto(interviewRepository
+                                    .save(interviewConverter
+                                            .toEntity(interview, jobPostingEntity.get()))))
                     .build());
         }
         return ResponseEntity.ok(ResponseObject.builder()
-                        .status(HttpStatus.NOT_FOUND.toString())
+                .status(HttpStatus.NOT_FOUND.toString())
                 .message(Constant.CAN_NOT_FIND_THIS_JOB)
                 .build());
     }
@@ -277,15 +287,15 @@ public class InterviewServiceImpl implements IInterviewService {
     @Override
     public ResponseEntity<ResponseObject> sendCalendarInvitation(SendInvitationDTO request) throws GeneralSecurityException, IOException {
         Optional<InterviewEntity> interview = interviewRepository.findById(request.getRoomId());
-        if(interview.isEmpty()){
+        if (interview.isEmpty()) {
             return ResponseEntity.ok(ResponseObject.builder()
-                            .status(HttpStatus.NOT_IMPLEMENTED.toString())
+                    .status(HttpStatus.NOT_IMPLEMENTED.toString())
                     .message("NOT SUCCESS")
                     .build());
-        }else {
+        } else {
             var interview1 = interview.get();
             List<String> attendees = interviewHelper.getEmailAttendeeByRoom(request.getRoomId());
-            CalendarAddRequestDTO req=  CalendarAddRequestDTO.builder()
+            CalendarAddRequestDTO req = CalendarAddRequestDTO.builder()
                     .summary(interview.get().getRoomName())
                     .description(interview.get().getDescription())
                     .startTime(request.getStartTime())
@@ -305,34 +315,34 @@ public class InterviewServiceImpl implements IInterviewService {
     @Override
     public ResponseEntity<ResponseObject> updateInterview(UpdateInterviewPayload request) {
         Optional<InterviewEntity> interview = interviewRepository.findById(request.getRoomId());
-        if(interview.isEmpty()){
-            return  ResponseEntity.ok(ResponseObject.builder()
-                            .status(HttpStatus.NOT_FOUND.toString())
+        if (interview.isEmpty()) {
+            return ResponseEntity.ok(ResponseObject.builder()
+                    .status(HttpStatus.NOT_FOUND.toString())
                     .message("CAN'T FIND THIS ROOM").build());
         }
         var interview1 = interview.get();
-        if(request.getRoomName()!=null) {
+        if (request.getRoomName() != null) {
             interview1.setRoomName(request.getRoomName());
         }
-        if(request.getSkill()!=null) {
+        if (request.getSkill() != null) {
             interview1.setSkill(request.getSkill());
         }
-        if(request.getDescription()!=null) {
+        if (request.getDescription() != null) {
             interview1.setDescription(request.getDescription());
         }
-        if(request.getStartDate()!=null) {
+        if (request.getStartDate() != null) {
             interview1.setStartDate(request.getStartDate());
         }
-        if(request.getEndDate()!=null) {
+        if (request.getEndDate() != null) {
             interview1.setEndDate(request.getEndDate());
         }
-        if(request.getStatus()!=null) {
+        if (request.getStatus() != null) {
             interview1.setStatus(request.getStatus());
         }
-        if(request.getLinkMeet()!=null) {
+        if (request.getLinkMeet() != null) {
             interview1.setLinkmeet(request.getLinkMeet());
         }
-        return  ResponseEntity.ok(ResponseObject.builder()
+        return ResponseEntity.ok(ResponseObject.builder()
                 .status(HttpStatus.OK.toString())
                 .message("SUCCESS!!")
                 .data(interviewConverter.toDto(interviewRepository.save(interview1)))
@@ -342,14 +352,14 @@ public class InterviewServiceImpl implements IInterviewService {
     @Override
     public ResponseEntity<ResponseObject> deleteInterview(Long roomId) {
         Optional<InterviewEntity> interview = interviewRepository.findById(roomId);
-        if(interview.isEmpty()){
-            return  ResponseEntity.ok(ResponseObject.builder()
+        if (interview.isEmpty()) {
+            return ResponseEntity.ok(ResponseObject.builder()
                     .status(HttpStatus.NOT_FOUND.toString())
                     .message(Constant.CAN_NOT_FIND_THIS_ROOM).build());
         }
         var interview1 = interview.get();
         interview1.setStatus("Disable");
-        return  ResponseEntity.ok(ResponseObject.builder()
+        return ResponseEntity.ok(ResponseObject.builder()
                 .status(HttpStatus.OK.toString())
                 .message("SUCCESS!!")
                 .data(interviewConverter.toDto(interviewRepository.save(interview1)))

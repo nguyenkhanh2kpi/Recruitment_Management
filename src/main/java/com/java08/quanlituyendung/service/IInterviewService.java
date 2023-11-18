@@ -36,6 +36,8 @@ public interface IInterviewService {
     ResponseEntity<ResponseObjectT<List<RoomResponseDTO>>> getAllT(Authentication authentication);
 
     ResponseEntity<ResponseObject> createInterviewer(CreateAccountInterviewerDTO req, Authentication authentication);
+
+    ResponseEntity<ResponseObjectT<RoomResponseDTO>> getById(Long interviewId);
 }
 
 

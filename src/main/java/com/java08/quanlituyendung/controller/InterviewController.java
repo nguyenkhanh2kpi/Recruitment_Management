@@ -39,6 +39,12 @@ public class InterviewController {
     public ResponseEntity<ResponseObjectT<List<RoomResponseDTO>>> getAllInterviews(Authentication authentication) {
         return service.getAllT(authentication);
     }
+
+    @Operation(summary = "Lấy theo id, dung chung")
+    @GetMapping("/getRoom/{interviewId}")
+    public ResponseEntity<ResponseObjectT<RoomResponseDTO>> getById(@PathVariable Long interviewId) {
+        return service.getById(interviewId);
+    }
     @Operation(summary = "Lấy danh sách các cuộc phỏng vấn theo JobPost")
     @GetMapping("/{jobPostId}")
     public ResponseEntity<ResponseObjectT<List<RoomResponseDTO>>> getByJobPostId(@PathVariable Long jobPostId, Authentication authentication) {

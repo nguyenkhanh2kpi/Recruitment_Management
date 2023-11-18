@@ -15,6 +15,7 @@ import com.google.api.services.calendar.model.Event;
 import com.java08.quanlituyendung.converter.EventRequestConverter;
 import com.java08.quanlituyendung.dto.CalendarAddRequestDTO;
 import org.springframework.stereotype.Service;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,15 +63,26 @@ public class CalendarGoogleService {
     public Event createEvent(CalendarAddRequestDTO requestDTO) throws IOException, GeneralSecurityException {
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         Calendar service =
-                new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT,requestDTO.getToken()))
+                new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT, requestDTO.getToken()))
                         .setApplicationName(APPLICATION_NAME)
                         .build();
-        Event event = EventRequestConverter.convertToEventCalendar(requestDTO);
+        Event eventOffline = EventRequestConverter.convertToEventCalendarOffline(requestDTO);
+        Event eventonline = EventRequestConverter.convertToEventCalendar(requestDTO);
+
         String calendarId = "primary";
-        return service.events().insert(calendarId, event)
-                .setSendNotifications(true)
-                .setConferenceDataVersion(1)
-                .execute();
+        if (requestDTO.isOffline()) {
+            return service.events().insert(calendarId, eventOffline)
+                    .setSendNotifications(true)
+                    .setConferenceDataVersion(1)
+                    .execute();
+
+        } else {
+            return service.events().insert(calendarId, eventonline)
+                    .setSendNotifications(true)
+                    .setConferenceDataVersion(1)
+                    .execute();
+        }
+
     }
 }
 

@@ -97,7 +97,7 @@ public class InterviewConverter {
         return  itemDTO;
     }
 
-    public CandidateItemDTO UserAccountToCandidateItem(UserAccountEntity userAccountEntity, Long jobPostId) {
+    public CandidateItemDTO UserAccountToCandidateItem(UserAccountEntity userAccountEntity, Long jobPostId, String cvUrl) {
         CandidateItemDTO candidateItemDTO = new CandidateItemDTO();
         JobPostingEntity jobPosting =jobPostingRepository.findOneById(jobPostId);
         candidateItemDTO.setUserId(userAccountEntity.getId());
@@ -106,6 +106,7 @@ public class InterviewConverter {
         candidateItemDTO.setSkill(userAccountEntity.getUserInfo().getSkill());
         candidateItemDTO.setAvatar(userAccountEntity.getUserInfo().getAvatar());
         candidateItemDTO.setEmail(userAccountEntity.getEmail());
+        candidateItemDTO.setCv(cvUrl);
         boolean hasInterviewDetail = false;
         for (InterviewEntity interview : jobPosting.getInterviewEntity()) {
             for (InterviewDetailEntity interviewDetail : interview.getInterviewDetailEntities()) {

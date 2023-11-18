@@ -37,11 +37,21 @@ public class CalendarController {
     @Operation(summary = "Tạo room phỏng vấn trên google calendar để lấy linkmeet, danh sách attendee là email của những tài khoản sẽ tham gia meet bao gồm candidate và interivewer")
     @PostMapping("/google-send-invitation")
     public ResponseEntity<ResponseObject> calendarGoogle(@RequestBody CalendarAddRequestDTO requestDTO) throws GeneralSecurityException, IOException {
-        return ResponseEntity.ok(ResponseObject.builder()
-        .status(HttpStatus.OK.toString())
-                .message("SUCCESS!!")
-                .data(calendarGoogleService.createEvent(requestDTO))
-                .build());
+//        try {
+            return ResponseEntity.ok(ResponseObject.builder()
+                    .status(HttpStatus.OK.toString())
+                    .message("SUCCESS!!")
+                    .data(calendarGoogleService.createEvent(requestDTO))
+                    .build());
+
+//        }catch (Exception e) {
+//            return ResponseEntity.ok(ResponseObject.builder()
+//                    .status(HttpStatus.OK.toString())
+//                    .message("FAIL")
+//                    .data("")
+//                    .build());
+//        }
+
     }
 
 }

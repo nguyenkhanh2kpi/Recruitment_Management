@@ -9,6 +9,7 @@ import com.java08.quanlituyendung.entity.EventEntity;
 import com.java08.quanlituyendung.entity.UserAccountEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -74,8 +75,8 @@ public class EventRequestConverter {
     public static Event convertToEventCalendar(CalendarAddRequestDTO requestDTO) {
         Event event = new Event();
 
-        event.setSummary("Bạn có một buổi phỏng vấn với FPT Software: "+requestDTO.getSummary());
-        event.setDescription("Lưu ý: "+requestDTO.getDescription());
+        event.setSummary("Bạn có một buổi phỏng vấn tại JOB PANDA : " + requestDTO.getSummary());
+        event.setDescription("Lưu ý: " + requestDTO.getDescription());
 
         DateTime startDateTime = new DateTime(requestDTO.getStartTime());
         EventDateTime start = new EventDateTime()
@@ -89,6 +90,7 @@ public class EventRequestConverter {
                 .setTimeZone("Asia/Ho_Chi_Minh");
         event.setEnd(end);
 
+
         ConferenceSolutionKey solutionKey = new ConferenceSolutionKey().setType("hangoutsMeet");
         CreateConferenceRequest request = new CreateConferenceRequest().setConferenceSolutionKey(solutionKey)
                 .setRequestId("qwerfsdiob");
@@ -97,6 +99,7 @@ public class EventRequestConverter {
                 .setCreateRequest(request)
                 .setEntryPoints(Collections.singletonList(entryPoint));
         event.setConferenceData(conferenceData);
+
 
         List<EventAttendee> attendees = new ArrayList<>();
         if (requestDTO.getAttendees() != null) {
@@ -115,6 +118,45 @@ public class EventRequestConverter {
                 .setOverrides(Arrays.asList(reminderOverrides));
         event.setReminders(reminders);
 
+        return event;
+    }
+
+
+    public static Event convertToEventCalendarOffline(CalendarAddRequestDTO requestDTO) {
+        Event event = new Event()
+                .setSummary(requestDTO.getSummary()+ " tại " + requestDTO.getLocation())
+                .setLocation(requestDTO.getLocation())
+                .setDescription(requestDTO.getDescription());
+
+        DateTime startDateTime = new DateTime(requestDTO.getStartTime());
+        EventDateTime start = new EventDateTime()
+                .setDateTime(startDateTime)
+                .setTimeZone("Asia/Ho_Chi_Minh");
+        event.setStart(start);
+
+        DateTime endDateTime = new DateTime(requestDTO.getEndTime());
+        EventDateTime end = new EventDateTime()
+                .setDateTime(endDateTime)
+                .setTimeZone("Asia/Ho_Chi_Minh");
+        event.setEnd(end);
+
+        List<EventAttendee> attendees = new ArrayList<>();
+        if (requestDTO.getAttendees() != null) {
+            for (String email : requestDTO.getAttendees()) {
+                attendees.add(new EventAttendee().setEmail(email));
+            }
+        }
+        event.setAttendees(attendees);
+
+
+        EventReminder[] reminderOverrides = new EventReminder[] {
+                new EventReminder().setMethod("email").setMinutes(24 * 60),
+                new EventReminder().setMethod("popup").setMinutes(10),
+        };
+        Event.Reminders reminders = new Event.Reminders()
+                .setUseDefault(false)
+                .setOverrides(Arrays.asList(reminderOverrides));
+        event.setReminders(reminders);
         return event;
     }
 
