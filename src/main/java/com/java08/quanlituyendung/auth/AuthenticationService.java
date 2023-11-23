@@ -77,13 +77,13 @@ public class AuthenticationService {
                     mailService.sendEmail(user.getEmail(),otp_code,EmailType.RESET_PASSWORD);
                 }
                 // check deliverable mail
-//                if(!mailService.isDeliverableMail(user.getEmail())){
-//                    return ResponseEntity.status(HttpStatus.OK).body(
-//                                    ResponseObject.builder()
-//                                    .status(HttpStatus.NOT_FOUND.toString())
-//                                    .message(Constant.MAIL_FAIL)
-//                                    .build());
-//                    }
+                if(!mailService.isDeliverableMail(user.getEmail())){
+                    return ResponseEntity.status(HttpStatus.OK).body(
+                                    ResponseObject.builder()
+                                    .status(HttpStatus.NOT_FOUND.toString())
+                                    .message(Constant.MAIL_FAIL)
+                                    .build());
+                    }
                 otpService.revokeAllUserOtp(user,otpType);
                 otpService.saveUserOtp(user,otp_code,otpType,320);
                 return ResponseEntity.status(HttpStatus.OK).body(
@@ -251,13 +251,13 @@ public ResponseEntity<AuthenticationResponseDTO> saveOrUpdateUser(GoogleRequestD
             mailService.sendEmail(user.getEmail(),otpCode,EmailType.VERIFICATION);
 
             // check deliverable mail;
-//            if (!mailService.isDeliverableMail(user.getEmail())) {
-//                return ResponseEntity.status(HttpStatus.OK).body(
-//                        AuthenticationResponseDTO.builder()
-//                                .status(HttpStatus.BAD_REQUEST.toString())
-//                                .message(Constant.MAIL_FAIL)
-//                                .build());
-//            }
+            if (!mailService.isDeliverableMail(user.getEmail())) {
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        AuthenticationResponseDTO.builder()
+                                .status(HttpStatus.BAD_REQUEST.toString())
+                                .message(Constant.MAIL_FAIL)
+                                .build());
+            }
             var savedUser = userAccountRepository.save(user);
             otpService.saveUserOtp(savedUser, otpCode, OtpType.VERIFY, 320);
             createUserInfo(user);
@@ -369,7 +369,7 @@ public ResponseEntity<AuthenticationResponseDTO> saveOrUpdateUser(GoogleRequestD
     private UserInfoEntity createUserInfo(UserAccountEntity userAccountEntity) {
         return userInfoRepository.save(UserInfoEntity.builder()
                 .userAccountInfo(userAccountEntity)
-                .avatar("https://scontent.fsgn2-3.fna.fbcdn.net/v/t39.30808-1/341056611_561940302586852_3051668306992785039_n.jpg?stp=dst-jpg_p200x200&_nc_cat=107&ccb=1-7&_nc_sid=7206a8&_nc_ohc=V6sB0rsKOe8AX-poMo4&_nc_ht=scontent.fsgn2-3.fna&oh=00_AfCAQLo2iz1n9QTMggikNtakCcEN6Iq9_q3_65qAWEVavw&oe=64CFDE44")
+                .avatar("")
                 .build());
     }
 }
