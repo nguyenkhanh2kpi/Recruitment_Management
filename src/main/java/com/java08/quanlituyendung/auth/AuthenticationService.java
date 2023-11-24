@@ -77,13 +77,13 @@ public class AuthenticationService {
                     mailService.sendEmail(user.getEmail(),otp_code,EmailType.RESET_PASSWORD);
                 }
                 // check deliverable mail
-                if(!mailService.isDeliverableMail(user.getEmail())){
-                    return ResponseEntity.status(HttpStatus.OK).body(
-                                    ResponseObject.builder()
-                                    .status(HttpStatus.NOT_FOUND.toString())
-                                    .message(Constant.MAIL_FAIL)
-                                    .build());
-                    }
+//                if(!mailService.isDeliverableMail(user.getEmail())){
+//                    return ResponseEntity.status(HttpStatus.OK).body(
+//                                    ResponseObject.builder()
+//                                    .status(HttpStatus.NOT_FOUND.toString())
+//                                    .message(Constant.MAIL_FAIL)
+//                                    .build());
+//                    }
                 otpService.revokeAllUserOtp(user,otpType);
                 otpService.saveUserOtp(user,otp_code,otpType,320);
                 return ResponseEntity.status(HttpStatus.OK).body(
@@ -251,13 +251,13 @@ public ResponseEntity<AuthenticationResponseDTO> saveOrUpdateUser(GoogleRequestD
             mailService.sendEmail(user.getEmail(),otpCode,EmailType.VERIFICATION);
 
             // check deliverable mail;
-            if (!mailService.isDeliverableMail(user.getEmail())) {
-                return ResponseEntity.status(HttpStatus.OK).body(
-                        AuthenticationResponseDTO.builder()
-                                .status(HttpStatus.BAD_REQUEST.toString())
-                                .message(Constant.MAIL_FAIL)
-                                .build());
-            }
+//            if (!mailService.isDeliverableMail(user.getEmail())) {
+//                return ResponseEntity.status(HttpStatus.OK).body(
+//                        AuthenticationResponseDTO.builder()
+//                                .status(HttpStatus.BAD_REQUEST.toString())
+//                                .message(Constant.MAIL_FAIL)
+//                                .build());
+//            }
             var savedUser = userAccountRepository.save(user);
             otpService.saveUserOtp(savedUser, otpCode, OtpType.VERIFY, 320);
             createUserInfo(user);
