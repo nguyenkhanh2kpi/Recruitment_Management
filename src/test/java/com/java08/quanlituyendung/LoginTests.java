@@ -35,7 +35,7 @@ public class LoginTests {
 
     @Test
     public void testLoginSuccess() throws Exception {
-        String email = "admin@gmail.com";
+        String email = "nguyenkhanh2kpi@gmail.com";
         String username = "tuan";
         String password = "1234";
         AuthenticationRequestDTO request = new AuthenticationRequestDTO(email, password,username);
