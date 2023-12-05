@@ -105,11 +105,29 @@ public class InterviewServiceImpl implements IInterviewService {
         var data = interviewRepository.findById(interviewId);
         if (data.isPresent()) {
             return ResponseEntity.ok(
-                    new ResponseObjectT<>(HttpStatus.OK.toString(), Constant.SUCCESS,interviewConverter.toDto(data.get()))
+                    new ResponseObjectT<>(HttpStatus.OK.toString(), Constant.SUCCESS, interviewConverter.toDto(data.get()))
             );
         }
         return ResponseEntity.ok(
                 new ResponseObjectT<>(HttpStatus.FORBIDDEN.toString(), Constant.YOU_DONT_HAVE_PERMISION, null));
+    }
+
+    @Override
+    public ResponseEntity<ResponseObject> getMyInterviewer(Authentication authentication) {
+        var me = userAccountRetriever.getUserAccountEntityFromAuthentication(authentication);
+        var list = userAccountRepository.findAll().stream()
+                .filter(userAccountEntity -> {
+                    if (userAccountEntity.getRole().equals(Role.INTERVIEWER) && userAccountEntity.getReccerId()==me.getId()) {
+                        return true;
+                    }
+                    return false;
+                })
+                .map(userAccountConverter::AccountToCustomeResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(ResponseObject.builder()
+                .status(HttpStatus.OK.toString())
+                .data(list)
+                .message(Constant.SUCCESS).build());
     }
 
 

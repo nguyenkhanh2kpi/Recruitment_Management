@@ -34,6 +34,8 @@ public class InterviewController {
     }
 
 
+
+
     @Operation(summary = "Lấy ra toàn bộ các cuộc phỏng vấn cho admin và interviewer")
     @GetMapping
     public ResponseEntity<ResponseObjectT<List<RoomResponseDTO>>> getAllInterviews(Authentication authentication) {
@@ -55,6 +57,12 @@ public class InterviewController {
     @GetMapping("/interviewers")
     public ResponseEntity<ResponseObject> getAllInterviewer() {
         return service.getAllInterviewer();
+    }
+
+    @Operation(summary = "Lấy danh sách đội tuyển dụng của tôi")
+    @GetMapping("/my-interviewers")
+    public ResponseEntity<ResponseObject> getMyInterviewer(Authentication authentication) {
+        return service.getMyInterviewer(authentication);
     }
 
     @Operation(summary = "Lấy danh sách candidate theo Jobpost để assign vào các phòng phỏng vấn")
