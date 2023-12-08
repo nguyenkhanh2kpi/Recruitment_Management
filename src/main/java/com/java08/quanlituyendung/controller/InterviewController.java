@@ -73,8 +73,8 @@ public class InterviewController {
 
     @Operation(summary = "Tạo phòng phỏng vấn")
     @PostMapping("/create-interview")
-    public ResponseEntity<ResponseObject> addInterview(@RequestBody InterviewCreateDTO interview) {
-        return service.addInterview(interview);
+    public ResponseEntity<ResponseObject> addInterview(@RequestBody InterviewCreateDTO interview, Authentication authentication) {
+        return service.addInterview(interview, authentication);
     }
 
     @Operation(summary = "Assign 1 người phỏng vấn với 1 phòng")

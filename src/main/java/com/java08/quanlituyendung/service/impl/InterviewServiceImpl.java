@@ -1,7 +1,6 @@
 package com.java08.quanlituyendung.service.impl;
 
 import com.google.api.services.calendar.model.Event;
-import com.google.type.DateTime;
 import com.java08.quanlituyendung.auth.UserAccountRetriever;
 import com.java08.quanlituyendung.calendar.CalendarGoogleService;
 import com.java08.quanlituyendung.converter.InterviewConverter;
@@ -79,9 +78,19 @@ public class InterviewServiceImpl implements IInterviewService {
     @Override
     public ResponseEntity<ResponseObjectT<List<RoomResponseDTO>>> getAllT(Authentication authentication) {
         UserAccountEntity userAccountEntity = userAccountRetriever.getUserAccountEntityFromAuthentication(authentication);
-        if (userAccountEntity.getRole().equals(Role.ADMIN) || userAccountEntity.getRole().equals(Role.RECRUITER)) {
+        if (userAccountEntity.getRole().equals(Role.ADMIN)) {
             List<RoomResponseDTO> data = interviewRepository.findAll()
                     .stream()
+                    .map(interviewConverter::toDto)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(
+                    new ResponseObjectT<>(HttpStatus.OK.toString(), Constant.SUCCESS, data)
+            );
+        }
+        if (userAccountEntity.getRole().equals(Role.RECRUITER)) {
+            List<RoomResponseDTO> data = interviewRepository.findAll()
+                    .stream()
+                    .filter(interview -> interview.getUserAccountEntity().getId().equals(userAccountEntity.getId()))
                     .map(interviewConverter::toDto)
                     .collect(Collectors.toList());
             return ResponseEntity.ok(
@@ -228,7 +237,7 @@ public class InterviewServiceImpl implements IInterviewService {
 
     /// tao interview|| tao room
     @Override
-    public ResponseEntity<ResponseObject> addInterview(InterviewCreateDTO interview) {
+    public ResponseEntity<ResponseObject> addInterview(InterviewCreateDTO interview, Authentication authentication) {
         Optional<JobPostingEntity> jobPostingEntity = jobPostingRepository.findById(Long.parseLong(interview.getJobPostId()));
         if (jobPostingEntity.isPresent()) {
             return ResponseEntity.ok(ResponseObject.builder()
@@ -237,7 +246,7 @@ public class InterviewServiceImpl implements IInterviewService {
                     .data(interviewConverter
                             .toDto(interviewRepository
                                     .save(interviewConverter
-                                            .toEntity(interview, jobPostingEntity.get()))))
+                                            .toEntity(interview, authentication, jobPostingEntity.get()))))
                     .build());
         }
         return ResponseEntity.ok(ResponseObject.builder()

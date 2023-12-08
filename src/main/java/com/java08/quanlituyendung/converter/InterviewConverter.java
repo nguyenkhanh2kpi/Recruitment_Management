@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import com.java08.quanlituyendung.auth.UserAccountRetriever;
 import com.java08.quanlituyendung.dto.InterviewPayload.CandidateItemDTO;
 import com.java08.quanlituyendung.dto.InterviewPayload.CandidateRoomItemDTO;
 import com.java08.quanlituyendung.dto.InterviewPayload.RoomResponseDTO;
@@ -17,6 +19,7 @@ import com.java08.quanlituyendung.repository.InterviewDetailRepository;
 import com.java08.quanlituyendung.repository.JobPostingRepository;
 import com.java08.quanlituyendung.repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import com.java08.quanlituyendung.dto.InterviewCreateDTO;
 import com.java08.quanlituyendung.entity.InterviewEntity;
@@ -43,6 +46,9 @@ public class InterviewConverter {
     @Autowired
     JobPostingRepository jobPostingRepository;
 
+    @Autowired
+    UserAccountRetriever userAccountRetriever;
+
     public RoomResponseDTO toDto(InterviewEntity interview) {
         RoomResponseDTO responseDTO = new RoomResponseDTO();
         responseDTO.setJobPostId(interview.getJobPostingEntity().getId());
@@ -67,7 +73,8 @@ public class InterviewConverter {
         return responseDTO;
     }
 
-    public InterviewEntity toEntity(InterviewCreateDTO dto, JobPostingEntity jobPostingEntity) {
+    public InterviewEntity toEntity(InterviewCreateDTO dto, Authentication authentication, JobPostingEntity jobPostingEntity) {
+        var user = userAccountRetriever.getUserAccountEntityFromAuthentication(authentication);
         InterviewEntity interview = new InterviewEntity();
         interview.setJobPostingEntity(jobPostingEntity);
         interview.setRoomName(dto.getRoomName());
@@ -78,6 +85,7 @@ public class InterviewConverter {
         interview.setStatus("Created");
         interview.setLinkmeet(dto.getLinkmeet());
         interview.setInterviewDetailEntities(new ArrayList<>());
+        interview.setUserAccountEntity(user);
         return interview;
     }
 

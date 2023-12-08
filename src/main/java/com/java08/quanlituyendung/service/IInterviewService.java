@@ -15,7 +15,7 @@ import java.util.List;
 
 public interface IInterviewService {
 
-    ResponseEntity<ResponseObject> addInterview(InterviewCreateDTO interview);
+    ResponseEntity<ResponseObject> addInterview(InterviewCreateDTO interview, Authentication authentication);
 
     ResponseEntity<ResponseObject> addOneInterviewer(InterviewerToInterviewDTO interviewerToInterview);
 
