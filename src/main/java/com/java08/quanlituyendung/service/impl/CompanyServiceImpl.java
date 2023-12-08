@@ -1,16 +1,23 @@
 package com.java08.quanlituyendung.service.impl;
 
 import com.java08.quanlituyendung.auth.UserAccountRetriever;
+import com.java08.quanlituyendung.dto.InterviewerDTO.ResponseCreateAcountInterviewDTO;
+import com.java08.quanlituyendung.dto.RegisterRequestDTO;
 import com.java08.quanlituyendung.dto.ResponseObject;
 import com.java08.quanlituyendung.dto.company.CompanyDTO;
-import com.java08.quanlituyendung.entity.CompanyEntity;
-import com.java08.quanlituyendung.entity.UserAccountEntity;
+import com.java08.quanlituyendung.entity.*;
 import com.java08.quanlituyendung.repository.CompanyRepository;
+import com.java08.quanlituyendung.repository.UserAccountRepository;
+import com.java08.quanlituyendung.repository.UserInfoRepository;
 import com.java08.quanlituyendung.service.ICompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.ZoneId;
+import java.util.Date;
 
 
 @Service
@@ -21,9 +28,16 @@ public class CompanyServiceImpl implements ICompanyService {
     @Autowired
     CompanyRepository companyRepository;
 
-    public CompanyServiceImpl(CompanyRepository companyRepository, UserAccountRetriever userAccountRetriever) {
+    private UserAccountRepository userAccountRepository;
+    private UserInfoRepository userInfoRepository;
+    private PasswordEncoder passwordEncoder;
+
+    public CompanyServiceImpl( PasswordEncoder passwordEncoder,UserInfoRepository userInfoRepository, UserAccountRepository userAccountRepository,CompanyRepository companyRepository, UserAccountRetriever userAccountRetriever) {
         this.companyRepository = companyRepository;
         this.userAccountRetriever = userAccountRetriever;
+        this.userAccountRepository = userAccountRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.userInfoRepository = userInfoRepository;
     }
 
     @Override
@@ -154,6 +168,37 @@ public class CompanyServiceImpl implements ICompanyService {
         return ResponseEntity.ok(ResponseObject.builder()
                 .message("Internal error")
                 .status("403")
+                .build());
+    }
+
+    @Override
+    public ResponseEntity<ResponseObject> registerReccer(RegisterRequestDTO request, Authentication authentication) {
+        UserAccountEntity userAccountEntity = userAccountRetriever.getUserAccountEntityFromAuthentication(authentication);
+
+        if (userAccountRepository.existsByEmail(request.getEmail())) {
+            return ResponseEntity.ok(ResponseObject.builder().status("BAD_REQUEST").message("email is exist").build());
+        }
+        UserAccountEntity interviewer = UserAccountEntity.builder()
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Role.RECRUITER)
+                .state(UserAccountEntity.State.ACTIVE)
+                .authenticationProvider(AuthenticationProvider.LOCAL)
+                .creationTime(new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())
+                .status(Status.INPROCESS)
+                .build();
+        userAccountRepository.save(interviewer);
+        UserInfoEntity userInfo = UserInfoEntity.builder().userAccountInfo(interviewer).build();
+        userInfoRepository.save(userInfo);
+        return ResponseEntity.ok(ResponseObject
+                .builder()
+                .status("OK")
+                .data(ResponseCreateAcountInterviewDTO.builder()
+                        .email(request.getEmail())
+                        .password(request.getPassword())
+                        .reccer(userAccountEntity.getUsername())
+                        .build())
+                .message("Success")
                 .build());
     }
 }

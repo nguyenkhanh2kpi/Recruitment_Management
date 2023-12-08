@@ -1,6 +1,7 @@
 package com.java08.quanlituyendung.service.impl;
 
 import com.google.api.services.calendar.model.Event;
+import com.google.type.DateTime;
 import com.java08.quanlituyendung.auth.UserAccountRetriever;
 import com.java08.quanlituyendung.calendar.CalendarGoogleService;
 import com.java08.quanlituyendung.converter.InterviewConverter;
@@ -27,6 +28,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -148,6 +151,8 @@ public class InterviewServiceImpl implements IInterviewService {
                 .role(Role.INTERVIEWER)
                 .state(UserAccountEntity.State.ACTIVE)
                 .authenticationProvider(AuthenticationProvider.LOCAL)
+                .creationTime(new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())
+                .status(Status.INPROCESS)
                 .build();
         userAccountRepository.save(interviewer);
         UserInfoEntity userInfo = UserInfoEntity.builder().userAccountInfo(interviewer).build();

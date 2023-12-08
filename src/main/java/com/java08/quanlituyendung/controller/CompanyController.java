@@ -1,8 +1,13 @@
 package com.java08.quanlituyendung.controller;
 
 
+import com.java08.quanlituyendung.auth.AuthenticationService;
+import com.java08.quanlituyendung.dto.AuthenticationResponseDTO;
+import com.java08.quanlituyendung.dto.RegisterRequestDTO;
 import com.java08.quanlituyendung.dto.ResponseObject;
 import com.java08.quanlituyendung.dto.company.CompanyDTO;
+import com.java08.quanlituyendung.entity.AuthenticationProvider;
+import com.java08.quanlituyendung.entity.Role;
 import com.java08.quanlituyendung.exception.CompanyException;
 import com.java08.quanlituyendung.service.ICompanyService;
 import com.java08.quanlituyendung.service.IJobPostingService;
@@ -26,6 +31,8 @@ public class CompanyController {
 
     @Autowired
     IJobPostingService iJobPostingService;
+
+    private final AuthenticationService authenticationService;
 
     @Operation(summary = "Lấy tất cả thông tin công ty")
     @GetMapping("")
@@ -58,6 +65,11 @@ public class CompanyController {
     public ResponseEntity<ResponseObject> getAllCompany(Authentication authentication) {
         return iCompanyService.init(authentication);
     }
+    @Operation(summary = "Dang ki Reccer")
+    @PostMapping("/register-reccer")
+    public ResponseEntity<ResponseObject> registerReccer(@RequestBody RegisterRequestDTO request, Authentication authentication) {
+        return iCompanyService.registerReccer(request, authentication);
+    }
 
     @Operation(summary = "Cap nhat thong tin cong ty")
     @PostMapping("")
@@ -69,5 +81,8 @@ public class CompanyController {
             return ResponseEntity.internalServerError().body(ResponseObject.builder().message(errorMessage).build());
         }
     }
+
+
+
 
 }

@@ -54,11 +54,11 @@ public class AuthController {
         return authenticationService.register(request, Role.CANDIDATE, AuthenticationProvider.LOCAL);
     }
 
-    @Operation(summary = "Sử dụng phương thức này để đăng ký tài khoản Reccer")
-    @PostMapping("/register-reccer")
-    public ResponseEntity<AuthenticationResponseDTO> registerRECcer(@RequestBody RegisterRequestDTO request) {
-        return authenticationService.register(request, Role.RECRUITER, AuthenticationProvider.LOCAL);
-    }
+//    @Operation(summary = "Sử dụng phương thức này để đăng ký tài khoản Reccer")
+//    @PostMapping("/register-reccer")
+//    public ResponseEntity<AuthenticationResponseDTO> registerRECcer(@RequestBody RegisterRequestDTO request) {
+//        return authenticationService.register(request, Role.RECRUITER, AuthenticationProvider.LOCAL);
+//    }
 
 
 

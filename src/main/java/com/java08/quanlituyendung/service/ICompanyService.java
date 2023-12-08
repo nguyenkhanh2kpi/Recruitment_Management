@@ -1,5 +1,6 @@
 package com.java08.quanlituyendung.service;
 
+import com.java08.quanlituyendung.dto.RegisterRequestDTO;
 import com.java08.quanlituyendung.dto.ResponseObject;
 import com.java08.quanlituyendung.dto.company.CompanyDTO;
 import org.springframework.http.ResponseEntity;
@@ -11,4 +12,6 @@ public interface ICompanyService {
     ResponseEntity<ResponseObject> getById(Long id);
     ResponseEntity<ResponseObject> update(CompanyDTO companyDTO, Authentication authentication);
     ResponseEntity<ResponseObject> getMyCompany(Authentication authentication);
+
+    ResponseEntity<ResponseObject> registerReccer(RegisterRequestDTO request, Authentication authentication);
 }
