@@ -14,6 +14,7 @@ import com.java08.quanlituyendung.service.IJobPostingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,14 +26,11 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Tag(name = "Company")
 public class CompanyController {
-
     @Autowired
     ICompanyService iCompanyService;
 
     @Autowired
     IJobPostingService iJobPostingService;
-
-    private final AuthenticationService authenticationService;
 
     @Operation(summary = "Lấy tất cả thông tin công ty")
     @GetMapping("")

@@ -81,7 +81,7 @@ class RegisterTests {
         RegisterRequestDTO requestDTO = new RegisterRequestDTO();
         requestDTO.setUsername("test");
         requestDTO.setPassword("test");
-        requestDTO.setEmail("nguyenkhanh2kpi@gmail.com");
+        requestDTO.setEmail("admin@gmail.com");
 
         MvcResult result = mockMvc.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -94,7 +94,7 @@ class RegisterTests {
     @Test
     void existUsername() throws Exception{
         RegisterRequestDTO requestDTO = new RegisterRequestDTO();
-        requestDTO.setUsername("nguyenkhanh2kpi");
+        requestDTO.setUsername("admin");
         requestDTO.setPassword("test");
         requestDTO.setEmail("testusernameexists@gmail.com");
 

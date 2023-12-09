@@ -108,6 +108,50 @@ public class QuestionServiceIml implements IQuestionService {
     }
 
 
+    public void init(QuestionRequestDTO request) {
+            QuestionEntity question = QuestionEntity.builder()
+                    .isDeleted(false)
+                    .question(request.getQuestion())
+                    .field(request.getFieldEnum())
+                    .createdBy("admin@gmail.com")
+                    .createTime(LocalDateTime.now())
+                    .answer(request.getAnswer())
+                    .build();
+
+            List<PositionEntity> positionEntities = new ArrayList<>();
+            for(Long pid: request.getPositionIds()){
+                Optional<PositionEntity> positionEntityOptional = positionRepository.findById(pid);
+                if(positionEntityOptional.isPresent())
+                {
+
+                    PositionEntity positionEntity = positionEntityOptional.get();
+                    List<QuestionEntity> questionEntities= positionEntity.getQuestionEntities();
+                    questionEntities.add(question);
+                    positionEntity.setQuestionEntities(questionEntities);
+                    positionEntities.add(positionEntity);
+                }
+            }
+
+
+            List<SkillEntity> skillEntities = new ArrayList<>();
+
+            for(Long sid: request.getSkillIds()){
+                Optional<SkillEntity> skillEntityOptional = skillRepository.findById(sid);
+                if(skillEntityOptional.isPresent())
+                {
+                    SkillEntity skillEntity = skillEntityOptional.get();
+                    List<QuestionEntity> questionEntities= skillEntity.getQuestionEntities();
+                    questionEntities.add(question);
+                    skillEntity.setQuestionEntities(questionEntities);
+                    skillEntities.add(skillEntity);
+                }
+            }
+            questionRepository.save(question);
+            skillRepository.saveAll(skillEntities);
+            positionRepository.saveAll(positionEntities);
+    }
+
+
     @Override
     public ResponseEntity<ResponseObject> update(QuestionRequestDTO request,Authentication authentication) {
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
