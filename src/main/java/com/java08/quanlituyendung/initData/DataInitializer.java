@@ -51,10 +51,10 @@ public class DataInitializer implements CommandLineRunner {
         if (!userAccountRepository.existsByEmail("admin@gmail.com")) {
             GenerateUser();
             GenerateSkillPosition();
-            GenerateQuestions();
+
         }
 
-
+        GenerateQuestions();
     }
 
     public void GenerateUser() {

@@ -110,7 +110,7 @@ class QuestionControllerTest {
     @Test
     void deleteTest() throws Exception {
         String tk = login("interviewer1@gmail.com","1234");
-        mockMvc.perform(delete("/question/1")
+        mockMvc.perform(delete("/question/3")
                         .header("authorization", "Bearer " + tk)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -122,7 +122,7 @@ class QuestionControllerTest {
         Long[] ids = {1L, 2L};
         String tk = login("interviewer1@gmail.com","1234");
         var request = QuestionRequestDTO.builder()
-                .id(1L)
+                .id(3L)
                 .question("1asds")
                 .answer("asd")
                 .skillIds(List.of(ids))

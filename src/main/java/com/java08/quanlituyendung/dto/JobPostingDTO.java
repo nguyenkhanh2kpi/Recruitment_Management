@@ -12,7 +12,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class JobPostingDTO {
     private Long id;
     private String name;

@@ -1,19 +1,13 @@
 package com.java08.quanlituyendung.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.java08.quanlituyendung.dto.RegisterRequestDTO;
 import com.java08.quanlituyendung.dto.ResponseObject;
 import com.java08.quanlituyendung.dto.company.CompanyDTO;
-import com.java08.quanlituyendung.entity.CompanyEntity;
-import com.java08.quanlituyendung.entity.Role;
-import com.java08.quanlituyendung.entity.UserAccountEntity;
 import com.java08.quanlituyendung.repository.CompanyRepository;
 import jakarta.transaction.Transactional;
-import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,7 +21,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
