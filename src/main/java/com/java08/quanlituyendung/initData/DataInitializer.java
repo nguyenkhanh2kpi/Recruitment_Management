@@ -18,7 +18,6 @@ import java.util.List;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
-
     private final UserAccountRepository userAccountRepository;
     private final UserInfoRepository userInfoRepository;
     private final CompanyRepository companyRepository;
@@ -30,8 +29,10 @@ public class DataInitializer implements CommandLineRunner {
     private final PositionRepository positionRepository;
     private final QuestionRepository questionRepository;
     private final QuestionServiceIml questionServiceIml;
+    private final BlackListRepository blackListRepository;
+    private final InterviewDetailRepository interviewDetailRepository;
 
-    public DataInitializer(UserAccountRepository userAccountRepository, UserInfoRepository userInfoRepository, CompanyRepository companyRepository, JobPostingRepository jobPostingRepository, EventRepository eventRepository, InterviewRepository interviewRepository, CvRepository cvRepository, SkillRepository skillRepository, PositionRepository positionRepository, QuestionRepository questionRepository, QuestionServiceIml questionServiceIml) {
+    public DataInitializer(UserAccountRepository userAccountRepository, UserInfoRepository userInfoRepository, CompanyRepository companyRepository, JobPostingRepository jobPostingRepository, EventRepository eventRepository, InterviewRepository interviewRepository, CvRepository cvRepository, SkillRepository skillRepository, PositionRepository positionRepository, QuestionRepository questionRepository, QuestionServiceIml questionServiceIml, BlackListRepository blackListRepository, InterviewDetailRepository interviewDetailRepository) {
         this.userAccountRepository = userAccountRepository;
         this.userInfoRepository = userInfoRepository;
         this.companyRepository = companyRepository;
@@ -43,18 +44,17 @@ public class DataInitializer implements CommandLineRunner {
         this.positionRepository = positionRepository;
         this.questionRepository = questionRepository;
         this.questionServiceIml = questionServiceIml;
+        this.blackListRepository = blackListRepository;
+        this.interviewDetailRepository = interviewDetailRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
-
         if (!userAccountRepository.existsByEmail("admin@gmail.com")) {
             GenerateUser();
             GenerateSkillPosition();
-
+            GenerateQuestions();
         }
-
-        GenerateQuestions();
     }
 
     public void GenerateUser() {
@@ -120,6 +120,16 @@ public class DataInitializer implements CommandLineRunner {
                 .state(UserAccountEntity.State.ACTIVE)
                 .username("candidate")
                 .build();
+        var backlistUser = UserAccountEntity.builder()
+                .authenticationProvider(AuthenticationProvider.LOCAL)
+                .creationTime(new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())
+                .email("backlist@gmail.com")
+                .password("$2a$10$zuZ.0a0OYWNA9nqc6mu5CuuySyvvrIf7CjnWot1Bez.QQowsg.Nhi")
+                .role(Role.CANDIDATE)
+                .status(Status.BLACKLIST)
+                .state(UserAccountEntity.State.ACTIVE)
+                .username("candidate")
+                .build();
         var adminInfo = UserInfoEntity.builder()
                 .userAccountInfo(admin)
                 .avatar("https://firebasestorage.googleapis.com/v0/b/upload2-23381.appspot.com/o/files%2Fhinh1.jpg?alt=media&token=c16bc73f-a3be-4c01-9f26-5a0d4ccad233")
@@ -168,16 +178,25 @@ public class DataInitializer implements CommandLineRunner {
                 .gender(Gender.MALE)
                 .phone("012334488")
                 .build();
+        var blacklistUserInfo = UserInfoEntity.builder()
+                .userAccountInfo(backlistUser)
+                .avatar("https://firebasestorage.googleapis.com/v0/b/upload2-23381.appspot.com/o/files%2Fhinh1.jpg?alt=media&token=c16bc73f-a3be-4c01-9f26-5a0d4ccad233")
+                .address("22 Lã Xuân Oai, Long Trường, quận 9, TP.HCM")
+                .fullName("Nguyễn Blacklist")
+                .gender(Gender.MALE)
+                .phone("012334488")
+                .build();
         userInfoRepository.save(adminInfo);
         userInfoRepository.save(reccer1Info);
         userInfoRepository.save(reccer2Info);
         userInfoRepository.save(interviewer1Info);
         userInfoRepository.save(interviewer2Info);
         userInfoRepository.save(candidateInfo);
+        userInfoRepository.save(blacklistUserInfo);
         GenerateRateCompany(reccer1, reccer2);
-        GenerateJob(reccer1, reccer2, candidate);
+        GenerateJob(interviewer1,reccer1, reccer2, candidate);
         GenerateEvent(reccer1);
-
+        GenerateBlackList(backlistUser);
     }
 
     public void GenerateRateCompany(UserAccountEntity reccer1, UserAccountEntity reccer2) {
@@ -203,7 +222,7 @@ public class DataInitializer implements CommandLineRunner {
         companyRepository.save(companyKinhTe);
     }
 
-    public void GenerateJob(UserAccountEntity reccer1, UserAccountEntity reccer2, UserAccountEntity candidate) {
+    public void GenerateJob(UserAccountEntity interviewer1, UserAccountEntity reccer1, UserAccountEntity reccer2, UserAccountEntity candidate) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         var job1 = JobPostingEntity.builder()
                 .userAccountEntity(reccer1)
@@ -267,8 +286,10 @@ public class DataInitializer implements CommandLineRunner {
         jobPostingRepository.save(job2);
         jobPostingRepository.save(jobKinhTe);
 
-        GenerateInterview(reccer1, job1, reccer2, jobKinhTe);
+        GenerateInterview(interviewer1,reccer1, job1, reccer2, jobKinhTe);
         GenerateCV(candidate, job1);
+
+
     }
 
 
@@ -286,7 +307,10 @@ public class DataInitializer implements CommandLineRunner {
         eventRepository.save(event);
     }
 
-    public void GenerateInterview(UserAccountEntity reccer1, JobPostingEntity job1, UserAccountEntity reccer2, JobPostingEntity job2) {
+    public void GenerateInterview(UserAccountEntity interviewer1, UserAccountEntity reccer1, JobPostingEntity job1, UserAccountEntity reccer2, JobPostingEntity job2) {
+
+        List<UserAccountEntity> listInterview = new ArrayList<>();
+        listInterview.add(interviewer1);
         var interview1 = InterviewEntity.builder()
                 .description("vòng 1 technical")
                 .endDate("2023-12-12T09:00")
@@ -297,6 +321,7 @@ public class DataInitializer implements CommandLineRunner {
                 .status("Created")
                 .jobPostingEntity(job1)
                 .userAccountEntity(reccer1)
+                .interviewers(listInterview)
                 .build();
 
         var interview2 = InterviewEntity.builder()
@@ -312,6 +337,8 @@ public class DataInitializer implements CommandLineRunner {
                 .build();
         interviewRepository.save(interview1);
         interviewRepository.save(interview2);
+
+        GenerateInterviewDetail(interview1);
     }
 
 
@@ -535,6 +562,35 @@ public class DataInitializer implements CommandLineRunner {
         for (QuestionEntity question : questions) {
             questionRepository.save(question);
         }
+    }
+
+    public void GenerateBlackList(UserAccountEntity user)  {
+        var blacklist = BlacklistEntity.builder()
+                .dateBlacklist(LocalDateTime.now())
+                .description("hacker")
+                .userAccountEntity(user)
+                .build();
+        blackListRepository.save(blacklist);
+    }
+
+
+    public void GenerateInterviewDetail(InterviewEntity interview) {
+        var detail = InterviewDetailEntity.builder()
+                .averageScore(0F)
+                .candidateId(6L)
+                .comment("")
+                .date("2023-12-10")
+                .description("no description")
+                .englishQuestions("")
+                .softSkillQuestions("")
+                .interviewer("")
+                .technicalQuestions("")
+                .status("Chưa phỏng vấn")
+                .interviewerEmail("")
+                .time("08h00 to 09h00")
+                .interview(interview)
+                .build();
+        interviewDetailRepository.save(detail);
     }
 
 
