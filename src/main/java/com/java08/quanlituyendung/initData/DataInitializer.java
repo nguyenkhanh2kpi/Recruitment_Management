@@ -210,12 +210,12 @@ public class DataInitializer implements CommandLineRunner {
                 .userId(reccer1.getId())
                 .build();
         var companyKinhTe = CompanyEntity.builder()
-                .address("123 Phố Chợ, Quận Thương Mại, Thành phố Tài Chính")
-                .avatar("https://example.com/kinh_te_avatar.jpg")
-                .info("Công ty về kinh tế chuyên về nghiên cứu, tư vấn và phát triển về tài chính và thương mại.")
-                .name("Công ty Kinh Tế Phát Triển")
+                .address("Tầng 3 TTTM, tòa nhà CTM Complex, số 139 Cầu Giấy, Phường Quan Hoa, Quận Cầu Giấy, Hà Nội")
+                .avatar("https://static.topcv.vn/company_covers/cong-ty-tnhh-kin-long-viet-nam-211e12c68ebec40e7a3395b793500466-65421fc34c31c.jpg")
+                .info("Kin Long là một doanh nghiệp quy mô lớn trong ngành ngũ kim Trung Quốc, là công ty chuyên nghiệp tham gia vào lĩnh vực nghiên cứu, chế tạo và phân phối các sản phẩm ngũ kim chất lượng cao.")
+                .name("CÔNG TY TNHH KIN LONG VIỆT NAM")
                 .phone("0987654321")
-                .website("https://kinhtecongty.com")
+                .website("https://kinlong.vn/")
                 .userId(reccer2.getId())
                 .build();
         companyRepository.save(company1);
@@ -226,65 +226,220 @@ public class DataInitializer implements CommandLineRunner {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         var job1 = JobPostingEntity.builder()
                 .userAccountEntity(reccer1)
-                .name("Thực tập sinh Springboot")
-                .position("Intern")
+                .name("Java Developer (SpringBoot/Struts)")
+                .position("Nhân viên")
                 .language("TOEIC 700")
                 .location("Hồ Chí Minh")
                 .salary("Thỏa thuận")
                 .number("10")
-                .workingForm("Full time")
+                .workingForm("Toàn thời gian")
                 .sex("Không yêu cầu")
-                .experience("Chưa có kinh nghiệm")
+                .experience("1 năm")
                 .detailLocation("Số 1 Võ Văn Ngân, Thủ Đức")
-                .detailJob("Work on backend services")
-                .requirements("Bachelor's degree in Computer Science")
-                .interest("Machine learning, web development")
-                .image("https://firebasestorage.googleapis.com/v0/b/quanlytuyendung-4fb2c.appspot.com/o/1700823708931_thong-ke-cac-vu-bat-giu-van-chuyen-buon-ban-trai-phep-te-te-tai-viet-nam-tu-nam-2015-2019-nguon-co-quan-tham-quyen-quan-ly-cites-viet-nam-cites-ma.jpg?alt=media")
+                .detailJob("Tham gia các dự án sử dụng ngôn ngữ lập trình Java cùng framework SpringBoot/Struts và các công nghệ liên quan cho các khách hàng đến từ Nhật Bản.\n" +
+                        "Phân tích thiết kế và lập trình chức năng của các website.\n" +
+                        "Làm các công việc khác theo sự phân công của quản lý")
+                .requirements("Yêu cầu cơ bản:  \n" +
+                        "\n" +
+                        "Tốt nghiệp đại học chuyên ngành IT  \n" +
+                        "Thao tác tốt Spring, Hibernate, Struts 2, HTML, CSS. (Struts 2 nếu chưa biết sẽ được đào tạo). \n" +
+                        "Ham học hỏi và khả năng tự học và hiểu các framework. Khuyến khích khả năng làm độc lập trong dự án. \n" +
+                        "Có tư duy và giải thuật tốt    \n" +
+                        "Có kinh nghiệm làm việc với AWS là một lợi thế    \n" +
+                        "Hiểu biết về MVC Framework, ORM, RESTful, OOP, Design Pattern    \n" +
+                        "Có kinh nghiệm làm việc với MySQL hoặc NoSQL (MongoDB)    \n" +
+                        "Thành thạo các công cụ quản lý mã nguồn: GIT, SVN    \n" +
+                        "Sẵn sàng học hỏi và đáp ứng nhanh các yêu cầu của dự án  \n" +
+                        "Yêu cầu chuyên môn: \n" +
+                        "\n" +
+                        "Viết code rõ ràng, dễ hiểu, dễ maintain, tuân thủ chặt chẽ convention \n" +
+                        "Tương tác với nhiều resources, nhiều dạng database là lợi thế.  \n" +
+                        "Viết SQL tối ưu, không bị SQL Injection là lợi thế ")
+                .interest("Mức lương khởi điểm hấp dẫn, cạnh tranh, tương xứng với năng lực và kinh nghiệm làm việc; \n" +
+                        "Thu nhập: 13 tháng lương/năm + thưởng dự án, thưởng Tết và các dịp lễ...; \n" +
+                        "Xét tăng lương 2 lần/năm theo năng lực và hiệu quả công việc; \n" +
+                        "Lương làm thêm giờ theo luật lao động, hỗ trợ đồ ăn OT theo quy định công ty; \n" +
+                        "Làm việc từ thứ 2 - thứ 6 (8h30 - 17h30); \n" +
+                        "Được tham gia BHXH, BHYT, BHTN theo quy định của pháp luật hiện hành; \n" +
+                        "Bảo hiểm chăm sóc sức khỏe 24/24 (Bảo Việt); \n" +
+                        "Khám sức khỏe định kỳ 1 năm/1 lần tại bệnh viện Đại học Y Hà Nội; \n" +
+                        "Nghỉ ốm hưởng nguyên lương tối đa 30 ngày/ năm (có giấy chứng nhận của bệnh viện); \n" +
+                        "Trợ cấp tiếng Nhật và các chứng chỉ IT liên quan (từ 1000.000 VNĐ - 2.500.000 VNĐ/tháng); \n" +
+                        "Phụ cấp thâm niên; phụ cấp chức vụ; \n" +
+                        "Được tham gia các câu lạc bộ của công ty: CLB Bóng đá, CLB Game, CLB Beauty,  CLB Dance... \n" +
+                        "Được tham gia các hoạt động tập thể sôi động của công ty: nghỉ mát hàng năm, teambuilding hàng quý, gala cuối năm...\n" +
+                        "Tham gia các khóa học nâng cao trình độ chuyên môn qua Portal đào tạo nội bộ hoặc các khóa học trực tiếp với các giảng viên uy tín.  \n" +
+                        "Cơ hội làm việc và đào tạo tại Nhật Bản với các ứng viên có tiếng Nhật \n" +
+                        "Làm việc trong môi trường chuyên nghiệp, được hỗ trợ phát huy khả năng, phát triển công việc tối đa.")
+                .image("https://cdn-new.topcv.vn/unsafe/150x/filters:format(webp)/https://static.topcv.vn/company_logos/hgTiOn9OZKDjJfARGkwrqczYVDkWC2it_1673406018____c31b182fa12ed20bae653cad41e00185.jpg")
                 .status(true)
                 .createDate(sdf.format(java.sql.Date.valueOf(LocalDate.now())))
                 .build();
         var job2 = JobPostingEntity.builder()
                 .userAccountEntity(reccer1)
-                .name("Front-end Developer - ReactJS")
-                .position("Mid-level")
+                .name("Senior React JS")
+                .position("Nhân viên")
                 .language("TOEIC 700")
                 .location("Hồ Chí Minh")
-                .salary("8 - 10 triệu")
+                .salary("30 -50 triệu")
                 .number("2")
                 .workingForm("Toàn thời gian")
                 .sex("Không yêu cầu")
-                .experience("3 - 5 năm")
+                .experience("4 năm")
                 .detailLocation("Hồ Chí Minh: Tòa nhà Bitexco Financial Tower, 2 Hải Triều, quận 1, TPHCM")
-                .detailJob("Phát triển và duy trì các ứng dụng web sử dụng ReactJS")
-                .requirements("Có kiến thức chuyên sâu về ReactJS và ít nhất 3 năm kinh nghiệm lập trình Front-end")
-                .interest("Tham gia vào dự án phát triển các ứng dụng web phức tạp")
-                .image("https://www.google.com/url?sa=i&url=https%3A%2F%2Fthtantai2.edu.vn%2Fanh-dep-ve-doi%2F&psig=AOvVaw0HlSMSdWQrghkASCNLrmkx&ust=1696065951309000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCNDsiZbAz4EDFQAAAAAdAAAAABAE")
+                .detailJob("Tham gia phát triển dự án sử dụng Reactjs, Nextjs, Tailwind Css, Typescript...\n" +
+                        "Tham gia vào việc phân tích nghiệp vụ, nghiên cứu giải pháp tối ưu hoá hiệu suất cho sản phẩm.\n" +
+                        "Quản lí chi tiết công việc: review code, đảm bảo chất lượng code, security và tuân thủ tiêu chuẩn code\n" +
+                        "Lead team, support team cùng hợp tác, phát triển")
+                .requirements("Tối thiểu 4 năm kinh nghiệm trong lập trình front-end.\n" +
+                        "Tham gia phát triển dự án sử dụng Reactjs, Nextjs, Tailwind Css, Typescript...\n" +
+                        "Tham gia vào việc phân tích nghiệp vụ, nghiên cứu giải pháp tối ưu hoá hiệu suất cho sản phẩm.\n" +
+                        "Có kiến thức cơ bản và khả năng sử dụng HTML, CSS, Javascript\n" +
+                        "Hiểu biết sâu sắc về các tiêu chuẩn và thông số kỹ thuật thiết kế HTTP\n" +
+                        "Hiểu biết về tính bảo mật của API OAuth 2.0.\n" +
+                        "Quen thuộc với JSON, RESTful APIs.\n" +
+                        "Có khả năng lãnh đạo, hỗ trợ thúc đẩy team cùng phát triển\n" +
+                        "Hiểu biết sâu sắc về kiến trúc hệ thống và khả năng đưa ra các quyết định cho kiến trúc hệ thống\n" +
+                        "Kinh nghiệm vể review code, đảm bảo chất lượng code, security và tuân thủ tiêu chuẩn code\n" +
+                        "Kỹ năng giải quyết vấn đề mạnh mẽ và khả năng nghiên cứu và khám phá các giải pháp sáng tạo cho những thách thức kỹ thuật phức tạp.\n" +
+                        "Có kinh nghiệm sử dụng các công cụ phát triển front-end như Webpack, NPM, Yarn, v.v\n" +
+                        "Khả năng tài liệu hóa sơ đồ và tổ chức thiết kế và cơ chế\n" +
+                        "Trải nghiệm công cụ cộng tác sử dụng Git, Jira và Confluence\n" +
+                        "Kinh nghiệm phát triển trong môi trường đám mây như AWS hoặc Azure\n" +
+                        "Từng làm việc với các dự án android/ios native là một lợi thế")
+                .interest("Salary: từ 1300$ (thỏa thuận khi phỏng vấn)\n" +
+                        "Review lương hàng năm.\n" +
+                        "Thời gian làm việc: T2-T6 (9h-18h). Không OT.\n" +
+                        "13 tháng lương/năm, thưởng Lễ tết, thưởng performance...\n" +
+                        "12 ngày phép/năm.\n" +
+                        "Môi trường làm việc trẻ trung, năng động, thân thiện.\n" +
+                        "Được tạo điều kiện để học hỏi và phát triển mỗi ngày.\n" +
+                        "Được hưởng đầy đủ các chế độ theo quy định của pháp luật (BHYT, BHXH, BHTN).\n" +
+                        "Được tham gia vào các hoạt động: du lịch hàng năm, team building theo quý, Party, sinh nhật hàng tháng...\n" +
+                        "Happy time hàng ngày; trà, coffee, hoa quả free...\n" +
+                        "Được hưởng đầy đủ các chế độ thăm hỏi sức khỏe cho bản thân và gia đình theo chính sách đãi ngộ của Công ty.")
+                .image("https://cdn-new.topcv.vn/unsafe/150x/filters:format(webp)/https://static.topcv.vn/company_logos/pvwD16TQug7kaK4TiV7e8AIuzqPmvwhZ_1682560198____b454ce1165bd47e18dc4f8386b288c7b.png")
                 .status(true)
                 .createDate(sdf.format(java.sql.Date.valueOf(LocalDate.now())))
                 .build();
 
         var jobKinhTe = JobPostingEntity.builder()
                 .userAccountEntity(reccer2) // Thay userOfYourCompany bằng thông tin tài khoản người dùng liên quan
-                .name("Kế Toán Tài Chính")
-                .position("Senior")
-                .language("Tiếng Anh chuyên ngành")
+                .name("Nhân Viên Kinh Doanh Tiếng Trung Tại Hà Nội")
+                .position("Nhân viên")
+                .language("Tiếng Trung")
                 .location("Hà Nội")
-                .salary("15 - 20 triệu")
+                .salary("thỏa thuận")
                 .number("1")
                 .workingForm("Toàn thời gian")
                 .sex("Không yêu cầu")
-                .experience("5 - 7 năm")
-                .detailLocation("Hà Nội: Số 123, Đường ABC, Quận XYZ, Hà Nội")
-                .detailJob("Quản lý các hoạt động kế toán, tài chính của công ty")
-                .requirements("Có kinh nghiệm quản lý kế toán tài chính, am hiểu về luật thuế và quy định kế toán")
-                .interest("Tham gia vào việc phát triển và nâng cao chất lượng kế toán tài chính")
-                .image("https://example.com/kinhte_job_image.jpg")
+                .experience("chưa có")
+                .detailLocation("Tầng 3 TTTM, tòa nhà CTM Complex, số 139 Cầu Giấy")
+
+                .detailJob("- Tìm hiểu, nghiên cứu các sản phẩm về phụ kiện xây dựng của công ty để giới thiệu, tư vấn giải pháp cho khách hàng ( hệ thống sản phẩm: phụ kiện khóa từ vân tay, khóa cửa gỗ, bu lông, tấm alu, sàn gỗ nhựa, đèn LED, hệ thống sản phẩm hoàn thiện nội thất ...)\n" +
+                        "\n" +
+                        "- Đàm phán điều khoản, ký kết hợp đồng kinh doanh với khách hàng\n" +
+                        "\n" +
+                        "- Khai thác, tìm kiếm khách hàng mới .Phát triển tiêu thụ sản phẩm tại thị trường Việt Nam\n" +
+                        "\n" +
+                        "- Khai thác và hợp tác với các công ty thương mại –phân phối\n" +
+                        "\n" +
+                        "- Quản lý hoạt động kinh doanh và chăm sóc khách hàng\n" +
+                        "\n" +
+                        "- Thực hiện các công việc khác liên quan đến quá trình kinh doanh theo sự phân công của cấp trên ( học tập kiến thức sản phẩm, điều tra thị trường, tiếp cận dự án... )")
+                .requirements("- Ưu tiên ứng viên có kinh nghiệm trong ngành xây dựng, không có kinh nghiệm sẽ được đào tạo;\n" +
+                        "\n" +
+                        "- Nam độ tuổi từ 30 trở xuống; Trình độ Cao đẳng trở lên;\n" +
+                        "\n" +
+                        "- Ưu tiên biết tiếng Trung\n" +
+                        "\n" +
+                        "- Kỹ năng đàm phán, thương lượng;\n" +
+                        "\n" +
+                        "- Yêu thích công việc kinh doanh;\n" +
+                        "\n" +
+                        "- Có khả năng làm việc độc lập, phối hợp làm việc nhóm\n" +
+                        "\n" +
+                        "- Chịu được áp lực công việc.\n" +
+                        "\n" +
+                        "- Trung thực, chịu khó")
+                .interest("- Lương hấp dẫn: Lương cơ bản 8-10 triệu tùy năng lực + hoa hồng ko giới hạn\n" +
+                        "\n" +
+                        "- Lương thử việc được trả 100%, thời gian thử việc được tính nghỉ phép\n" +
+                        "\n" +
+                        "- Phụ cấp tiền ăn trưa, xăng xe, chi phí liên lạc điện thoại\n" +
+                        "\n" +
+                        "- Được hưởng các chế độ thưởng chuyên cần, thưởng hiệu suất làm việc, thưởng thâm niên công tác...\n" +
+                        "\n" +
+                        "- Xét tăng lương 1 lần / năm theo quy định của công ty\n" +
+                        "\n" +
+                        "- Được tham gia BHYT + BHXH + BHTN và các chế độ phúc lợi xã hội khác theo luật lao động Việt Nam\n" +
+                        "\n" +
+                        "- Được hưởng chế độ nghỉ Lễ, tết theo quy định của Luật Lao động và Quy định của công ty.\n" +
+                        "\n" +
+                        "- Được làm việc trong môi trường năng động, chuyên nghiệp, được cử sang nước ngoài đào tạo\n" +
+                        "\n" +
+                        "- Được tham gia các hoạt động chung của Công ty: du lịch, teambuilding, sự kiện.........")
+                .image("https://static.topcv.vn/employer_medias/301e1c35751c47cbd642b7688a0e2d37-654223f13e101.jpg")
                 .status(true)
                 .createDate(sdf.format(java.sql.Date.valueOf(LocalDate.now())))
                 .build();
+
+        var jobKinhTe2 = JobPostingEntity.builder()
+                .userAccountEntity(reccer2) // Thay userOfYourCompany bằng thông tin tài khoản người dùng liên quan
+                .name("Giáo Viên Tiếng Anh Online")
+                .position("Thực tập sinh")
+                .language("Tiếng Trung")
+                .location("Hà Nội")
+                .salary("Dưới 10 triệu")
+                .number("20")
+                .workingForm("Toàn thời gian")
+                .sex("Không yêu cầu")
+                .experience("chưa có")
+                .detailLocation("Toà nhà Comatce, 61 P.Ngụy Như Kon Tum, Nhân Chính, Thanh Xuân, Hà Nội")
+
+                .detailJob("- Giảng dạy cho học sinh độ tuổi từ 5-14 về phát âm, ngữ pháp, từ vựng theo học liệu được biên soạn sẵn từ Edupia (bám sát chương trình của Bộ Giáo Dục)\n" +
+                        "\n" +
+                        "- Mô hình lớp: 2 học sinh, giảng dạy online qua phần mềm classin\n" +
+                        "\n" +
+                        "- Tham gia các hoạt động phong trào, lễ tết cùng hơn 600 gia sư năng động, trẻ trung đang làm việc tại hệ thống.\n" +
+                        "\n" +
+                        "- Tham gia các buổi đào tạo trực tuyến, nâng cao kỹ năng sư phạm.")
+                .requirements("- Ứng viên từ 19-35 tuổi, có khả năng giao tiếp tiếng Anh tốt, phát âm chuẩn.\n" +
+                        "\n" +
+                        "- Có chứng chỉ tiếng Anh hoặc là sinh viên khoa sư phạm tiếng Anh là một lợi thế\n" +
+                        "\n" +
+                        "- Có kinh nghiệm gia sư, trợ giảng là lợi thế.\n" +
+                        "\n" +
+                        "- Có đam mê giảng dạy và định hướng gắn bó lâu dài với công việc (từ 6 tháng trở lên).\n" +
+                        "\n" +
+                        "- Có máy tính đảm bảo kết nối Internet tốt, camera, mic tốt phục vụ cho việc giảng dạy trực tuyến.\n" +
+                        "\n" +
+                        "- Làm việc tối thiểu 15 ca/tuần (45'/ca) các buổi tối thứ 2-CN, từ 18h-21h45, đặc biệt có thể làm các ca tối cuối tuần.")
+                .interest("- Thu nhập: lương khởi điểm 50-65k/ca 45', tương đương trung bình 66-87k/h bao gồm lương cứng và thưởng tuỳ vị trí (tổng thu nhập dao động từ 3tr - 11tr/tháng)\n" +
+                        "\n" +
+                        "- Mức lương cao hơn 20% - 50% công ty cùng ngành\n" +
+                        "\n" +
+                        "- Đánh giá tăng lương định kỳ, mức max nhận được 115k/ca 45'\n" +
+                        "\n" +
+                        "- Đăng ký theo lịch rảnh cá nhân\n" +
+                        "\n" +
+                        "- Cùng học sinh tạo ra các lớp học với trải nghiệm, đào tạo E-learning chuẩn thế kỷ 21 \"Đem thế giới vào lớp học và kết nối lớp học với cuộc sống\"\n" +
+                        "\n" +
+                        "- Được làm việc trong môi trường chuyên nghiệp và đội ngũ quản lý có kinh nghiệm và trình độ cao trong lĩnh vực giáo dục.\n" +
+                        "\n" +
+                        "- Educa luôn tạo cơ hội để các bạn ham học hỏi và phát triển bản thân, đồng thời đánh giá công bằng năng lực của ứng viên.\n" +
+                        "\n" +
+                        "- Làm việc trên 6 tháng sẽ được cấp chứng nhận giảng dạy tại trung tâm (có hỗ trợ dấu thực tập sau 6 tháng)")
+                .image("https://static.topcv.vn/employer_medias/d0174e67d5e2154738ca475ad8a1d450-6513923c776fd.jpg")
+                .status(true)
+                .createDate(sdf.format(java.sql.Date.valueOf(LocalDate.now())))
+                .build();
+
+
         jobPostingRepository.save(job1);
         jobPostingRepository.save(job2);
         jobPostingRepository.save(jobKinhTe);
+        jobPostingRepository.save(jobKinhTe2);
 
         GenerateInterview(interviewer1,reccer1, job1, reccer2, jobKinhTe);
         GenerateCV(candidate, job1);
