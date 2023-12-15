@@ -251,7 +251,7 @@ public class UserServiceImpl implements IUserService {
                             System.out.print("  link: "+interviewDetailEntity.getInterview().getLinkmeet());
                             objJobPosting.put("linkMeet",
                                     interviewDetailEntity.getInterview().getLinkmeet());
-                            LocalDate dateInterview = LocalDate.parse(interviewDetailEntity.getDate(), inputFormatter);
+                            LocalDate dateInterview = LocalDate.parse(interviewDetailEntity.getDate(), outputFormatter);
                             objJobPosting.put("dateInterview", dateInterview.format(outputFormatter));
                             objJobPosting.put("timeInterview", interviewDetailEntity.getTime());
                             List<UserAccountEntity> interviewers = interviewDetailEntity

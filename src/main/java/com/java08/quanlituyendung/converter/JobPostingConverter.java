@@ -1,12 +1,31 @@
 package com.java08.quanlituyendung.converter;
 
 import com.java08.quanlituyendung.dto.JobPostingDTO;
+import com.java08.quanlituyendung.dto.company.CandidateCompanyItemDTO;
+import com.java08.quanlituyendung.entity.CVEntity;
+import com.java08.quanlituyendung.entity.InterviewDetailEntity;
 import com.java08.quanlituyendung.entity.JobPostingEntity;
+import com.java08.quanlituyendung.entity.UserAccountEntity;
+import com.java08.quanlituyendung.repository.InterviewDetailRepository;
+import com.java08.quanlituyendung.repository.UserAccountRepository;
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class JobPostingConverter {
+
+    @Autowired
+    private InterviewDetailRepository interviewDetailRepository;
+
+    @Autowired
+    UserAccountRepository userAccountRepository;
+
     public JobPostingEntity toEntity(JobPostingDTO dto) {
         return JobPostingEntity.builder()
                 .name(dto.getName())
@@ -92,12 +111,13 @@ public class JobPostingConverter {
         if (dto.getInterest() != null) {
             entity.setInterest(dto.getInterest());
         }
-        if(dto.getStatus() != null){
+        if (dto.getStatus() != null) {
             entity.setStatus(dto.getStatus());
         }
         return entity;
     }
-    public JSONObject toJsonForProfile(JobPostingEntity jobPostingEntity){
+
+    public JSONObject toJsonForProfile(JobPostingEntity jobPostingEntity) {
         JSONObject obj = new JSONObject();
         obj.put("id", jobPostingEntity.getId());
         obj.put("name", jobPostingEntity.getName());
@@ -117,11 +137,54 @@ public class JobPostingConverter {
         obj.put("status", jobPostingEntity.getStatus());
         return obj;
     }
-    public JSONObject toJsonForUser(JobPostingEntity jobPostingEntity){
+
+    public JSONObject toJsonForUser(JobPostingEntity jobPostingEntity) {
         JSONObject obj = new JSONObject();
         obj.put("name", jobPostingEntity.getName());
         obj.put("position", jobPostingEntity.getPosition());
         obj.put("skill", jobPostingEntity.getLanguage());
         return obj;
+    }
+
+    public List<CandidateCompanyItemDTO> getListCandidateFromListJob(List<JobPostingEntity> jobs) {
+        List<CandidateCompanyItemDTO> response = new ArrayList<>();
+        List<InterviewDetailEntity> interviewDetails = interviewDetailRepository.findAll();
+
+        List<InterviewDetailEntity> interviewDetailsFilter = interviewDetails.stream()
+                .filter(item ->jobs.contains(item.getInterview().getJobPostingEntity()))
+                .collect(Collectors.toList());
+
+        interviewDetailsFilter.stream()
+                .map(this::interviewDetailToCandidateCompanyItemDTO)
+                .forEach(response::add);
+
+        return response;
+    }
+
+
+    public CandidateCompanyItemDTO interviewDetailToCandidateCompanyItemDTO(InterviewDetailEntity interviewDetail) {
+        Optional<UserAccountEntity> userAccountEntityOpt = userAccountRepository.findById(interviewDetail.getCandidateId());
+        if (userAccountEntityOpt.isPresent()) {
+            UserAccountEntity userAccountEntity = userAccountEntityOpt.get();
+            List<CVEntity> cvs = interviewDetail.getInterview().getJobPostingEntity().getCvEntities();
+            String cvUrl = cvs.stream()
+                    .filter(cv -> cv.getUserAccountEntity().equals(userAccountEntity))
+                    .findFirst()
+                    .map(CVEntity::getUrl)
+                    .orElse("");
+
+            return CandidateCompanyItemDTO.builder()
+                    .candidateId(interviewDetail.getCandidateId())
+                    .name(userAccountEntity.getUserInfo().getFullName())
+                    .email(userAccountEntity.getEmail())
+                    .jobApplied(interviewDetail.getInterview().getJobPostingEntity().getName())
+                    .status(interviewDetail.getStatus())
+                    .avatar(userAccountEntity.getUserInfo().getAvatar())
+                    .cv(cvUrl)
+                    .score(interviewDetail.getAverageScore().toString())
+                    .build();
+        }
+        return null;
+
     }
 }

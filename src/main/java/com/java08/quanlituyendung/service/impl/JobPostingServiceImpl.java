@@ -5,6 +5,7 @@ import com.java08.quanlituyendung.converter.JobPostingConverter;
 import com.java08.quanlituyendung.converter.UserInfoConverter;
 import com.java08.quanlituyendung.dto.JobPostingDTO;
 import com.java08.quanlituyendung.dto.ResponseObject;
+import com.java08.quanlituyendung.dto.company.CandidateCompanyItemDTO;
 import com.java08.quanlituyendung.entity.CVEntity;
 import com.java08.quanlituyendung.entity.JobPostingEntity;
 import com.java08.quanlituyendung.entity.UserAccountEntity;
@@ -149,5 +150,25 @@ public class JobPostingServiceImpl implements IJobPostingService {
                 .body(ResponseObject.builder()
                         .status(HttpStatus.FORBIDDEN.toString())
                         .message(Constant.FAIL).build());
+    }
+
+    @Override
+    public ResponseEntity<ResponseObject> getMyCandidate(Authentication authentication) {
+        var user = userAccountRetriever.getUserAccountEntityFromAuthentication(authentication);
+        if (user != null) {
+            var jobs = jobPostingRepository.findByUserAccountEntity(user);
+            List<CandidateCompanyItemDTO> response =  jobPostingConverter.getListCandidateFromListJob(jobs);
+            return ResponseEntity.ok(ResponseObject.builder()
+                    .message("Success")
+                    .status(HttpStatus.OK.toString())
+                    .data(response)
+                    .build());
+
+        } else {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(ResponseObject.builder()
+                            .status(HttpStatus.FORBIDDEN.toString())
+                            .message(Constant.FAIL).build());
+        }
     }
 }

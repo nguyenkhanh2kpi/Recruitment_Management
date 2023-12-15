@@ -16,4 +16,5 @@ public class UserAccountCustomResponseDTO {
     private String avatar;
     private String fullName;
     private String username;
+    private String status;
 }

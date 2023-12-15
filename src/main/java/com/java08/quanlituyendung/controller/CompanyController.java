@@ -51,6 +51,12 @@ public class CompanyController {
         return iJobPostingService.getCompanyJobs(companyId);
     }
 
+    @Operation(summary = "Lấy danh sách các ứng viên theo công ty của tôi")
+    @GetMapping("/my-candidate")
+    public ResponseEntity<ResponseObject> getMyCandidate(Authentication authentication) {
+        return iJobPostingService.getMyCandidate(authentication);
+    }
+
 
     @Operation(summary = "Lấy cty cua toi")
     @GetMapping("/my-company")
@@ -79,6 +85,8 @@ public class CompanyController {
             return ResponseEntity.internalServerError().body(ResponseObject.builder().message(errorMessage).build());
         }
     }
+
+
 
 
 

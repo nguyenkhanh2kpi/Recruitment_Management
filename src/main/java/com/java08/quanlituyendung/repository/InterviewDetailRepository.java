@@ -9,5 +9,4 @@ public interface InterviewDetailRepository extends JpaRepository<InterviewDetail
     Optional<List<InterviewDetailEntity>> findByInterview_Id(Long id);
     List<InterviewDetailEntity>  findByCandidateId(Long id);
 
-
 }

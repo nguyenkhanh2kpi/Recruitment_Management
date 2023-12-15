@@ -239,6 +239,7 @@ public class UserAccountConverter {
         responseDTO.setAvatar(userAccount.getUserInfo().getAvatar());
         responseDTO.setFullName(userAccount.getUserInfo().getFullName());
         responseDTO.setUsername(userAccount.getUsernameReal());
+        responseDTO.setStatus(userAccount.getStatus().toString());
         return responseDTO;
     }
     private <T> void setFirstNonNullElement(List<T> list, Consumer<T> setter) {
