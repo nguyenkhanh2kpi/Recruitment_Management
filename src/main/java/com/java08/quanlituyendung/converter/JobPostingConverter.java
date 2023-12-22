@@ -64,6 +64,7 @@ public class JobPostingConverter {
                 .requirements(entity.getRequirements())
                 .interest(entity.getInterest())
                 .status(entity.getStatus())
+                .createDate(entity.getCreateDate())
                 .user_id(Math.toIntExact(entity.getUserAccountEntity().getId()))
                 .build();
     }

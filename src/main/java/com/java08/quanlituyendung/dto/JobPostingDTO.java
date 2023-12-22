@@ -31,4 +31,5 @@ public class JobPostingDTO {
     private Boolean status;
     private List<JSONObject> listCandidate;
     private Integer user_id;
+    private String createDate;
 }

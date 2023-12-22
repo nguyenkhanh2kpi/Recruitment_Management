@@ -83,4 +83,14 @@ public class CvServiceIml implements ICvService {
                 .message(Constant.NOT_AUTHENTICATED)
                 .build());
     }
+
+    @Override
+    public ResponseEntity<ResponseObject> getAllCV() {
+        var CVS = cvRepository.findAll();
+        return ResponseEntity.ok(ResponseObject.builder()
+                .status(HttpStatus.OK.toString())
+                .message(Constant.SUCCESS)
+                        .data(CVS)
+                .build());
+    }
 }
