@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CandidateCompanyItemDTO {
+    private Long detailId;
     private Long candidateId;
     private String name;
     private String email;

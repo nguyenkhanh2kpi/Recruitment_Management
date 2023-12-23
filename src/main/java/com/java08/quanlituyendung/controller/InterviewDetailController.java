@@ -3,6 +3,7 @@ package com.java08.quanlituyendung.controller;
 
 import com.java08.quanlituyendung.dto.InterviewPayload.MarkCandidatePayload;
 import com.java08.quanlituyendung.dto.ResponseObject;
+import com.java08.quanlituyendung.dto.RoomStatusDTO;
 import com.java08.quanlituyendung.service.IInterviewDetailService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,11 +19,13 @@ public class InterviewDetailController {
 
     @Autowired
     private IInterviewDetailService iInterviewDetailService;
+
     @Operation(summary = "Sử dụng phương thức này để lấy tất cả các detail candidate trong các phòng phỏng vấn, admin dùng")
     @GetMapping
     public ResponseEntity<ResponseObject> getAll() {
         return iInterviewDetailService.getAll();
     }
+
     @Operation(summary = "Dùng để lấy danh sách chi tiết candidate theo phòng gọi interview-detail/room/{idRoom}")
     @GetMapping("/room/{roomId}")
     public ResponseEntity<ResponseObject> getInterviewDetailByRoomId(@PathVariable Long roomId) {
@@ -39,5 +42,11 @@ public class InterviewDetailController {
     @PostMapping("/mark")
     public ResponseEntity<ResponseObject> markCandidate(@RequestBody MarkCandidatePayload request, Authentication authentication) {
         return iInterviewDetailService.markCandidate(request, authentication);
+    }
+
+    @Operation(summary = "Thay đổi trạng thái")
+    @PostMapping("/hiring-status/{detailId}")
+    public ResponseEntity<ResponseObject> changeHiringStatus(@PathVariable Long detailId, @RequestBody RoomStatusDTO status, Authentication authentication){
+        return  iInterviewDetailService.changeStatus(detailId,status.getStatus(),authentication);
     }
 }

@@ -52,6 +52,7 @@ public class InterviewConverter {
     public RoomResponseDTO toDto(InterviewEntity interview) {
         RoomResponseDTO responseDTO = new RoomResponseDTO();
         responseDTO.setJobPostId(interview.getJobPostingEntity().getId());
+        responseDTO.setJobName(interview.getJobPostingEntity().getName());
         responseDTO.setId(interview.getId());
         responseDTO.setRoomName(interview.getRoomName());
         responseDTO.setRoomSkill(interview.getSkill());

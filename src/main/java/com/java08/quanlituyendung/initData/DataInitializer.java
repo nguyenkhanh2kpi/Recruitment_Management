@@ -230,7 +230,7 @@ public class DataInitializer implements CommandLineRunner {
                 .position("Nhân viên")
                 .language("TOEIC 700")
                 .location("Hồ Chí Minh")
-                .salary("Thỏa thuận")
+                .salary("thỏa thuận")
                 .number("10")
                 .workingForm("Toàn thời gian")
                 .sex("Không yêu cầu")

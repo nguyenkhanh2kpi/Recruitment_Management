@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class RoomResponseDTO extends AbstractDTO {
     private Long jobPostId;
+    private String jobName;
     private String roomName;
     private String roomSkill;
     private String roomDescription;

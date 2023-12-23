@@ -175,6 +175,7 @@ public class JobPostingConverter {
                     .orElse("");
 
             return CandidateCompanyItemDTO.builder()
+                    .detailId(interviewDetail.getId())
                     .candidateId(interviewDetail.getCandidateId())
                     .name(userAccountEntity.getUserInfo().getFullName())
                     .email(userAccountEntity.getEmail())
