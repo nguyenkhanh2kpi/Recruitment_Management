@@ -26,12 +26,4 @@ workflows:
       - maven/test:
           command: 'test'
           executor: java17
-          steps:
-            - run:
-                name: Run Tests
-                command: |
-                  # Your test commands go here
-
-      - store_test_results:
-          path: target/surefire-reports
-          when: always
+          test_results_path: ./test.yml
