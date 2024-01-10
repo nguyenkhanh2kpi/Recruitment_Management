@@ -54,6 +54,10 @@ public class DataInitializer implements CommandLineRunner {
             GenerateUser();
             GenerateSkillPosition();
             GenerateQuestions();
+            System.out.println("Dữ liệu đã được khởi tạo thành công!");
+
+        } else {
+            System.out.println("Dữ liệu đã được khởi tạo thành công!");
         }
     }
 
