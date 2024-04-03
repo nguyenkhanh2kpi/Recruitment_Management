@@ -2,16 +2,23 @@ package com.java08.quanlituyendung.calendar;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.auth.oauth2.TokenResponse;
+import com.google.api.client.auth.openidconnect.IdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.Event;
+import com.google.api.services.people.v1.PeopleService;
+import com.google.api.services.people.v1.model.Person;
 import com.java08.quanlituyendung.converter.EventRequestConverter;
 import com.java08.quanlituyendung.dto.CalendarAddRequestDTO;
 import org.springframework.stereotype.Service;
@@ -82,9 +89,24 @@ public class CalendarGoogleService {
                     .setConferenceDataVersion(1)
                     .execute();
         }
-
     }
 
+    public static String getEmailFromToken(String accessToken) throws IOException, GeneralSecurityException {
+        HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+
+        GoogleCredential credential = new GoogleCredential().setAccessToken(accessToken);
+
+        PeopleService service = new PeopleService.Builder(httpTransport, JSON_FACTORY, credential)
+                .setApplicationName(APPLICATION_NAME)
+                .build();
+
+        Person me = service.people().get("people/me").setPersonFields("emailAddresses").execute();
+
+        String userEmail = me.getEmailAddresses().get(0).getValue();
+        String userName = me.getNames().get(0).getDisplayName();
+        String imageUrl = me.getPhotos().get(0).getUrl();
+        return userEmail;
+    }
 
 
 

@@ -32,8 +32,8 @@ import java.util.Map;
 public class MessageServiceImpl implements IMessageService {
     private UserAccountRetriever userAccountRetriever;
 
-    private String privateKey = "f6c9a615-51f4-4d04-82ef-e292040cbc85";
-    private static String CHAT_ENGINE_PROJECT_ID = "bd1f57d0-c073-4374-bbb9-ee898f8af3ec";
+    private String privateKey = "577f1035-3b9e-4267-b35c-2cd57b0431a3";
+    private static String CHAT_ENGINE_PROJECT_ID = "2689e2c3-fe10-416a-95b8-1267082c3cca";
 
     @Autowired
     public MessageServiceImpl(UserAccountRetriever userAccountRetriever) {
