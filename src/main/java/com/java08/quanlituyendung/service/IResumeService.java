@@ -2,6 +2,7 @@ package com.java08.quanlituyendung.service;
 
 import com.java08.quanlituyendung.dto.ResponseObject;
 import com.java08.quanlituyendung.dto.Resume.ResumeDTO;
+import com.java08.quanlituyendung.dto.Resume.UpdateResumeDTO;
 import com.java08.quanlituyendung.dto.Resume.WorkExpDTO;
 import com.java08.quanlituyendung.dto.Resume.WorkProjectDTO;
 import org.springframework.http.ResponseEntity;
@@ -20,4 +21,6 @@ public interface IResumeService {
     ResponseEntity<ResponseObject> saveProject(Authentication authentication, WorkProjectDTO request);
 
     ResponseEntity<ResponseObject> deleteProject(Authentication authentication, WorkProjectDTO request);
+
+    ResponseEntity<ResponseObject> updateResume(UpdateResumeDTO request, Authentication authentication);
 }

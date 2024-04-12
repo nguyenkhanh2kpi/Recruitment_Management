@@ -3,6 +3,7 @@ package com.java08.quanlituyendung.controller;
 import com.java08.quanlituyendung.auth.AuthenticationService;
 import com.java08.quanlituyendung.dto.*;
 import com.java08.quanlituyendung.dto.InterviewerDTO.CreateAccountInterviewerDTO;
+import com.java08.quanlituyendung.dto.google.LoginGoogleFormDTO;
 import com.java08.quanlituyendung.entity.AuthenticationProvider;
 import com.java08.quanlituyendung.entity.OtpType;
 import com.java08.quanlituyendung.entity.Role;
@@ -19,6 +20,7 @@ import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 
 @RestController
@@ -33,11 +35,11 @@ public class AuthController {
     private final IInterviewService iInterviewService;
     @CrossOrigin(origins = "//localhost:3000/")
 
-    @Operation(summary = "Sử dụng phương thức này để đăng nhập bằng tài khoản google")
-    @PostMapping("/google/login")
-    public ResponseEntity<AuthenticationResponseDTO> loginGoogle(@RequestBody GoogleRequestDTO requestDTO){
-        return authenticationService.saveOrUpdateUser(requestDTO,Role.CANDIDATE,AuthenticationProvider.GOOGLE);
-    }
+//    @Operation(summary = "Sử dụng phương thức này để đăng nhập bằng tài khoản google")
+//    @PostMapping("/google/login")
+//    public ResponseEntity<AuthenticationResponseDTO> loginGoogle(@RequestBody GoogleRequestDTO requestDTO){
+//        return authenticationService.saveOrUpdateUser(requestDTO,Role.CANDIDATE,AuthenticationProvider.GOOGLE);
+//    }
     @Operation(summary = "Sử dụng phương thức này để gửi mã otp về gmail")
     @PostMapping("/send-otp")
     public ResponseEntity<ResponseObject> sendOTP(@RequestBody EmailRequestDTO request){
@@ -54,19 +56,18 @@ public class AuthController {
         return authenticationService.register(request, Role.CANDIDATE, AuthenticationProvider.LOCAL);
     }
 
-//    @Operation(summary = "Sử dụng phương thức này để đăng ký tài khoản Reccer")
-//    @PostMapping("/register-reccer")
-//    public ResponseEntity<AuthenticationResponseDTO> registerRECcer(@RequestBody RegisterRequestDTO request) {
-//        return authenticationService.register(request, Role.RECRUITER, AuthenticationProvider.LOCAL);
-//    }
-
-
-
     @Operation(summary = "Sử dụng phương thức này để đăng nhập")
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponseDTO> authenticate(@RequestBody AuthenticationRequestDTO request) {
         return authenticationService.authenticate(request);
     }
+
+    @Operation(summary = "Sử dụng phương thức này để đăng nhập")
+    @PostMapping("/login-google")
+    public ResponseEntity<AuthenticationResponseDTO> loginGoogle(@RequestBody LoginGoogleFormDTO request) throws GeneralSecurityException, IOException {
+        return authenticationService.loginGoogle(request);
+    }
+
     @Operation(summary = "Sử dụng phương thức này để tạo mới access token")
     @PostMapping("/refresh-token")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {

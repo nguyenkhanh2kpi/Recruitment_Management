@@ -5,6 +5,7 @@ import com.java08.quanlituyendung.auth.UserAccountRetriever;
 import com.java08.quanlituyendung.converter.ResumeConverter;
 import com.java08.quanlituyendung.dto.ResponseObject;
 import com.java08.quanlituyendung.dto.Resume.ResumeDTO;
+import com.java08.quanlituyendung.dto.Resume.UpdateResumeDTO;
 import com.java08.quanlituyendung.dto.Resume.WorkExpDTO;
 import com.java08.quanlituyendung.dto.Resume.WorkProjectDTO;
 import com.java08.quanlituyendung.entity.ResumeEntity;
@@ -87,10 +88,8 @@ public class ResumeServiceImpl implements IResumeService {
                     .build());
         }
         var resume = resumeRepository.findByUserAccountEntity(user);
-
-        if(resume.isEmpty()) {
-            ResumeEntity resumeEntity = new ResumeEntity();
-            resumeEntity.setUserAccountEntity(user);
+        if (resume.isEmpty()) {
+            ResumeEntity resumeEntity = resumeConverter.userToResumeEntity(user);
             resumeRepository.save(resumeEntity);
             return ResponseEntity.ok(ResponseObject.builder()
                     .status(HttpStatus.CREATED.toString())
@@ -99,7 +98,7 @@ public class ResumeServiceImpl implements IResumeService {
                     .build());
         }
         return ResponseEntity.ok(ResponseObject.builder()
-                .status(HttpStatus.CREATED.toString())
+                .status(HttpStatus.OK.toString())
                 .message(Constant.SUCCESS)
                 .data(resumeConverter.toDTO(resume.get()))
                 .build());
@@ -114,7 +113,6 @@ public class ResumeServiceImpl implements IResumeService {
                     .message("Something went wrong")
                     .build());
         }
-
         WorkingExperience workingExperience;
         workingExperience = resumeConverter.DtoToWokEntity(request);
         experienceRepository.save(workingExperience);
@@ -135,6 +133,7 @@ public class ResumeServiceImpl implements IResumeService {
                 .data(resumeConverter.toDTO(resume.get()))
                 .build());
     }
+
 
     @Override
     public ResponseEntity<ResponseObject> delete(Authentication authentication, WorkExpDTO request) {
@@ -238,4 +237,26 @@ public class ResumeServiceImpl implements IResumeService {
                 .build());
 
     }
+
+    @Override
+    public ResponseEntity<ResponseObject> updateResume(UpdateResumeDTO request, Authentication authentication) {
+        Optional<ResumeEntity> resume = resumeRepository.findById(request.getId());
+        if (resume.isPresent()) {
+            resumeRepository.save(resumeConverter.toEntity(resume.get(),request));
+            return ResponseEntity.ok(ResponseObject.builder()
+                    .status(HttpStatus.OK.toString())
+                    .message(Constant.SUCCESS)
+                    .data(resumeConverter.toDTO(resume.get()))
+                    .build());
+
+        } else {
+            return ResponseEntity.ok(ResponseObject.builder()
+                    .status(HttpStatus.NOT_FOUND.toString())
+                    .message("Can not find resume")
+                    .data("")
+                    .build());
+
+        }
+    }
+
 }

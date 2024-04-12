@@ -322,7 +322,7 @@ public class DataInitializer implements CommandLineRunner {
                         "Được tham gia vào các hoạt động: du lịch hàng năm, team building theo quý, Party, sinh nhật hàng tháng...\n" +
                         "Happy time hàng ngày; trà, coffee, hoa quả free...\n" +
                         "Được hưởng đầy đủ các chế độ thăm hỏi sức khỏe cho bản thân và gia đình theo chính sách đãi ngộ của Công ty.")
-                .image("https://cdn-new.topcv.vn/unsafe/150x/filters:format(webp)/https://static.topcv.vn/company_logos/pvwD16TQug7kaK4TiV7e8AIuzqPmvwhZ_1682560198____b454ce1165bd47e18dc4f8386b288c7b.png")
+                .image("https://cdn-new.topcv.vn/unsafe/150x/https://static.topcv.vn/company_logos/cong-ty-tnhh-concentrix-service-vietnam-a963cac26074348bc95ce4bf90dc9fb1-6423dfbc43963.jpg")
                 .status(true)
                 .createDate(sdf.format(java.sql.Date.valueOf(LocalDate.now())))
                 .build();

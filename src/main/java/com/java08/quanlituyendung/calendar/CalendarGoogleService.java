@@ -21,6 +21,10 @@ import com.google.api.services.people.v1.PeopleService;
 import com.google.api.services.people.v1.model.Person;
 import com.java08.quanlituyendung.converter.EventRequestConverter;
 import com.java08.quanlituyendung.dto.CalendarAddRequestDTO;
+import com.java08.quanlituyendung.dto.google.GoogleTransferDTO;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
 import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
@@ -66,7 +70,6 @@ public class CalendarGoogleService {
         return credential;
     }
 
-
     public Event createEvent(CalendarAddRequestDTO requestDTO) throws IOException, GeneralSecurityException {
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         Calendar service =
@@ -91,24 +94,39 @@ public class CalendarGoogleService {
         }
     }
 
-    public static String getEmailFromToken(String accessToken) throws IOException, GeneralSecurityException {
+    public GoogleTransferDTO getEmailFromToken(String accessToken) throws IOException, GeneralSecurityException {
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-
         GoogleCredential credential = new GoogleCredential().setAccessToken(accessToken);
-
         PeopleService service = new PeopleService.Builder(httpTransport, JSON_FACTORY, credential)
                 .setApplicationName(APPLICATION_NAME)
                 .build();
+        Person me = service.people().get("people/me").setPersonFields("names,emailAddresses,phoneNumbers,photos,addresses,birthdays,genders").execute();
+        GoogleTransferDTO googleTransferDTO = new GoogleTransferDTO();
+        if (me.getPhoneNumbers() != null && !me.getPhoneNumbers().isEmpty()) {
+            googleTransferDTO.setPhone(me.getPhoneNumbers().get(0).getValue().toString());
+        }
+        if (me.getNames() != null && !me.getNames().isEmpty()) {
+            googleTransferDTO.setUsername(me.getNames().get(0).getDisplayName());
+        }
+        if (me.getEmailAddresses() != null && !me.getEmailAddresses().isEmpty()) {
+            googleTransferDTO.setEmail(me.getEmailAddresses().get(0).getValue());
+        }
+        if (me.getPhotos() != null && !me.getPhotos().isEmpty()) {
+            googleTransferDTO.setAvatar(me.getPhotos().get(0).getUrl());
+        }
+        if (me.getBirthdays() != null && !me.getBirthdays().isEmpty()) {
+            googleTransferDTO.setBirthDay(String.valueOf(me.getBirthdays().get(0)));
+        }
+        if (me.getAddresses() != null && !me.getAddresses().isEmpty()) {
+            googleTransferDTO.setAddress(String.valueOf(me.getAddresses().get(0)));
+        }
+        if (me.getGenders() != null && !me.getGenders().isEmpty()) {
+            googleTransferDTO.setGender(String.valueOf(me.getGenders().get(0)));
+        }
+        return googleTransferDTO;
 
-        Person me = service.people().get("people/me").setPersonFields("emailAddresses").execute();
 
-        String userEmail = me.getEmailAddresses().get(0).getValue();
-        String userName = me.getNames().get(0).getDisplayName();
-        String imageUrl = me.getPhotos().get(0).getUrl();
-        return userEmail;
     }
-
-
 
 }
 

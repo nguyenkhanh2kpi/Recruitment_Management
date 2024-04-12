@@ -10,6 +10,7 @@ import com.java08.quanlituyendung.dto.OAuth2RequestDTO;
 import com.java08.quanlituyendung.dto.ProfileUpdateRequestDTO;
 import com.java08.quanlituyendung.dto.RegisterRequestDTO;
 import com.java08.quanlituyendung.dto.UserAccountPayload.UserAccountCustomResponseDTO;
+import com.java08.quanlituyendung.dto.google.GoogleTransferDTO;
 import com.java08.quanlituyendung.entity.*;
 import com.java08.quanlituyendung.repository.UserAccountRepository;
 import com.java08.quanlituyendung.repository.UserInfoRepository;
@@ -193,10 +194,19 @@ public class UserAccountConverter {
         entity.setStatus(Status.INPROCESS);
         return entity;
     }
-
     // convert cho register google
-
-
+    public UserAccountEntity toEntityGoogle(GoogleTransferDTO transferDTO) {
+        UserAccountEntity entity = new UserAccountEntity();
+        entity.setUsername(transferDTO.getUsername());
+        entity.setPassword(passwordEncoder.encode("1234"));
+        entity.setEmail(transferDTO.getEmail());
+        entity.setState(UserAccountEntity.State.ACTIVE);
+        entity.setCreationTime(LocalDateTime.now());
+        entity.setRole(Role.CANDIDATE);
+        entity.setAuthenticationProvider(AuthenticationProvider.GOOGLE);
+        entity.setStatus(Status.INPROCESS);
+        return entity;
+    }
     public AuthDataResponseDTO toAuthDataResponseDTO(UserAccountEntity userAccountEntity) {
         AuthDataResponseDTO authDataResponseDTO = new AuthDataResponseDTO();
         authDataResponseDTO.setUsername(userAccountEntity.getUsernameReal());

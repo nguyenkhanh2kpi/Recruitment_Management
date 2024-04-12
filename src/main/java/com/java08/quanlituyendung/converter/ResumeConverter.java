@@ -2,6 +2,7 @@ package com.java08.quanlituyendung.converter;
 
 
 import com.java08.quanlituyendung.dto.Resume.ResumeDTO;
+import com.java08.quanlituyendung.dto.Resume.UpdateResumeDTO;
 import com.java08.quanlituyendung.dto.Resume.WorkExpDTO;
 import com.java08.quanlituyendung.dto.Resume.WorkProjectDTO;
 import com.java08.quanlituyendung.entity.ResumeEntity;
@@ -9,6 +10,9 @@ import com.java08.quanlituyendung.entity.UserAccountEntity;
 import com.java08.quanlituyendung.entity.sample.WorkingExperience;
 import com.java08.quanlituyendung.entity.sample.WorkingProject;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class ResumeConverter {
@@ -91,5 +95,64 @@ public class ResumeConverter {
                 .responsibilities(request.getResponsibilities())
                 .technology(request.getTechnology())
                 .build();
+    }
+
+    public ResumeEntity userToResumeEntity(UserAccountEntity user) {
+        var work = WorkingExperience.builder()
+                .companyName("")
+                .startWorkingTime("")
+                .endWorkingTime("")
+                .position("")
+                .jobDetail("")
+                .technology("")
+                .build();
+
+        List<WorkingExperience> workingExperiences = new ArrayList<>();
+        workingExperiences.add(work);
+
+        var project = WorkingProject.builder()
+                .nameProject("")
+                .startTime("")
+                .endTime("")
+                .client("")
+                .description("")
+                .members("")
+                .position("")
+                .responsibilities("")
+                .technology("")
+                .build();
+        List<WorkingProject> workingProjects = new ArrayList<>();
+        workingProjects.add(project);
+
+        return ResumeEntity.builder()
+                .userAccountEntity(user)
+                .fullName(user.getUserInfo().getFullName())
+                .workingExperiences(workingExperiences)
+                .workingProjects(workingProjects)
+                .email(user.getEmail())
+                .dateOB(user.getUserInfo().getDob())
+                .build();
+    }
+
+    public ResumeEntity toEntity(ResumeEntity resumeEntity, UpdateResumeDTO request) {
+        resumeEntity.setFullName(request.getFullName());
+        resumeEntity.setApplicationPosition(request.getApplicationPosition());
+        resumeEntity.setEmail(request.getEmail());
+        resumeEntity.setPhone(request.getPhone());
+        resumeEntity.setGender(request.getGender());
+        resumeEntity.setDateOB(request.getDateOB());
+        resumeEntity.setCity(request.getCity());
+        resumeEntity.setAddress(request.getAddress());
+        resumeEntity.setLinkedIn(request.getLinkedIn());
+        resumeEntity.setGithub(request.getGithub());
+        resumeEntity.setAboutYourself(request.getAboutYourself());
+        resumeEntity.setMainSkill(request.getMainSkill());
+        resumeEntity.setSkills(request.getSkills());
+        resumeEntity.setSchool(request.getSchool());
+        resumeEntity.setStartEducationTime(request.getStartEducationTime());
+        resumeEntity.setEndEducationTime(request.getEndEducationTime());
+        resumeEntity.setMajor(request.getMajor());
+        resumeEntity.setOthers(request.getOthers());
+        return resumeEntity;
     }
 }

@@ -6,8 +6,11 @@ import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.services.people.v1.model.Person;
+import com.java08.quanlituyendung.calendar.CalendarGoogleService;
 import com.java08.quanlituyendung.converter.UserAccountConverter;
 import com.java08.quanlituyendung.dto.*;
+import com.java08.quanlituyendung.dto.google.GoogleTransferDTO;
+import com.java08.quanlituyendung.dto.google.LoginGoogleFormDTO;
 import com.java08.quanlituyendung.entity.*;
 import com.java08.quanlituyendung.jwt.JwtService;
 import com.java08.quanlituyendung.repository.OtpRepository;
@@ -28,9 +31,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -49,7 +54,10 @@ public class AuthenticationService {
 
 
     @Autowired
-    private  LoginGoogleService loginGoogleService;
+    private LoginGoogleService loginGoogleService;
+
+    @Autowired
+    private CalendarGoogleService calendarGoogleService;
 
     @Autowired
     public AuthenticationService(UserAccountRepository userAccountRepository, JwtService jwtService, AuthenticationManager authenticationManager, ITokenService tokenService, UserAccountConverter userAccountConverter, IMailService mailService, UserInfoRepository userInfoRepository, OtpServiceImpl otpService, OtpRepository otpRepository, UserAccountRepository userRepository) {
@@ -64,6 +72,7 @@ public class AuthenticationService {
         this.otpRepository = otpRepository;
         this.userRepository = userRepository;
     }
+
     public ResponseEntity<ResponseObject> sendOTP(String mail, OtpType otpType) {
         try {
             Optional<UserAccountEntity> userAccountOptional = userRepository.findByEmail(mail);
@@ -71,10 +80,10 @@ public class AuthenticationService {
                 UserAccountEntity user = userAccountOptional.get();
                 var otp_code = RandomNumberGenerator.generateSixDigitNumber();
                 // send mail;
-                if(otpType.equals(OtpType.VERIFY)){
-                    mailService.sendEmail(user.getEmail(),otp_code,EmailType.VERIFICATION);
-                }else {
-                    mailService.sendEmail(user.getEmail(),otp_code,EmailType.RESET_PASSWORD);
+                if (otpType.equals(OtpType.VERIFY)) {
+                    mailService.sendEmail(user.getEmail(), otp_code, EmailType.VERIFICATION);
+                } else {
+                    mailService.sendEmail(user.getEmail(), otp_code, EmailType.RESET_PASSWORD);
                 }
                 // check deliverable mail
 //                if(!mailService.isDeliverableMail(user.getEmail())){
@@ -84,8 +93,8 @@ public class AuthenticationService {
 //                                    .message(Constant.MAIL_FAIL)
 //                                    .build());
 //                    }
-                otpService.revokeAllUserOtp(user,otpType);
-                otpService.saveUserOtp(user,otp_code,otpType,320);
+                otpService.revokeAllUserOtp(user, otpType);
+                otpService.saveUserOtp(user, otp_code, otpType, 320);
                 return ResponseEntity.status(HttpStatus.OK).body(
                         ResponseObject.builder()
                                 .status(HttpStatus.OK.toString())
@@ -114,7 +123,7 @@ public class AuthenticationService {
             if (userOptional.isPresent()) {
                 UserAccountEntity user = userOptional.get();
                 Optional<OtpEntity> otpOptional =
-                        otpRepository.findValidOtpByUser(user.getEmail(), request.getOtp(), OtpType.VERIFY,OtpEnum.Enabled);
+                        otpRepository.findValidOtpByUser(user.getEmail(), request.getOtp(), OtpType.VERIFY, OtpEnum.Enabled);
                 if (otpOptional.isPresent()) {
                     OtpEntity otp = otpOptional.get();
                     otpService.revokeAllUserOtp(user, OtpType.VERIFY);
@@ -149,63 +158,64 @@ public class AuthenticationService {
                             .build());
         }
     }
-public ResponseEntity<AuthenticationResponseDTO> saveOrUpdateUser(GoogleRequestDTO requestDTO, Role role, AuthenticationProvider authenticationProvider) {
-    try {
-        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        Credential credential = loginGoogleService.getCredentialsFromAccessToken(HTTP_TRANSPORT, requestDTO.getToken());
-        Person person = loginGoogleService.getUserInfo(credential);
-        Optional<UserAccountEntity> userOptional = userRepository.
-                findByEmail(person.getEmailAddresses().get(0).getValue());
-        if (userOptional.isPresent()) {
-            var user = userOptional.get();
+
+    public ResponseEntity<AuthenticationResponseDTO> saveOrUpdateUser(GoogleRequestDTO requestDTO, Role role, AuthenticationProvider authenticationProvider) {
+        try {
+            final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+            Credential credential = loginGoogleService.getCredentialsFromAccessToken(HTTP_TRANSPORT, requestDTO.getToken());
+            Person person = loginGoogleService.getUserInfo(credential);
+            Optional<UserAccountEntity> userOptional = userRepository.
+                    findByEmail(person.getEmailAddresses().get(0).getValue());
+            if (userOptional.isPresent()) {
+                var user = userOptional.get();
+                var jwtToken = jwtService.generateToken(user);
+                var refreshToken = jwtService.generateRefreshToken(user);
+
+                tokenService.revokeAllUserToken(user);
+                tokenService.saveUserToken(user, refreshToken);
+                userAccountRepository.save(userAccountConverter.toEntityForUpdate(person, user));
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        AuthenticationResponseDTO.builder()
+                                .data(userAccountConverter.toAuthDataResponseDTO(user))
+                                .status(HttpStatus.OK.toString())
+                                .message(Constant.SUCCESS_LOGIN)
+                                .accessToken(jwtToken)
+                                .refreshToken(refreshToken)
+                                .build());
+
+            }
+            var user = userAccountConverter.toEntityWithAuthProvider(person, role, authenticationProvider);
+            var savedUser = userRepository.save(user);
+            //tạo userInfo
+            var userInfo = createUserInfo(user);
+            user.setUserInfo(userInfo);
+            // cập nhật userInfo, tạm thời chỉ thêm avt từ google account
+            userInfoRepository.save(userAccountConverter.toEntityForCreate(person, user));
+
             var jwtToken = jwtService.generateToken(user);
             var refreshToken = jwtService.generateRefreshToken(user);
 
             tokenService.revokeAllUserToken(user);
             tokenService.saveUserToken(user, refreshToken);
-            userAccountRepository.save(userAccountConverter.toEntityForUpdate(person, user));
+
             return ResponseEntity.status(HttpStatus.OK).body(
                     AuthenticationResponseDTO.builder()
-                            .data(userAccountConverter.toAuthDataResponseDTO(user))
-                            .status(HttpStatus.OK.toString())
+                            .status(HttpStatus.CREATED.toString())
                             .message(Constant.SUCCESS_LOGIN)
+                            .data(userAccountConverter.toAuthDataResponseDTO(savedUser))
                             .accessToken(jwtToken)
                             .refreshToken(refreshToken)
                             .build());
 
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    AuthenticationResponseDTO.builder()
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
+                            .message("Error" + ":" + e)
+                            .build());
         }
-        var user = userAccountConverter.toEntityWithAuthProvider(person, role, authenticationProvider);
-        var savedUser = userRepository.save(user);
-        //tạo userInfo
-        var userInfo = createUserInfo(user);
-        user.setUserInfo(userInfo);
-        // cập nhật userInfo, tạm thời chỉ thêm avt từ google account
-        userInfoRepository.save(userAccountConverter.toEntityForCreate(person, user));
-
-        var jwtToken = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(user);
-
-        tokenService.revokeAllUserToken(user);
-        tokenService.saveUserToken(user, refreshToken);
-
-        return ResponseEntity.status(HttpStatus.OK).body(
-                AuthenticationResponseDTO.builder()
-                        .status(HttpStatus.CREATED.toString())
-                        .message(Constant.SUCCESS_LOGIN)
-                        .data(userAccountConverter.toAuthDataResponseDTO(savedUser))
-                        .accessToken(jwtToken)
-                        .refreshToken(refreshToken)
-                        .build());
-
-
-    } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.OK).body(
-                AuthenticationResponseDTO.builder()
-                        .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
-                        .message("Error" + ":" + e)
-                        .build());
     }
-}
 
     public ResponseEntity<AuthenticationResponseDTO> register(RegisterRequestDTO request, Role role, AuthenticationProvider authenticationProvider) {
         try {
@@ -248,7 +258,7 @@ public ResponseEntity<AuthenticationResponseDTO> saveOrUpdateUser(GoogleRequestD
             var otpCode = RandomNumberGenerator.generateSixDigitNumber();
 
             //send mail @Async;
-            mailService.sendEmail(user.getEmail(),otpCode,EmailType.VERIFICATION);
+            mailService.sendEmail(user.getEmail(), otpCode, EmailType.VERIFICATION);
 
             // check deliverable mail;
 //            if (!mailService.isDeliverableMail(user.getEmail())) {
@@ -281,7 +291,7 @@ public ResponseEntity<AuthenticationResponseDTO> saveOrUpdateUser(GoogleRequestD
         try {
             Optional<UserAccountEntity> userOptional = userRepository.
                     findByEmail(request.getEmail());
-            if(userOptional.get().getAuthenticationProvider() == AuthenticationProvider.GOOGLE){
+            if (userOptional.get().getAuthenticationProvider() == AuthenticationProvider.GOOGLE) {
                 return ResponseEntity.status(HttpStatus.OK).body(
                         AuthenticationResponseDTO.builder()
                                 .status(HttpStatus.NOT_ACCEPTABLE.toString())
@@ -295,7 +305,7 @@ public ResponseEntity<AuthenticationResponseDTO> saveOrUpdateUser(GoogleRequestD
                     )
             );
             var user = userAccountRepository.findByEmail(request.getEmail()).orElseThrow();
-            if(user.getState()!= UserAccountEntity.State.ACTIVE) {
+            if (user.getState() != UserAccountEntity.State.ACTIVE) {
                 return ResponseEntity.ok(
                         AuthenticationResponseDTO.builder()
                                 .status(HttpStatus.NOT_ACCEPTABLE.toString())
@@ -371,5 +381,52 @@ public ResponseEntity<AuthenticationResponseDTO> saveOrUpdateUser(GoogleRequestD
                 .userAccountInfo(userAccountEntity)
                 .avatar("https://scontent.fsgn2-3.fna.fbcdn.net/v/t39.30808-1/341056611_561940302586852_3051668306992785039_n.jpg?stp=dst-jpg_p200x200&_nc_cat=107&ccb=1-7&_nc_sid=7206a8&_nc_ohc=V6sB0rsKOe8AX-poMo4&_nc_ht=scontent.fsgn2-3.fna&oh=00_AfCAQLo2iz1n9QTMggikNtakCcEN6Iq9_q3_65qAWEVavw&oe=64CFDE44")
                 .build());
+    }
+
+    private UserInfoEntity createUserInfoWithGoogle(UserAccountEntity userAccountEntity, GoogleTransferDTO transferDTO) {
+        return userInfoRepository.save(UserInfoEntity.builder()
+                .userAccountInfo(userAccountEntity)
+                .fullName(transferDTO.getUsername())
+                .avatar(transferDTO.getAvatar())
+                .phone(transferDTO.getPhone())
+                .dob(transferDTO.getBirthDay())
+                .address(transferDTO.getAddress())
+                .build());
+    }
+
+
+    public ResponseEntity<AuthenticationResponseDTO> loginGoogle(LoginGoogleFormDTO request) throws GeneralSecurityException, IOException {
+        GoogleTransferDTO transferDTO = calendarGoogleService.getEmailFromToken(request.getGoogleToken());
+
+        Optional<UserAccountEntity> user = userRepository.findByEmail(transferDTO.getEmail());
+        if (user.isPresent()) {
+            var jwtToken = jwtService.generateToken(user.get());
+            var refreshToken = jwtService.generateRefreshToken(user.get());
+            tokenService.revokeAllUserToken(user.get());
+            tokenService.saveUserToken(user.get(), refreshToken);
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    AuthenticationResponseDTO.builder()
+                            .status(HttpStatus.OK.toString())
+                            .message(Constant.SUCCESS_LOGIN)
+                            .data(userAccountConverter.toAuthDataResponseDTO(user.get()))
+                            .accessToken(jwtToken)
+                            .refreshToken(refreshToken)
+                            .build());
+        } else {
+            var newUser = userAccountConverter.toEntityGoogle(transferDTO);
+            var savedUser = userAccountRepository.save(newUser);
+            createUserInfoWithGoogle(newUser, transferDTO);
+            var jwtToken = jwtService.generateToken(newUser);
+            var refreshToken = jwtService.generateRefreshToken(newUser);
+            tokenService.revokeAllUserToken(newUser);
+            tokenService.saveUserToken(newUser, refreshToken);
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    AuthenticationResponseDTO.builder()
+                            .status(HttpStatus.CREATED.toString())
+                            .message(Constant.SUCCESS_REGISTER)
+                            .accessToken(jwtToken)
+                            .data(userAccountConverter.toAuthDataResponseDTO(savedUser))
+                            .build());
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.java08.quanlituyendung.controller;
 
 import com.java08.quanlituyendung.dto.ResponseObject;
 import com.java08.quanlituyendung.dto.Resume.ResumeDTO;
+import com.java08.quanlituyendung.dto.Resume.UpdateResumeDTO;
 import com.java08.quanlituyendung.dto.Resume.WorkExpDTO;
 import com.java08.quanlituyendung.dto.Resume.WorkProjectDTO;
 import com.java08.quanlituyendung.service.IResumeService;
@@ -26,10 +27,16 @@ public class ResumeController {
         return iResumeService.getMyResume(authentication);
     }
 
-    @Operation(summary = "create resume")
+    @Operation(summary = "create resume (tam khong dung)")
     @PostMapping("")
     public ResponseEntity<ResponseObject> createResume(@RequestBody ResumeDTO request, Authentication authentication) {
         return iResumeService.createResume(request,authentication);
+    }
+
+    @Operation(summary = "update resume")
+    @PutMapping("")
+    public ResponseEntity<ResponseObject> update(@RequestBody UpdateResumeDTO request, Authentication authentication) {
+        return iResumeService.updateResume(request,authentication);
     }
 
 

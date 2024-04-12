@@ -21,4 +21,5 @@ public class CalendarAddRequestDTO {
     private List<String> attendees;
     private String token;
     private Long roomId;
+    private String tokenId;
 }
