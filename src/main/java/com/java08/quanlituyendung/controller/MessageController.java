@@ -1,9 +1,11 @@
 package com.java08.quanlituyendung.controller;
 
 import com.google.rpc.context.AttributeContext;
+import com.java08.quanlituyendung.dto.MessageDTO.ChatDTO;
 import com.java08.quanlituyendung.dto.ResponseObject;
 import com.java08.quanlituyendung.service.IMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +30,13 @@ public class MessageController {
         return messageService.getChatWithUser(authentication, email);
     }
 
+
+
+    ///
+//    @PostMapping("/chatbot")
+//    public ResponseEntity<Object> getBotAnswer(@RequestBody ChatDTO chatDTO){
+//        return new ResponseEntity<>(chatbotService.getBotAnswer(chatDTO), HttpStatus.OK);
+//    }
 
 
 }

@@ -43,6 +43,7 @@ public class ResumeEntity {
     private String github;
 
     //    about
+    @Column(name = "aboutYourself", columnDefinition = "TEXT")
     private String aboutYourself;
 
     // workEx

@@ -25,4 +25,6 @@ public interface IMulQuestionService {
     ResponseEntity<ResponseObject> getMyTest(Authentication authentication);
 
     ResponseEntity<ResponseObject> getMyTestID(Authentication authentication, Long id);
+
+    ResponseEntity<ResponseObject> getRecordByJobID(Long jobId);
 }

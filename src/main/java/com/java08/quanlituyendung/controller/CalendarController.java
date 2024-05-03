@@ -1,11 +1,14 @@
 package com.java08.quanlituyendung.controller;
 
 import com.google.api.services.calendar.model.Event;
+import com.java08.quanlituyendung.auth.UserAccountRetriever;
 import com.java08.quanlituyendung.calendar.CalendarGoogleService;
 import com.java08.quanlituyendung.dto.CalendarAddRequestDTO;
 import com.java08.quanlituyendung.dto.ResponseObject;
 import com.java08.quanlituyendung.entity.InterviewEntity;
+import com.java08.quanlituyendung.entity.LocalCalendar.LocalCalendar;
 import com.java08.quanlituyendung.repository.InterviewRepository;
+import com.java08.quanlituyendung.repository.LocalCalendarRepository;
 import com.java08.quanlituyendung.service.ILocalCalendarService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,7 +20,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -31,6 +37,12 @@ public class CalendarController {
 
     @Autowired
     private CalendarGoogleService calendarGoogleService;
+
+    @Autowired
+    private LocalCalendarRepository localCalendarRepository;
+
+    @Autowired
+    private UserAccountRetriever userAccountRetriever;
 
 
     @Autowired
@@ -67,6 +79,36 @@ public class CalendarController {
         }
     }
 
-
+    @GetMapping("/local")
+    public List<LocalCalendar> getAllEvents(Authentication authentication) {
+        var user = userAccountRetriever.getUserAccountEntityFromAuthentication(authentication);
+        return localCalendarRepository.findAll().stream().filter(c -> Objects.equals(c.getUserId(), user.getId())).collect(Collectors.toList());
+    }
+    @PostMapping("/local")
+    public LocalCalendar addEvent(@RequestBody LocalCalendar event, Authentication authentication) {
+        var user = userAccountRetriever.getUserAccountEntityFromAuthentication(authentication);
+        LocalCalendar calendar = event;
+        calendar.setUserId(user.getId());
+        return localCalendarRepository.save(event);
+    }
+    @PutMapping("/local/{id}")
+    public LocalCalendar updateEvent(@PathVariable Long id, @RequestBody LocalCalendar eventDetails) {
+        LocalCalendar event = localCalendarRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Sự kiện không tồn tại với id: " + id));
+        event.setSubject(eventDetails.getSubject());
+        event.setLocation(eventDetails.getLocation());
+        event.setStartTime(eventDetails.getStartTime());
+        event.setEndTime(eventDetails.getEndTime());
+        event.setIsAllDay(eventDetails.isAllDay());
+        event.setResourceId(eventDetails.getResourceId());
+        event.setDescription(eventDetails.getDescription());
+        return localCalendarRepository.save(event);
+    }
+    @DeleteMapping("/local/{id}")
+    public void deleteEvent(@PathVariable Long id) {
+        LocalCalendar event = localCalendarRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Sự kiện không tồn tại với id: " + id));
+        localCalendarRepository.delete(event);
+    }
 
 }

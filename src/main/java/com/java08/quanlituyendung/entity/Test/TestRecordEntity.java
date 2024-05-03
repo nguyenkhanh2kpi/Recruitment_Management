@@ -27,6 +27,8 @@ public class TestRecordEntity {
     private TestEntity testEntity;
 
     private Double score;
+
+    @Column(name = "record", columnDefinition = "TEXT")
     private String record;
 
 }

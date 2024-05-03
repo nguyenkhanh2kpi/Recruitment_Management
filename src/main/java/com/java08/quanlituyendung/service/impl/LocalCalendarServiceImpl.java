@@ -65,6 +65,12 @@ public class LocalCalendarServiceImpl implements ILocalCalendarService {
                     responseDTOS.add(calendarConverter.InterviewToLocalCalendarDTO(i));
                 }
             }
+            if (userAccountEntity.getRole().equals(Role.RECRUITER)) {
+                List<InterviewEntity> interviewEntities = interviewRepository.findByUserAccountEntity(userAccountEntity);
+                for (var i : interviewEntities) {
+                    responseDTOS.add(calendarConverter.InterviewToLocalCalendarDTO(i));
+                }
+            }
             return ResponseEntity.ok(ResponseObject.builder()
                     .status(HttpStatus.OK.toString())
                     .message("SUCCESS!!")

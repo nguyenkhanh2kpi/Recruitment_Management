@@ -65,5 +65,10 @@ public class MulQuestionController {
         return iMulQuestionService.record(authentication, request);
     }
 
+    @Operation(summary = "get record by userid and jobId")
+    @GetMapping("/record/{jobId}")
+    public ResponseEntity<ResponseObject> getRecordByUserAndTest(Authentication authentication, @PathVariable Long jobId) {
+        return iMulQuestionService.getRecordByJobID(jobId );
+    }
 
 }

@@ -12,11 +12,9 @@ import com.java08.quanlituyendung.entity.Role;
 import com.java08.quanlituyendung.entity.Test.MulQuestionEntity;
 import com.java08.quanlituyendung.entity.Test.MulQuestionOptionEntity;
 import com.java08.quanlituyendung.entity.Test.TestEntity;
+import com.java08.quanlituyendung.entity.Test.TestRecordEntity;
 import com.java08.quanlituyendung.entity.UserAccountEntity;
-import com.java08.quanlituyendung.repository.JobPostingRepository;
-import com.java08.quanlituyendung.repository.MulOptionRepository;
-import com.java08.quanlituyendung.repository.MulQuestionRepository;
-import com.java08.quanlituyendung.repository.TestRepository;
+import com.java08.quanlituyendung.repository.*;
 import com.java08.quanlituyendung.service.IMulQuestionService;
 import com.java08.quanlituyendung.utils.Constant;
 import lombok.RequiredArgsConstructor;
@@ -43,12 +41,15 @@ public class MulQuestionServiceImpl implements IMulQuestionService {
     private TestConverter testConverter;
     private MulOptionRepository mulOptionRepository;
 
+    private RecordRepository recordRepository;
+
     @Autowired
     public MulQuestionServiceImpl(UserAccountRetriever userAccountRetriever
             , MulQuestionRepository mulQuestionRepository
             , JobPostingRepository jobPostingRepository
             , TestConverter testConverter
             , MulOptionRepository mulOptionRepository
+            , RecordRepository recordRepository
             , TestRepository testRepository) {
         this.userAccountRetriever = userAccountRetriever;
         this.mulQuestionRepository = mulQuestionRepository;
@@ -56,6 +57,7 @@ public class MulQuestionServiceImpl implements IMulQuestionService {
         this.jobPostingRepository = jobPostingRepository;
         this.testConverter = testConverter;
         this.mulOptionRepository = mulOptionRepository;
+        this.recordRepository = recordRepository;
     }
 
 
@@ -103,7 +105,7 @@ public class MulQuestionServiceImpl implements IMulQuestionService {
         List<TestResponseDTO> result = allTest.stream().filter(test -> {
             var attendees = test.getAttendees();
             return attendees.contains(user.getEmail());
-        }).map((TestEntity testEntity) -> testConverter.toDTOcandidate(testEntity,user)).collect(Collectors.toList());
+        }).map((TestEntity testEntity) -> testConverter.toDTOcandidate(testEntity, user)).collect(Collectors.toList());
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ResponseObject.builder()
                         .status(HttpStatus.OK.toString())
@@ -141,8 +143,6 @@ public class MulQuestionServiceImpl implements IMulQuestionService {
                             .build());
         }
     }
-
-
 
 
     @Override
@@ -220,4 +220,17 @@ public class MulQuestionServiceImpl implements IMulQuestionService {
     }
 
 
+    // theo jobId
+    @Override
+    public ResponseEntity<ResponseObject> getRecordByJobID(Long jobId) {
+        List<TestRecordEntity> recordEntities = recordRepository.findAll();
+        List<TestRecordEntity> response = recordEntities.stream().filter(r -> {
+            return (r.getTestEntity().getJobPostingEntity().getId() == jobId);
+        }).collect(Collectors.toList());
+        return ResponseEntity.ok(ResponseObject.builder()
+                .status(HttpStatus.OK.toString())
+                .data(response)
+                .message(Constant.SUCCESS)
+                .build());
+    }
 }
