@@ -227,6 +227,24 @@
             <version>4.5.14</version>
         </dependency>
 
+
+
+
+<!--        xoa xoa-->
+        <dependency>
+            <groupId>net.sf.py4j</groupId>
+            <artifactId>py4j</artifactId>
+            <version>0.10.9.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-websocket</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-messaging</artifactId>
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>

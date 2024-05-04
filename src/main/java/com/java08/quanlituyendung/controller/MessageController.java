@@ -4,6 +4,7 @@ import com.google.rpc.context.AttributeContext;
 import com.java08.quanlituyendung.dto.MessageDTO.ChatDTO;
 import com.java08.quanlituyendung.dto.ResponseObject;
 import com.java08.quanlituyendung.service.IMessageService;
+import com.java08.quanlituyendung.service.impl.ChatbotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,8 @@ public class MessageController {
 
     @Autowired
     private IMessageService messageService;
+    private final ChatbotService chatbotService = new ChatbotService();
+
 
     @GetMapping
     public ResponseEntity<ResponseObject> getMyMessage(Authentication authentication) {
@@ -33,10 +36,12 @@ public class MessageController {
 
 
     ///
-//    @PostMapping("/chatbot")
-//    public ResponseEntity<Object> getBotAnswer(@RequestBody ChatDTO chatDTO){
-//        return new ResponseEntity<>(chatbotService.getBotAnswer(chatDTO), HttpStatus.OK);
-//    }
+
+
+    @PostMapping("/chatbot")
+    public ResponseEntity<Object> getBotAnswer(@RequestBody ChatDTO chatDTO){
+        return new ResponseEntity<>(chatbotService.getBotAnswer(chatDTO), HttpStatus.OK);
+    }
 
 
 }
