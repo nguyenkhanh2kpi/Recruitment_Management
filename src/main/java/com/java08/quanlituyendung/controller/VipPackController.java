@@ -1,10 +1,13 @@
 package com.java08.quanlituyendung.controller;
 
 
+import com.java08.quanlituyendung.entity.vip.BillEntity;
 import com.java08.quanlituyendung.entity.vip.VipPackReccerEntity;
+import com.java08.quanlituyendung.service.BillService;
 import com.java08.quanlituyendung.service.IVipPackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
@@ -15,9 +18,17 @@ public class VipPackController {
     @Autowired
     private IVipPackService vipPackService;
 
+    @Autowired
+    private BillService billService;
+
     @GetMapping
     public List<VipPackReccerEntity> getAllVipPacks() {
         return vipPackService.findAll();
+    }
+
+    @GetMapping("/my-bills")
+    public ResponseEntity<List<BillEntity>> getMyBill(Authentication authentication) {
+        return ResponseEntity.ok(billService.getMyBills(authentication));
     }
 
     @GetMapping("/{id}")
