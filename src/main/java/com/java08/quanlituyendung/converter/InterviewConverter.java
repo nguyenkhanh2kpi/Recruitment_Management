@@ -10,9 +10,7 @@ import com.java08.quanlituyendung.dto.InterviewPayload.CandidateItemDTO;
 import com.java08.quanlituyendung.dto.InterviewPayload.CandidateRoomItemDTO;
 import com.java08.quanlituyendung.dto.InterviewPayload.RoomResponseDTO;
 import com.java08.quanlituyendung.dto.UserAccountPayload.UserAccountCustomResponseDTO;
-import com.java08.quanlituyendung.entity.InterviewDetailEntity;
-import com.java08.quanlituyendung.entity.JobPostingEntity;
-import com.java08.quanlituyendung.entity.UserAccountEntity;
+import com.java08.quanlituyendung.entity.*;
 import com.java08.quanlituyendung.helper.InterviewHelper;
 import com.java08.quanlituyendung.repository.CvRepository;
 import com.java08.quanlituyendung.repository.InterviewDetailRepository;
@@ -22,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import com.java08.quanlituyendung.dto.InterviewCreateDTO;
-import com.java08.quanlituyendung.entity.InterviewEntity;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -106,7 +103,7 @@ public class InterviewConverter {
         return  itemDTO;
     }
 
-    public CandidateItemDTO UserAccountToCandidateItem(UserAccountEntity userAccountEntity, Long jobPostId, String cvUrl) {
+    public CandidateItemDTO UserAccountToCandidateItem(UserAccountEntity userAccountEntity, Long jobPostId, CVEntity c) {
         CandidateItemDTO candidateItemDTO = new CandidateItemDTO();
         JobPostingEntity jobPosting =jobPostingRepository.findOneById(jobPostId);
         candidateItemDTO.setUserId(userAccountEntity.getId());
@@ -115,7 +112,10 @@ public class InterviewConverter {
         candidateItemDTO.setSkill(userAccountEntity.getUserInfo().getSkill());
         candidateItemDTO.setAvatar(userAccountEntity.getUserInfo().getAvatar());
         candidateItemDTO.setEmail(userAccountEntity.getEmail());
-        candidateItemDTO.setCv(cvUrl);
+        candidateItemDTO.setApplyDate(c.getDateApply());
+        candidateItemDTO.setCvId(c.getId());
+        candidateItemDTO.setCv(c.getUrl());
+        candidateItemDTO.setCvStatus(c.getState().toString());
         boolean hasInterviewDetail = false;
         for (InterviewEntity interview : jobPosting.getInterviewEntity()) {
             for (InterviewDetailEntity interviewDetail : interview.getInterviewDetailEntities()) {

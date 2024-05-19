@@ -17,11 +17,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CvServiceIml implements ICvService {
@@ -58,9 +59,12 @@ public class CvServiceIml implements ICvService {
                     }
 
                     CVEntity cvEntity = new CVEntity();
+                    cvEntity.setState(CVEntity.State.RECEIVE_CV);
+                    cvEntity.setView(false);
                     cvEntity.setUserAccountEntity(userAccountEntity);
                     cvEntity.setJobPostingEntity(jobPostingEntity);
                     cvEntity.setUrl(urlCv);
+                    cvEntity.setLabels("");
                     cvEntity.setDateApply(LocalDate.now().toString());
                     cvRepository.save(cvEntity);
 
@@ -120,6 +124,9 @@ public class CvServiceIml implements ICvService {
             }
         }
         CVEntity cvEntity = new CVEntity();
+        cvEntity.setState(CVEntity.State.RECEIVE_CV);
+        cvEntity.setView(false);
+        cvEntity.setLabels("");
         cvEntity.setUserAccountEntity(user);
         cvEntity.setJobPostingEntity(jobPostingEntity);
         cvEntity.setUrl(request.getCv());
@@ -130,4 +137,74 @@ public class CvServiceIml implements ICvService {
                 .message("Apply CV success!")
                 .build());
     }
+
+    @Override
+    public ResponseEntity<ResponseObject> updateStatus(Long id, String status) {
+        Optional<CVEntity> optionalCvEntity = cvRepository.findById(id);
+        if (!optionalCvEntity.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    ResponseObject.builder()
+                            .status(HttpStatus.NOT_FOUND.toString())
+                            .message("CV not found")
+                            .build()
+            );
+        }
+
+        CVEntity cvEntity = optionalCvEntity.get();
+        cvEntity.setState(getState(status));
+        cvRepository.save(cvEntity);
+
+        return ResponseEntity.ok(ResponseObject.builder()
+                .status(HttpStatus.OK.toString())
+                .message("Update status success!")
+                .build());
+    }
+
+    public CVEntity.State getState(String state) {
+        if (state == null || state.trim().isEmpty()) {
+            throw new IllegalArgumentException("State cannot be null or empty");
+        }
+
+        for (CVEntity.State enumState : CVEntity.State.values()) {
+            if (enumState.name().equalsIgnoreCase(state.trim())) {
+                return enumState;
+            }
+        }
+
+        throw new IllegalArgumentException("Invalid state value: " + state);
+    }
+
+    @Override
+    public ResponseEntity<ResponseObject> updateLabel(Long id, String label) {
+        Optional<CVEntity> optionalCvEntity = cvRepository.findById(id);
+        if (!optionalCvEntity.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    ResponseObject.builder()
+                            .status(HttpStatus.NOT_FOUND.toString())
+                            .message("CV not found")
+                            .build()
+            );
+        }
+
+        CVEntity cvEntity = optionalCvEntity.get();
+        cvEntity.setLabels(label);
+        cvRepository.save(cvEntity);
+
+        return ResponseEntity.ok(ResponseObject.builder()
+                .status(HttpStatus.OK.toString())
+                .message("Update label success!")
+                .build());
+    }
+
+    @Override
+    public ResponseEntity<ResponseObject> getCVById(Long id) {
+        List<CVEntity> CVS = cvRepository.findAll().stream().filter(cvEntity -> cvEntity.getId()==id).collect(Collectors.toList());
+        return ResponseEntity.ok(ResponseObject.builder()
+                .status(HttpStatus.OK.toString())
+                .message(Constant.SUCCESS)
+                .data(CVS)
+                .build());
+    }
+
+
 }

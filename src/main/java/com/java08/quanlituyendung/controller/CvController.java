@@ -40,4 +40,22 @@ public class CvController {
         return cvService.getAllCV();
     }
 
+    @Operation(summary = "Lấy cv theo id")
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseObject> getCV(@PathVariable Long id) {
+        return cvService.getCVById(id);
+    }
+
+    //
+    @Operation(summary = "Cập nhật trạng thái cho CV")
+    @PutMapping("/update-status/{id}")
+    public ResponseEntity<ResponseObject> updateStatusCV(@PathVariable Long id, @RequestBody String status) {
+        return cvService.updateStatus(id, status);
+    }
+
+    @Operation(summary = "Cập nhật nhãn cho CV")
+    @PutMapping("/update-label/{id}")
+    public ResponseEntity<ResponseObject> updateLabelCV(@PathVariable Long id, @RequestBody String label) {
+        return cvService.updateLabel(id, label);
+    }
 }

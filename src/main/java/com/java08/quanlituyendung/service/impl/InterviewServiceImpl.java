@@ -219,7 +219,7 @@ public class InterviewServiceImpl implements IInterviewService {
         if (jd.isPresent()) {
             var listCV = jd.get().getCvEntities();
             List<CandidateItemDTO> listCandidate = listCV.stream()
-                    .map(c -> interviewConverter.UserAccountToCandidateItem(c.getUserAccountEntity(), jobPostId, c.getUrl()))
+                    .map(c -> interviewConverter.UserAccountToCandidateItem(c.getUserAccountEntity(), jobPostId, c))
                     .collect(Collectors.toList());
             return ResponseEntity.ok(ResponseObject.builder()
                     .status(HttpStatus.OK.toString())

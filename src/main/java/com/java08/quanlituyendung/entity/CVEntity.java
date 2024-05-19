@@ -24,9 +24,14 @@ public class CVEntity extends BaseEntity {
     private State state;
 
     public enum State {
-        INPROGRESS,
-        APPROVED
+        RECEIVE_CV,
+        SUITABLE,
+        SCHEDULE_INTERVIEW,
+        SEND_PROPOSAL,
+        ACCEPT,
+        REJECT
     }
+
     // vai tro la ung vien nop cv
     @ManyToOne
     @JoinColumn(name = "user_account_id")
@@ -38,5 +43,6 @@ public class CVEntity extends BaseEntity {
     @JoinColumn(name = "job_posting_id")
     private JobPostingEntity jobPostingEntity;
 
-
+    private boolean view;
+    private String labels;
 }

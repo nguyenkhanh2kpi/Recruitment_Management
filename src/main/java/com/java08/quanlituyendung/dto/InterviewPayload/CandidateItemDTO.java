@@ -16,5 +16,8 @@ public class CandidateItemDTO {
     private String experience;
     private String avatar;
     private String interviewStatus;
+    private Long cvId;
     private String cv;
+    private String applyDate;
+    private String cvStatus;
 }
