@@ -53,6 +53,13 @@ public class CvController {
         return cvService.updateStatus(id, status);
     }
 
+    @Operation(summary = "Đánh dấu CV đã xem hoặc chưa xem")
+    @PutMapping("/update-view/{id}")
+    public ResponseEntity<ResponseObject> viewCV(@PathVariable Long id, @RequestBody Boolean status) {
+        return cvService.updateView(id, status);
+    }
+
+
     @Operation(summary = "Cập nhật nhãn cho CV")
     @PutMapping("/update-label/{id}")
     public ResponseEntity<ResponseObject> updateLabelCV(@PathVariable Long id, @RequestBody String label) {

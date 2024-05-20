@@ -1,5 +1,6 @@
 package com.java08.quanlituyendung.dto;
 
+import com.java08.quanlituyendung.entity.JobPostingEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,4 +33,10 @@ public class JobPostingDTO {
     private List<JSONObject> listCandidate;
     private Integer user_id;
     private String createDate;
+
+    private Boolean requireTest;
+    private JobPostingEntity.State state;
+
+    private String industry;
+    private String industry2;
 }

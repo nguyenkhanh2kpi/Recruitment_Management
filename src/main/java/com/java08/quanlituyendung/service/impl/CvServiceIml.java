@@ -64,7 +64,7 @@ public class CvServiceIml implements ICvService {
                     cvEntity.setUserAccountEntity(userAccountEntity);
                     cvEntity.setJobPostingEntity(jobPostingEntity);
                     cvEntity.setUrl(urlCv);
-                    cvEntity.setLabels("");
+                    cvEntity.setLabels("{}");
                     cvEntity.setDateApply(LocalDate.now().toString());
                     cvRepository.save(cvEntity);
 
@@ -203,6 +203,28 @@ public class CvServiceIml implements ICvService {
                 .status(HttpStatus.OK.toString())
                 .message(Constant.SUCCESS)
                 .data(CVS)
+                .build());
+    }
+
+    @Override
+    public ResponseEntity<ResponseObject> updateView(Long id, Boolean status) {
+        Optional<CVEntity> optionalCvEntity = cvRepository.findById(id);
+        if (!optionalCvEntity.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    ResponseObject.builder()
+                            .status(HttpStatus.NOT_FOUND.toString())
+                            .message("CV not found")
+                            .build()
+            );
+        }
+
+        CVEntity cvEntity = optionalCvEntity.get();
+        cvEntity.setView(status);
+        cvRepository.save(cvEntity);
+
+        return ResponseEntity.ok(ResponseObject.builder()
+                .status(HttpStatus.OK.toString())
+                .message("Update view success!")
                 .build());
     }
 

@@ -123,6 +123,7 @@ public class JobPostingServiceImpl implements IJobPostingService {
                 return ResponseEntity.status(HttpStatus.OK).body(ResponseObject.builder().status(HttpStatus.NOT_FOUND.toString()).message(Constant.JOBPOSTING_NOT_FOUND).build());
             }
             jobPostingEntity.setStatus(false);
+            jobPostingEntity.setState(JobPostingEntity.State.END);
             jobPostingRepository.save(jobPostingEntity);
             return ResponseEntity.status(HttpStatus.OK).body(ResponseObject.builder().status(HttpStatus.OK.toString()).message(Constant.Delete_SUCCESS).build());
         } catch (Exception e) {

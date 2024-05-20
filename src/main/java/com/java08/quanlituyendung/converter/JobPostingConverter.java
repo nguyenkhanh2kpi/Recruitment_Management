@@ -43,6 +43,10 @@ public class JobPostingConverter {
                 .requirements(dto.getRequirements())
                 .interest(dto.getInterest())
                 .status(true)
+                .requireTest(dto.getRequireTest())
+                .state(JobPostingEntity.State.CREATE)
+                .industry(dto.getIndustry())
+                .industry2(dto.getIndustry2())
                 .build();
     }
 
@@ -66,6 +70,10 @@ public class JobPostingConverter {
                 .status(entity.getStatus())
                 .createDate(entity.getCreateDate())
                 .user_id(Math.toIntExact(entity.getUserAccountEntity().getId()))
+                .state(JobPostingEntity.State.valueOf(entity.getState().toString()))
+                .requireTest(entity.getRequireTest())
+                .industry(entity.getIndustry())
+                .industry2(entity.getIndustry2())
                 .build();
     }
 
@@ -114,6 +122,18 @@ public class JobPostingConverter {
         }
         if (dto.getStatus() != null) {
             entity.setStatus(dto.getStatus());
+        }
+        if(dto.getRequireTest() != null) {
+            entity.setRequireTest(dto.getRequireTest());
+        }
+        if(dto.getState()!=null) {
+            entity.setState(dto.getState());
+        }
+        if(dto.getIndustry()!=null) {
+            entity.setIndustry(dto.getIndustry());
+        }
+        if(dto.getIndustry2()!=null) {
+            entity.setIndustry2(dto.getIndustry2());
         }
         return entity;
     }

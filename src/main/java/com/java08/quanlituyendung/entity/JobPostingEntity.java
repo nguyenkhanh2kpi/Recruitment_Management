@@ -75,4 +75,23 @@ public class JobPostingEntity extends BaseEntity{
     @JoinColumn(name = "userAccountId")
     private UserAccountEntity userAccountEntity;
 
+
+// những trường mới
+    private Boolean requireTest;
+
+    @Enumerated(EnumType.STRING)
+    private JobPostingEntity.State state;
+    public enum State {
+        CREATE,
+        ON,
+        PAUSE,
+        END
+    }
+//nganh nghe
+    @Column(name = "industry")
+    private String industry;
+
+    @Column(name = "industry2")
+    private String industry2;
+
 }

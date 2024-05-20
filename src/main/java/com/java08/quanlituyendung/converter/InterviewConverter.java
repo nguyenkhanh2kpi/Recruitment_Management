@@ -116,6 +116,9 @@ public class InterviewConverter {
         candidateItemDTO.setCvId(c.getId());
         candidateItemDTO.setCv(c.getUrl());
         candidateItemDTO.setCvStatus(c.getState().toString());
+        candidateItemDTO.setPhone(c.getUserAccountEntity().getUserInfo().getPhone());
+        candidateItemDTO.setView(c.isView());
+        candidateItemDTO.setLabels(c.getLabels());
         boolean hasInterviewDetail = false;
         for (InterviewEntity interview : jobPosting.getInterviewEntity()) {
             for (InterviewDetailEntity interviewDetail : interview.getInterviewDetailEntities()) {

@@ -19,4 +19,6 @@ public interface ICvService {
     ResponseEntity<ResponseObject> updateLabel(Long id, String label);
 
     ResponseEntity<ResponseObject> getCVById(Long id);
+
+    ResponseEntity<ResponseObject> updateView(Long id, Boolean status);
 }

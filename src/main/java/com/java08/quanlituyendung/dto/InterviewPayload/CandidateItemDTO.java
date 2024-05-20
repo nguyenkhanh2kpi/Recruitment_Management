@@ -20,4 +20,9 @@ public class CandidateItemDTO {
     private String cv;
     private String applyDate;
     private String cvStatus;
+    private String labels;
+
+
+    private Boolean view;
+    private String phone;
 }
