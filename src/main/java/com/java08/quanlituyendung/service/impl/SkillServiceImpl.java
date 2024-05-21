@@ -1,8 +1,10 @@
 package com.java08.quanlituyendung.service.impl;
 
+import com.java08.quanlituyendung.auth.UserAccountRetriever;
 import com.java08.quanlituyendung.converter.SkillConverter;
 import com.java08.quanlituyendung.dto.QuestionPayload.SkillRequestDTO;
 import com.java08.quanlituyendung.dto.ResponseObject;
+import com.java08.quanlituyendung.entity.Role;
 import com.java08.quanlituyendung.entity.SkillEntity;
 import com.java08.quanlituyendung.repository.SkillRepository;
 import com.java08.quanlituyendung.service.ISkillService;
@@ -19,6 +21,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +31,8 @@ public class SkillServiceImpl implements ISkillService {
     private final SkillRepository skillRepository;
     @Autowired
     private final SkillConverter skillConverter;
+    @Autowired
+    private final UserAccountRetriever userAccountRetriever;
 
     @Override
     public ResponseEntity<ResponseObject> create(SkillRequestDTO request, Authentication authentication) {
@@ -120,17 +125,26 @@ public class SkillServiceImpl implements ISkillService {
             return ResponseEntity.status(HttpStatus.OK).body(
                     ResponseObject.builder()
                             .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
-                            .message(e.getMessage())
+                            .message("Something went wrong!")
                             .build());
         }
-
-
     }
 
     @Override
-    public ResponseEntity<ResponseObject> getAll() {
+    public ResponseEntity<ResponseObject> getAll(Authentication authentication) {
+        var user = userAccountRetriever.getUserAccountEntityFromAuthentication(authentication);
         try {
             List<SkillEntity> skillEntities = skillRepository.findAll();
+            if(user.getRole().equals(Role.INTERVIEWER)) {
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        ResponseObject.builder()
+                                .status(HttpStatus.OK.toString())
+                                .message(Constant.SUCCESS)
+                                .data(skillConverter.toSkillsDTOList(skillEntities.stream().filter(skillEntity -> {
+                                    return skillEntity.getCreatedBy().equals(user.getEmail());
+                                }).collect(Collectors.toList())))
+                                .build());
+            }
             return ResponseEntity.status(HttpStatus.OK).body(
                     ResponseObject.builder()
                             .status(HttpStatus.OK.toString())

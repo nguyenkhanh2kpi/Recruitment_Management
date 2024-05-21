@@ -42,8 +42,8 @@ public class SkillController {
 
     @Operation(summary = "Lấy tất cả các Skill trong database")
     @GetMapping()
-    public ResponseEntity<ResponseObject> getAll() {
-        return skillService.getAll();
+    public ResponseEntity<ResponseObject> getAll(Authentication authentication) {
+        return skillService.getAll(authentication);
     }
 
     @Operation(summary = "Lấy skill theo id")

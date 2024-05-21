@@ -10,7 +10,7 @@ public interface ISkillService {
      ResponseEntity<ResponseObject> create(SkillRequestDTO request, Authentication authentication);
      ResponseEntity<ResponseObject> delete(Long id,Authentication authentication);
      ResponseEntity<ResponseObject> update(Long id,SkillRequestDTO request,Authentication authentication);
-     ResponseEntity<ResponseObject> getAll();
+     ResponseEntity<ResponseObject> getAll(Authentication authentication);
 
     ResponseEntity<ResponseObject> getById(Long id);
 }

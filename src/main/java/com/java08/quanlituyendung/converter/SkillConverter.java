@@ -5,7 +5,6 @@ import com.java08.quanlituyendung.entity.SkillEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +18,7 @@ public class SkillConverter {
         return SkillResponseDTO.builder()
                 .id(skillsEntity.getId())
                 .skillName(skillsEntity.getSkillName())
+                .isDelete(skillsEntity.getIsDeleted())
                 .build();
     }
 

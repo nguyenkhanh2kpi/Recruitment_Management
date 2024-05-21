@@ -26,7 +26,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class SecurityConfiguration implements WebMvcConfigurer {
     @Autowired
-   JwtAuthenticationFilter jwtAuthenticationFilter;
+    JwtAuthenticationFilter jwtAuthenticationFilter;
     @Autowired
     AuthenticationProvider authenticationProvider;
     @Autowired
@@ -39,10 +39,10 @@ public class SecurityConfiguration implements WebMvcConfigurer {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .csrf(csrf->csrf.disable())
+                .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeRequests()
-                .requestMatchers("/auth/**", "/v3/**", "/swagger-ui/**","/recover/**", "/payment/**","/industries/**")
+                .requestMatchers("/auth/**", "/v3/**", "/swagger-ui/**", "/recover/**", "/payment/**", "/industries/**")
                 .permitAll()
                 .requestMatchers(HttpMethod.GET,
                         "/event/**",
@@ -59,11 +59,11 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                         "/interview-detail/**",
                         "/user/**"
                 )
-                        .hasAnyAuthority(
-                            Role.ADMIN.name(),
-                            Role.RECRUITER.name(),
-                            Role.INTERVIEWER.name()
-                        )
+                .hasAnyAuthority(
+                        Role.ADMIN.name(),
+                        Role.RECRUITER.name(),
+                        Role.INTERVIEWER.name()
+                )
 
 
                 .requestMatchers(HttpMethod.POST,
@@ -75,40 +75,40 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                         "/interview/**",
                         "/calendar/**"
                 )
-                        .hasAnyAuthority(
-                            Role.ADMIN.name(),
-                            Role.RECRUITER.name()
-                        )
+                .hasAnyAuthority(
+                        Role.ADMIN.name(),
+                        Role.RECRUITER.name(),
+                        Role.INTERVIEWER.name()
+                )
 
                 .requestMatchers(HttpMethod.POST,
                         "/interview-detail/**",
                         "/question/**"
                 )
-                        .hasAnyAuthority(
-                                Role.ADMIN.name(),
-                                Role.RECRUITER.name(),
-                                Role.INTERVIEWER.name()
-                        )
-
+                .hasAnyAuthority(
+                        Role.ADMIN.name(),
+                        Role.RECRUITER.name(),
+                        Role.INTERVIEWER.name()
+                )
 
 
                 .requestMatchers(HttpMethod.PUT,
                         "/question/**"
                 )
-                            .hasAnyAuthority(
-                                    Role.ADMIN.name(),
-                                    Role.RECRUITER.name(),
-                                    Role.INTERVIEWER.name()
-                            )
+                .hasAnyAuthority(
+                        Role.ADMIN.name(),
+                        Role.RECRUITER.name(),
+                        Role.INTERVIEWER.name()
+                )
 
                 .requestMatchers(HttpMethod.DELETE,
                         "/question/**"
                 )
-                            .hasAnyAuthority(
-                                    Role.ADMIN.name(),
-                                    Role.RECRUITER.name(),
-                                    Role.INTERVIEWER.name()
-                            )
+                .hasAnyAuthority(
+                        Role.ADMIN.name(),
+                        Role.RECRUITER.name(),
+                        Role.INTERVIEWER.name()
+                )
 
 
                 .requestMatchers(HttpMethod.POST,
@@ -129,10 +129,11 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                         "/event/**",
                         "/blacklist/**"
                 )
-                        .hasAnyAuthority(
-                                Role.ADMIN.name(),
-                                Role.RECRUITER.name()
-                        )
+                .hasAnyAuthority(
+                        Role.ADMIN.name(),
+                        Role.RECRUITER.name(),
+                        Role.INTERVIEWER.name()
+                )
 
 
                 .requestMatchers(HttpMethod.DELETE,
@@ -144,20 +145,19 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                 )
                 .hasAnyAuthority(
                         Role.ADMIN.name(),
-                        Role.RECRUITER.name()
+                        Role.RECRUITER.name(),
+                        Role.INTERVIEWER.name()
                 )
 
                 .requestMatchers(HttpMethod.PUT,
                         "/user/password"
                 )
-                        .hasAnyAuthority(
-                                Role.ADMIN.name(),
-                                Role.RECRUITER.name(),
-                                Role.CANDIDATE.name(),
-                                Role.INTERVIEWER.name()
-                        )
-
-
+                .hasAnyAuthority(
+                        Role.ADMIN.name(),
+                        Role.RECRUITER.name(),
+                        Role.CANDIDATE.name(),
+                        Role.INTERVIEWER.name()
+                )
 
 
                 .anyRequest()

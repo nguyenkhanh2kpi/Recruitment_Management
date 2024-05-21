@@ -14,5 +14,5 @@ import lombok.NoArgsConstructor;
 public class SkillResponseDTO {
     private Long id;
     private String skillName;
-    //private List<FieldDTO> field = new ArrayList<>();
+    private Boolean isDelete;
 }

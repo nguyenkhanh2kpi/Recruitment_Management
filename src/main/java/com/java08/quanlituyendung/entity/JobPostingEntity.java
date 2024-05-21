@@ -58,13 +58,13 @@ public class JobPostingEntity extends BaseEntity{
     private List<CVEntity> cvEntities;
 
     // thuoc ve skill
-    @ManyToMany
-    @JoinTable(
-            name = "Skills_JobPosting",
-            joinColumns = @JoinColumn(name = "jobPostingId"),
-            inverseJoinColumns = @JoinColumn(name = "skillId")
-    )
-    private List<SkillEntity> skillsEntities = new ArrayList<>();
+//    @ManyToMany
+//    @JoinTable(
+//            name = "Skills_JobPosting",
+//            joinColumns = @JoinColumn(name = "jobPostingId"),
+//            inverseJoinColumns = @JoinColumn(name = "skillId")
+//    )
+//    private List<SkillEntity> skillsEntities = new ArrayList<>();
 
     // danh sach nguoi phong van ?
     @OneToMany(mappedBy = "jobPostingEntity")
