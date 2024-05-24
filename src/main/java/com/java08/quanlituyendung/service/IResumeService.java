@@ -23,4 +23,6 @@ public interface IResumeService {
     ResponseEntity<ResponseObject> deleteProject(Authentication authentication, WorkProjectDTO request);
 
     ResponseEntity<ResponseObject> updateResume(UpdateResumeDTO request, Authentication authentication);
+
+    ResponseEntity<ResponseObject> getAll(Authentication authentication);
 }

@@ -9,6 +9,7 @@ import com.java08.quanlituyendung.dto.Resume.UpdateResumeDTO;
 import com.java08.quanlituyendung.dto.Resume.WorkExpDTO;
 import com.java08.quanlituyendung.dto.Resume.WorkProjectDTO;
 import com.java08.quanlituyendung.entity.ResumeEntity;
+import com.java08.quanlituyendung.entity.Role;
 import com.java08.quanlituyendung.entity.UserAccountEntity;
 import com.java08.quanlituyendung.entity.sample.WorkingExperience;
 import com.java08.quanlituyendung.entity.sample.WorkingProject;
@@ -24,6 +25,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ResumeServiceImpl implements IResumeService {
@@ -101,6 +103,23 @@ public class ResumeServiceImpl implements IResumeService {
                 .status(HttpStatus.OK.toString())
                 .message(Constant.SUCCESS)
                 .data(resumeConverter.toDTO(resume.get()))
+                .build());
+    }
+
+    @Override
+    public ResponseEntity<ResponseObject> getAll(Authentication authentication) {
+        UserAccountEntity user = userAccountRetriever.getUserAccountEntityFromAuthentication(authentication);
+        if (user.getRole().equals(Role.RECRUITER)) {
+            var resumes = resumeRepository.findAll();
+            return ResponseEntity.ok(ResponseObject.builder()
+                    .status(HttpStatus.OK.toString())
+                    .message(Constant.SUCCESS)
+                    .data(resumes.stream().map(resumeConverter::toDTO).collect(Collectors.toList()))
+                    .build());
+        }
+        return ResponseEntity.ok(ResponseObject.builder()
+                .status(HttpStatus.NOT_ACCEPTABLE.toString())
+                .message("Something went wrong")
                 .build());
     }
 
@@ -242,7 +261,7 @@ public class ResumeServiceImpl implements IResumeService {
     public ResponseEntity<ResponseObject> updateResume(UpdateResumeDTO request, Authentication authentication) {
         Optional<ResumeEntity> resume = resumeRepository.findById(request.getId());
         if (resume.isPresent()) {
-            resumeRepository.save(resumeConverter.toEntity(resume.get(),request));
+            resumeRepository.save(resumeConverter.toEntity(resume.get(), request));
             return ResponseEntity.ok(ResponseObject.builder()
                     .status(HttpStatus.OK.toString())
                     .message(Constant.SUCCESS)
@@ -258,5 +277,6 @@ public class ResumeServiceImpl implements IResumeService {
 
         }
     }
+
 
 }

@@ -30,13 +30,13 @@ public class ResumeController {
     @Operation(summary = "create resume (tam khong dung)")
     @PostMapping("")
     public ResponseEntity<ResponseObject> createResume(@RequestBody ResumeDTO request, Authentication authentication) {
-        return iResumeService.createResume(request,authentication);
+        return iResumeService.createResume(request, authentication);
     }
 
     @Operation(summary = "update resume")
     @PutMapping("")
     public ResponseEntity<ResponseObject> update(@RequestBody UpdateResumeDTO request, Authentication authentication) {
-        return iResumeService.updateResume(request,authentication);
+        return iResumeService.updateResume(request, authentication);
     }
 
 
@@ -65,6 +65,13 @@ public class ResumeController {
         return iResumeService.deleteProject(authentication, request);
     }
 
+
+    //get tat ca resume
+    @Operation(summary = "Get all resume")
+    @GetMapping("/all")
+    public ResponseEntity<ResponseObject> getAll(Authentication authentication) {
+        return iResumeService.getAll(authentication);
+    }
 
 
 }
