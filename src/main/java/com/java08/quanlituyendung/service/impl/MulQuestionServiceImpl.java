@@ -7,6 +7,7 @@ import com.java08.quanlituyendung.dto.test.AddQuestionDTO;
 import com.java08.quanlituyendung.dto.test.NewTestDTO;
 import com.java08.quanlituyendung.dto.test.RecordRequestDTO;
 import com.java08.quanlituyendung.dto.test.TestResponseDTO;
+import com.java08.quanlituyendung.entity.CVEntity;
 import com.java08.quanlituyendung.entity.JobPostingEntity;
 import com.java08.quanlituyendung.entity.Role;
 import com.java08.quanlituyendung.entity.Test.MulQuestionEntity;
@@ -42,6 +43,7 @@ public class MulQuestionServiceImpl implements IMulQuestionService {
     private MulOptionRepository mulOptionRepository;
 
     private RecordRepository recordRepository;
+    private CvRepository cvRepository;
 
     @Autowired
     public MulQuestionServiceImpl(UserAccountRetriever userAccountRetriever
@@ -50,7 +52,8 @@ public class MulQuestionServiceImpl implements IMulQuestionService {
             , TestConverter testConverter
             , MulOptionRepository mulOptionRepository
             , RecordRepository recordRepository
-            , TestRepository testRepository) {
+            , TestRepository testRepository
+     ,CvRepository cvRepository) {
         this.userAccountRetriever = userAccountRetriever;
         this.mulQuestionRepository = mulQuestionRepository;
         this.testRepository = testRepository;
@@ -58,6 +61,7 @@ public class MulQuestionServiceImpl implements IMulQuestionService {
         this.testConverter = testConverter;
         this.mulOptionRepository = mulOptionRepository;
         this.recordRepository = recordRepository;
+        this.cvRepository = cvRepository;
     }
 
 
@@ -101,11 +105,13 @@ public class MulQuestionServiceImpl implements IMulQuestionService {
     @Override
     public ResponseEntity<ResponseObject> getMyTest(Authentication authentication) {
         UserAccountEntity user = userAccountRetriever.getUserAccountEntityFromAuthentication(authentication);
+        List<CVEntity> cvEntityList = cvRepository.findAll();
         List<TestEntity> allTest = testRepository.findAll();
-        List<TestResponseDTO> result = allTest.stream().filter(test -> {
-            var attendees = test.getAttendees();
-            return attendees.contains(user.getEmail());
-        }).map((TestEntity testEntity) -> testConverter.toDTOcandidate(testEntity, user)).collect(Collectors.toList());
+        List<TestResponseDTO> result = allTest.stream()
+                .filter(test -> cvEntityList.stream()
+                        .anyMatch(cvEntity -> cvEntity.getJobPostingEntity().equals(test.getJobPostingEntity())))
+                .map(testEntity -> testConverter.toDTOcandidate(testEntity, user))
+                .collect(Collectors.toList());
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ResponseObject.builder()
                         .status(HttpStatus.OK.toString())

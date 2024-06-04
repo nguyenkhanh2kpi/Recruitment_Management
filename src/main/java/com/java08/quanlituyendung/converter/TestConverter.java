@@ -29,10 +29,8 @@ public class TestConverter {
         testResponseDTO.setJdId(testEntity.getJobPostingEntity().getId());
         testResponseDTO.setJob(testEntity.getJobPostingEntity().getName());
         testResponseDTO.setSummary(testEntity.getSummary());
-        testResponseDTO.setStartTime(testEntity.getStartTime().toString());
-        testResponseDTO.setEndTime(testEntity.getEndTime().toString());
         testResponseDTO.setQuestions(questions);
-        testResponseDTO.setAttendees(testEntity.getAttendees());
+        testResponseDTO.setTime(testEntity.getTime());
         return testResponseDTO;
     }
 
@@ -58,6 +56,8 @@ public class TestConverter {
                 .build();
     }
 
+
+    // fix ok
     public TestEntity toEntity(NewTestDTO request, JobPostingEntity job) {
         List<CVEntity> cvs = job.getCvEntities();
         List<String> attendees = cvs.stream().map(cvEntity -> {
@@ -66,10 +66,9 @@ public class TestConverter {
         return TestEntity.builder()
                 .mulQuestions(new ArrayList<>())
                 .jobPostingEntity(job)
+                .time(Math.toIntExact(request.getTime()))
                 .summary(request.getSummary())
-                .startTime(request.getStartTime())
-                .endTime(request.getEndTime())
-                .attendees(attendees)
+                .isDelete(false)
                 .build();
     }
 
@@ -101,10 +100,8 @@ public class TestConverter {
         testResponseDTO.setJdId(testEntity.getJobPostingEntity().getId());
         testResponseDTO.setJob(testEntity.getJobPostingEntity().getName());
         testResponseDTO.setSummary(testEntity.getSummary());
-        testResponseDTO.setStartTime(testEntity.getStartTime().toString());
-        testResponseDTO.setEndTime(testEntity.getEndTime().toString());
         testResponseDTO.setQuestions(questions);
-        testResponseDTO.setAttendees(testEntity.getAttendees());
+        testResponseDTO.setTime(testEntity.getTime());
         List<TestRecordEntity> records = testEntity.getRecords();
         records.forEach(testRecordEntity -> {
             if(testRecordEntity.getUserAccountEntity().equals(user)) {

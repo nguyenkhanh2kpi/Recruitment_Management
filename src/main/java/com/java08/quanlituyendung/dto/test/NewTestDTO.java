@@ -15,9 +15,6 @@ import java.util.List;
 @Builder
 public class NewTestDTO {
     private Long jdId;
-//    private Long time;
+    private Long time;
     private String summary;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-
 }

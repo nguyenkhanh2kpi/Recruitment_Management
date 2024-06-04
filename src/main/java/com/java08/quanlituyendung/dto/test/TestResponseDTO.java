@@ -22,16 +22,9 @@ import java.util.List;
 public class TestResponseDTO {
     private Long id;
     private Long jdId;
-//    private Integer time;
+    private Integer time;
     private String summary;
-    private String startTime;
-    private String endTime;
-
     private String job;
     private List<MulQuestionResponseDTO> questions;
-
-    // ds tham gia
-    private List<String> attendees;
-    // da lam bai chua
     private boolean isRecord;
 }
