@@ -3,6 +3,7 @@ package com.java08.quanlituyendung.dto.test;
 
 import com.java08.quanlituyendung.entity.JobPostingEntity;
 import com.java08.quanlituyendung.entity.Test.MulQuestionEntity;
+import com.java08.quanlituyendung.entity.Test.TestEntity;
 import com.java08.quanlituyendung.entity.Test.TestRecordEntity;
 import com.java08.quanlituyendung.entity.UserAccountEntity;
 import jakarta.persistence.*;
@@ -27,4 +28,9 @@ public class TestResponseDTO {
     private String job;
     private List<MulQuestionResponseDTO> questions;
     private boolean isRecord;
+    private boolean isStart;
+    private String startTime;
+    private TestEntity.Type type;
+    private String essayQuestion;
+
 }

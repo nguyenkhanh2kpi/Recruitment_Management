@@ -21,6 +21,11 @@ public class TestEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    public enum Type{
+        MULTIPLE_CHOICE,
+        ESSAY,
+        CODE
+    }
 
     @OneToOne
     private UserAccountEntity userAccountEntity;
@@ -30,7 +35,14 @@ public class TestEntity {
     private JobPostingEntity jobPostingEntity;
     private String summary;
     private Integer time;
-    protected Boolean isDelete;
+    private Boolean isDelete;
+
+    @Column(name = "state")
+    @Enumerated(EnumType.STRING)
+    private Type type;
+
+    @Column(name = "essayQuestion", columnDefinition = "TEXT")
+    private String essayQuestion;
 
     @JsonIgnore
     @OneToMany(mappedBy = "testEntity", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -40,5 +52,10 @@ public class TestEntity {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "test_id")
     private List<MulQuestionEntity> mulQuestions = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "test_id")
+    private List<CodeQuestionEntity> codeQuestions = new ArrayList<>();
 
 }

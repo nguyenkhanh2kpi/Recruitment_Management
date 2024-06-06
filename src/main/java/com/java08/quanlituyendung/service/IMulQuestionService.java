@@ -2,10 +2,7 @@ package com.java08.quanlituyendung.service;
 
 
 import com.java08.quanlituyendung.dto.ResponseObject;
-import com.java08.quanlituyendung.dto.test.AddQuesitonOptionDTO;
-import com.java08.quanlituyendung.dto.test.AddQuestionDTO;
-import com.java08.quanlituyendung.dto.test.NewTestDTO;
-import com.java08.quanlituyendung.dto.test.RecordRequestDTO;
+import com.java08.quanlituyendung.dto.test.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -27,4 +24,10 @@ public interface IMulQuestionService {
     ResponseEntity<ResponseObject> getMyTestID(Authentication authentication, Long id);
 
     ResponseEntity<ResponseObject> getRecordByJobID(Long jobId);
+
+    ResponseEntity<ResponseObject> newEssatTest(Authentication authentication, NewTestDTO request);
+
+    ResponseEntity<ResponseObject> startRecord(Authentication authentication, StartRecordRequestDTO request);
+
+    ResponseEntity<ResponseObject> newCodeTest(Authentication authentication, NewTestDTO request);
 }

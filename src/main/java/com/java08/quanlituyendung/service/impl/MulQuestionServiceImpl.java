@@ -3,10 +3,7 @@ package com.java08.quanlituyendung.service.impl;
 import com.java08.quanlituyendung.auth.UserAccountRetriever;
 import com.java08.quanlituyendung.converter.TestConverter;
 import com.java08.quanlituyendung.dto.ResponseObject;
-import com.java08.quanlituyendung.dto.test.AddQuestionDTO;
-import com.java08.quanlituyendung.dto.test.NewTestDTO;
-import com.java08.quanlituyendung.dto.test.RecordRequestDTO;
-import com.java08.quanlituyendung.dto.test.TestResponseDTO;
+import com.java08.quanlituyendung.dto.test.*;
 import com.java08.quanlituyendung.entity.CVEntity;
 import com.java08.quanlituyendung.entity.JobPostingEntity;
 import com.java08.quanlituyendung.entity.Role;
@@ -91,7 +88,28 @@ public class MulQuestionServiceImpl implements IMulQuestionService {
                             .message("Failed: User not found or Test not found")
                             .build());
         } else {
-            test.get().getRecords().add(testConverter.toRecordEntity(request, user, test.get()));
+            testConverter.toRecordEntity(request, user, test.get());
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(ResponseObject.builder()
+                            .status(HttpStatus.OK.toString())
+                            .message(Constant.SUCCESS)
+                            .data(test.get().getRecords())
+                            .build());
+        }
+    }
+
+    @Override
+    public ResponseEntity<ResponseObject> startRecord(Authentication authentication, StartRecordRequestDTO request) {
+        UserAccountEntity user = userAccountRetriever.getUserAccountEntityFromAuthentication(authentication);
+        Optional<TestEntity> test = testRepository.findById(request.getTestId());
+        if (user == null || test.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ResponseObject.builder()
+                            .status(Constant.FAIL)
+                            .message("Failed: User not found or Test not found")
+                            .build());
+        } else {
+            test.get().getRecords().add(testConverter.toStartRecordEntity(request, user, test.get()));
             testRepository.save(test.get());
             return ResponseEntity.status(HttpStatus.OK)
                     .body(ResponseObject.builder()
@@ -101,6 +119,8 @@ public class MulQuestionServiceImpl implements IMulQuestionService {
                             .build());
         }
     }
+
+
 
     @Override
     public ResponseEntity<ResponseObject> getMyTest(Authentication authentication) {
@@ -171,6 +191,49 @@ public class MulQuestionServiceImpl implements IMulQuestionService {
                         .build());
     }
 
+    @Override
+    public ResponseEntity<ResponseObject> newEssatTest(Authentication authentication, NewTestDTO request) {
+        UserAccountEntity user = userAccountRetriever.getUserAccountEntityFromAuthentication(authentication);
+        Optional<JobPostingEntity> job = jobPostingRepository.findById(request.getJdId());
+        if (user.getRole() == Role.RECRUITER && job.isPresent()) {
+            TestEntity test = testConverter.toEntityEssay(request, job.get());
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(ResponseObject.builder()
+                            .status(HttpStatus.CREATED.toString())
+                            .data(testConverter.toDTO(testRepository.save(test)))
+                            .message(Constant.SUCCESS)
+                            .build());
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ResponseObject.builder()
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
+                        .message("You are not allow to create test")
+                        .build());
+    }
+
+
+    @Override
+    public ResponseEntity<ResponseObject> newCodeTest(Authentication authentication, NewTestDTO request) {
+        UserAccountEntity user = userAccountRetriever.getUserAccountEntityFromAuthentication(authentication);
+        Optional<JobPostingEntity> job = jobPostingRepository.findById(request.getJdId());
+        if (user.getRole() == Role.RECRUITER && job.isPresent()) {
+            TestEntity test = testConverter.toEntityCode(request, job.get());
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(ResponseObject.builder()
+                            .status(HttpStatus.CREATED.toString())
+                            .data(testConverter.toDTO(testRepository.save(test)))
+                            .message(Constant.SUCCESS)
+                            .build());
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ResponseObject.builder()
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
+                        .message("You are not allow to create test")
+                        .build());
+    }
+
+
+
 
     @Override
     public ResponseEntity<ResponseObject> addQuestion(Authentication authentication, AddQuestionDTO request) {
@@ -239,4 +302,6 @@ public class MulQuestionServiceImpl implements IMulQuestionService {
                 .message(Constant.SUCCESS)
                 .build());
     }
+
+
 }

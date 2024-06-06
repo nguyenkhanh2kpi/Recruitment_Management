@@ -9,6 +9,5 @@ import java.util.Optional;
 public interface TestRepository extends JpaRepository<TestEntity, Long> {
     Optional<TestEntity> findById(Long id);
     List<TestEntity> findAllByJobPostingEntityId(Long id);
-
-
+    Optional<TestEntity> findByIdAndUserAccountEntity(Long id, UserAccountRepository userAccountRepository);
 }

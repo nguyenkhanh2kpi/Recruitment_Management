@@ -5,6 +5,7 @@ import com.java08.quanlituyendung.dto.ResponseObject;
 import com.java08.quanlituyendung.dto.test.AddQuestionDTO;
 import com.java08.quanlituyendung.dto.test.NewTestDTO;
 import com.java08.quanlituyendung.dto.test.RecordRequestDTO;
+import com.java08.quanlituyendung.dto.test.StartRecordRequestDTO;
 import com.java08.quanlituyendung.service.IMulQuestionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,31 +16,42 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/mul-test")
-@Tag(name = "Multiple choice question test")
+@Tag(name = "Kiểm tra sàng lọc")
 public class MulQuestionController {
 
     @Autowired
     private IMulQuestionService iMulQuestionService;
 
 
-    @Operation(summary = "thêm bai test")
+    @Operation(summary = "Thêm bài test trắc nghiệm")
     @PostMapping("/new-test")
     public ResponseEntity<ResponseObject> newTest(Authentication authentication, @RequestBody NewTestDTO request) {
         return iMulQuestionService.newTest(authentication, request);
     }
+    @Operation(summary = "Thêm bài test tự luận")
+    @PostMapping("/new-eaasy-test")
+    public ResponseEntity<ResponseObject> newEssayTest(Authentication authentication, @RequestBody NewTestDTO request) {
+        return iMulQuestionService.newEssatTest(authentication, request);
+    }
+    @Operation(summary = "Thêm bài test code")
+    @PostMapping("/new-code-test")
+    public ResponseEntity<ResponseObject> newCodeTest(Authentication authentication, @RequestBody NewTestDTO request) {
+        return iMulQuestionService.newCodeTest(authentication, request);
+    }
 
-    @Operation(summary = "get tests by job")
+
+    @Operation(summary = "lấy tests theo jobId")
     @GetMapping("/{jdId}")
     public ResponseEntity<ResponseObject> getTestForJob(@PathVariable Long jdId, Authentication authentication) {
         return iMulQuestionService.getTestForJob(jdId, authentication);
     }
 
-    @Operation(summary = "get job by user")
+    @Operation(summary = "lấy test của tôi")
     @GetMapping("/my-test")
     public ResponseEntity<ResponseObject> getMyTest(Authentication authentication) {
         return iMulQuestionService.getMyTest(authentication);
     }
-    @Operation(summary = "get job by user by id")
+    @Operation(summary = "Lấy test theo ID")
     @GetMapping("/a-test/{id}")
     public ResponseEntity<ResponseObject> getMyTest(@PathVariable Long id, Authentication authentication) {
         return iMulQuestionService.getMyTestID(authentication,id);
@@ -59,10 +71,16 @@ public class MulQuestionController {
     }
 
 
-    @Operation(summary = "post a record")
+    @Operation(summary = "Thực hiện 1 bài")
     @PostMapping("/record")
     public ResponseEntity<ResponseObject> record(Authentication authentication, @RequestBody RecordRequestDTO request) {
         return iMulQuestionService.record(authentication, request);
+    }
+
+    @Operation(summary = "Start 1 bài test")
+    @PostMapping("/start-record")
+    public ResponseEntity<ResponseObject> startRecord(Authentication authentication, @RequestBody StartRecordRequestDTO request) {
+        return iMulQuestionService.startRecord(authentication, request);
     }
 
     @Operation(summary = "get record by userid and jobId")
