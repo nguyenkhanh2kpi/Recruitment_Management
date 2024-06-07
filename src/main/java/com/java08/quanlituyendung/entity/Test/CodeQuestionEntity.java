@@ -1,6 +1,7 @@
 package com.java08.quanlituyendung.entity.Test;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 
 @Entity
-@Table(name = "mul_question")
+@Table(name = "code_question")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -28,6 +29,7 @@ public class CodeQuestionEntity {
     @Column(name = "testCase", columnDefinition = "TEXT")
     private String testCase;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "test_id")
     private TestEntity test;

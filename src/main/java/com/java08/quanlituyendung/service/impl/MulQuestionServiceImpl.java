@@ -125,7 +125,8 @@ public class MulQuestionServiceImpl implements IMulQuestionService {
     @Override
     public ResponseEntity<ResponseObject> getMyTest(Authentication authentication) {
         UserAccountEntity user = userAccountRetriever.getUserAccountEntityFromAuthentication(authentication);
-        List<CVEntity> cvEntityList = cvRepository.findAll();
+        List<CVEntity> cvEntityList = cvRepository.findAll().stream()
+                .filter(cvEntity -> cvEntity.getUserAccountEntity().equals(user)).collect(Collectors.toList());
         List<TestEntity> allTest = testRepository.findAll();
         List<TestResponseDTO> result = allTest.stream()
                 .filter(test -> cvEntityList.stream()
@@ -139,6 +140,8 @@ public class MulQuestionServiceImpl implements IMulQuestionService {
                         .data(result)
                         .build());
     }
+
+
 
     @Override
     public ResponseEntity<ResponseObject> getMyTestID(Authentication authentication, Long id) {

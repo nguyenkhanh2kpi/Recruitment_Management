@@ -52,7 +52,7 @@ public class TestEntity {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "test_id")
     private List<MulQuestionEntity> mulQuestions = new ArrayList<>();
-
+    
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "test_id")

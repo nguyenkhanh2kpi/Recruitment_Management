@@ -9,10 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/mul-test-code")
@@ -26,4 +23,17 @@ public class CodeQuestionController {
     public ResponseEntity<ResponseObject> addQuestion(Authentication authentication, @RequestBody AddCodeQuestion questionText) {
         return codeQuestionService.addQuestion(authentication, questionText);
     }
+
+    @Operation(summary = "lấy danh sách câu hỏi code theo id bài test")
+    @GetMapping("/{testId}")
+    public ResponseEntity<ResponseObject> getCodeQuestionByTestId(@PathVariable Long testId, Authentication authentication) {
+        return codeQuestionService.getCodeQuestionByTestId(testId, authentication);
+    }
+    @Operation(summary = "Xóa câu hỏi khỏi code test")
+    @DeleteMapping("/{codeQuestionId}")
+    public ResponseEntity<ResponseObject> deleteCodeQuestion(@PathVariable Long codeQuestionId, Authentication authentication) {
+        return codeQuestionService.deleteCodeQuestion(codeQuestionId, authentication);
+    }
+
+
 }

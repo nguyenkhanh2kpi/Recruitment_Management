@@ -2,6 +2,7 @@ package com.java08.quanlituyendung.dto.test;
 
 
 import com.java08.quanlituyendung.entity.JobPostingEntity;
+import com.java08.quanlituyendung.entity.Test.CodeQuestionEntity;
 import com.java08.quanlituyendung.entity.Test.MulQuestionEntity;
 import com.java08.quanlituyendung.entity.Test.TestEntity;
 import com.java08.quanlituyendung.entity.Test.TestRecordEntity;
@@ -27,6 +28,7 @@ public class TestResponseDTO {
     private String summary;
     private String job;
     private List<MulQuestionResponseDTO> questions;
+    private List<CodeQuestionEntity> codeQuestions;
     private boolean isRecord;
     private boolean isStart;
     private String startTime;

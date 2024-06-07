@@ -18,11 +18,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/mul-test")
 @Tag(name = "Kiểm tra sàng lọc")
 public class MulQuestionController {
-
     @Autowired
     private IMulQuestionService iMulQuestionService;
-
-
     @Operation(summary = "Thêm bài test trắc nghiệm")
     @PostMapping("/new-test")
     public ResponseEntity<ResponseObject> newTest(Authentication authentication, @RequestBody NewTestDTO request) {

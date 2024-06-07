@@ -39,6 +39,7 @@ public class TestConverter {
         testResponseDTO.setTime(testEntity.getTime());
         testResponseDTO.setEssayQuestion(testEntity.getEssayQuestion());
         testResponseDTO.setType(testEntity.getType());
+        testResponseDTO.setCodeQuestions(testEntity.getCodeQuestions());
         return testResponseDTO;
     }
 
@@ -93,6 +94,7 @@ public class TestConverter {
                 .isDelete(false)
                 .build();
     }
+
     public TestEntity toEntityCode(NewTestDTO request, JobPostingEntity jobPostingEntity) {
         return TestEntity.builder()
                 .mulQuestions(new ArrayList<>())
@@ -149,6 +151,7 @@ public class TestConverter {
     }
 
     // dung cho ung vien get
+//    test nay co nguoi do
     public TestResponseDTO toDTOcandidate(TestEntity testEntity, UserAccountEntity user) {
         List<MulQuestionResponseDTO> questions = new ArrayList<>();
         testEntity.getMulQuestions().forEach(question -> {
@@ -163,24 +166,29 @@ public class TestConverter {
         testResponseDTO.setTime(testEntity.getTime());
         testResponseDTO.setType(testEntity.getType());
         testResponseDTO.setEssayQuestion(testEntity.getEssayQuestion());
+        testResponseDTO.setCodeQuestions(testEntity.getCodeQuestions());
+//        record của test đó
         List<TestRecordEntity> records = testEntity.getRecords();
-        records.forEach(testRecordEntity -> {
+        boolean found = false;
+        for (TestRecordEntity testRecordEntity : records) {
             if (testRecordEntity.getUserAccountEntity().equals(user)) {
                 testResponseDTO.setStart(true);
-                if(testRecordEntity.getIsDone()==true) {
+                if (testRecordEntity.getIsDone()) {
                     testResponseDTO.setRecord(true);
                 } else {
                     testResponseDTO.setStartTime(testRecordEntity.getStartTime());
                     testResponseDTO.setRecord(false);
                 }
-            } else {
-                testResponseDTO.setStart(false);
-                testResponseDTO.setRecord(false);
+                found = true;
+                break;
             }
-        });
+        }
+        if (!found) {
+            testResponseDTO.setStart(false);
+            testResponseDTO.setRecord(false);
+        }
         return testResponseDTO;
     }
-
 
 
 }

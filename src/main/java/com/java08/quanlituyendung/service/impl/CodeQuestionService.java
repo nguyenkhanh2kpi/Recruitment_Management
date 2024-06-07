@@ -20,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -83,5 +84,43 @@ public class CodeQuestionService {
                     .message("Question added successfully")
                     .build());
         }
+    }
+
+    public ResponseEntity<ResponseObject> getCodeQuestionByTestId(Long testId, Authentication authentication) {
+        UserAccountEntity user = userAccountRetriever.getUserAccountEntityFromAuthentication(authentication);
+        Optional<TestEntity> optionalTest = testRepository.findById(testId);
+        if (user == null || optionalTest.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ResponseObject.builder()
+                            .status(Constant.FAIL)
+                            .message("Không thể tìm thấy testId")
+                            .build());
+        } else {
+            List<CodeQuestionEntity> codeQuestions = optionalTest.get().getCodeQuestions();
+            return ResponseEntity.ok(ResponseObject.builder()
+                    .status(HttpStatus.OK.toString())
+                    .data(codeQuestions)
+                    .message("Success!")
+                    .build());
+        }
+    }
+
+    public ResponseEntity<ResponseObject> deleteCodeQuestion(Long codeQuestionId, Authentication authentication) {
+        Optional<CodeQuestionEntity> codeQuestion = codeQuestionRepository.findById(codeQuestionId);
+        if(codeQuestion.isPresent()) {
+            codeQuestionRepository.delete(codeQuestion.get());
+            return ResponseEntity.ok(ResponseObject.builder()
+                    .status(HttpStatus.OK.toString())
+                    .data("")
+                    .message("Success!")
+                    .build());
+        }else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ResponseObject.builder()
+                            .status(Constant.FAIL)
+                            .message("Không thể tìm thấy Question")
+                            .build());
+        }
+
     }
 }
