@@ -1,5 +1,6 @@
 package com.java08.quanlituyendung.converter;
 
+import com.java08.quanlituyendung.dto.UserCV_AppliedJob.AppliedJobTestsDTO;
 import com.java08.quanlituyendung.dto.test.*;
 import com.java08.quanlituyendung.entity.CVEntity;
 import com.java08.quanlituyendung.entity.JobPostingEntity;
@@ -190,5 +191,36 @@ public class TestConverter {
         return testResponseDTO;
     }
 
+
+    public AppliedJobTestsDTO toDTO_AppliedPage(TestEntity testEntity,UserAccountEntity user) {
+        AppliedJobTestsDTO testResponseDTO = new AppliedJobTestsDTO();
+        testResponseDTO.setId(testEntity.getId());
+        testResponseDTO.setJdId(testEntity.getJobPostingEntity().getId());
+        testResponseDTO.setJob(testEntity.getJobPostingEntity().getName());
+        testResponseDTO.setSummary(testEntity.getSummary());
+        testResponseDTO.setTime(testEntity.getTime());
+        testResponseDTO.setType(testEntity.getType());
+//        record của test đó
+        List<TestRecordEntity> records = testEntity.getRecords();
+        boolean found = false;
+        for (TestRecordEntity testRecordEntity : records) {
+            if (testRecordEntity.getUserAccountEntity().equals(user)) {
+                testResponseDTO.setStart(true);
+                testResponseDTO.setStartTime(testRecordEntity.getStartTime());
+                if (testRecordEntity.getIsDone()) {
+                    testResponseDTO.setRecord(true);
+                } else {
+                    testResponseDTO.setRecord(false);
+                }
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            testResponseDTO.setStart(false);
+            testResponseDTO.setRecord(false);
+        }
+        return testResponseDTO;
+    }
 
 }

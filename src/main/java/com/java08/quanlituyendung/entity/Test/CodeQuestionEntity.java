@@ -23,6 +23,7 @@ public class CodeQuestionEntity {
 
     @Column(name = "questionText", columnDefinition = "TEXT")
     private String questionText;
+    @Column(name = "value", columnDefinition = "TEXT")
     private String value;
     private String language;
 

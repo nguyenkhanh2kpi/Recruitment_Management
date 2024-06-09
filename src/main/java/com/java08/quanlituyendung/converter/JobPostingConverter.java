@@ -70,6 +70,7 @@ public class JobPostingConverter {
                 .interest(entity.getInterest())
                 .status(entity.getStatus())
                 .createDate(entity.getCreateDate())
+                .updateAt(entity.getUpdateDate())
                 .user_id(Math.toIntExact(entity.getUserAccountEntity().getId()))
                 .state(JobPostingEntity.State.valueOf(entity.getState().toString()))
                 .requireTest(entity.getRequireTest())

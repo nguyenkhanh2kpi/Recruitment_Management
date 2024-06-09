@@ -54,6 +54,12 @@ public class CalendarController {
         return localCalendarService.getMyCalendar(authentication);
     }
 
+    @Operation(summary = "Lấy danh sách interviewRoom của tôi theo jobID")
+    @GetMapping("/my-calendar-by-job-id/{jobId}")
+    public ResponseEntity<ResponseObject> getMyCalendarByJobId(@PathVariable Long jobId,Authentication authentication) {
+        return localCalendarService.getMyCalendarByJobId(authentication,jobId);
+    }
+
     @Operation(summary = "Tạo room phỏng vấn trên google calendar để lấy linkmeet, danh sách attendee là email của những tài khoản sẽ tham gia meet bao gồm candidate và interivewer")
     @PostMapping("/google-send-invitation")
     public ResponseEntity<ResponseObject> calendarGoogle(@RequestBody CalendarAddRequestDTO requestDTO) throws GeneralSecurityException, IOException {

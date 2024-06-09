@@ -65,4 +65,11 @@ public class CvController {
     public ResponseEntity<ResponseObject> updateLabelCV(@PathVariable Long id, @RequestBody String label) {
         return cvService.updateLabel(id, label);
     }
+
+    @Operation(summary = "Lấy danh sách những công việc tôi đã ứng tuyển")
+    @GetMapping("/get-all-my-applied-job")
+    public ResponseEntity<ResponseObject> getAllMyAppliedJob(Authentication authentication) {
+        return cvService.getAllMyAppliedJob(authentication);
+    }
+
 }

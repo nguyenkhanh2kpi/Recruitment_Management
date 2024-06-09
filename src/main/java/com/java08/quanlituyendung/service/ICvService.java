@@ -21,4 +21,6 @@ public interface ICvService {
     ResponseEntity<ResponseObject> getCVById(Long id);
 
     ResponseEntity<ResponseObject> updateView(Long id, Boolean status);
+
+    ResponseEntity<ResponseObject> getAllMyAppliedJob(Authentication authentication);
 }

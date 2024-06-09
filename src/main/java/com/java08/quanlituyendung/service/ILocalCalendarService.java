@@ -6,4 +6,6 @@ import org.springframework.security.core.Authentication;
 
 public interface ILocalCalendarService {
     ResponseEntity<ResponseObject> getMyCalendar(Authentication authentication);
+
+    ResponseEntity<ResponseObject> getMyCalendarByJobId(Authentication authentication, Long jobId);
 }

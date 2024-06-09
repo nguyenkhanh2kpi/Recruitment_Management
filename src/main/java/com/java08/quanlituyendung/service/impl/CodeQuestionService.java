@@ -70,9 +70,9 @@ public class CodeQuestionService {
         } else {
             CodeQuestionEntity newQuestion = CodeQuestionEntity.builder()
                     .questionText(request.getQuestionText())
-                    .value("")
-                    .language("")
-                    .testCase("")
+                    .value(request.getValue())
+                    .language(request.getLanguage())
+                    .testCase(request.getTestCase())
                     .build();
 
             TestEntity test = optionalTest.get();

@@ -33,6 +33,7 @@ public class JobPostingDTO {
     private List<JSONObject> listCandidate;
     private Integer user_id;
     private String createDate;
+    private String updateAt;
 
     private Boolean requireTest;
     private JobPostingEntity.State state;

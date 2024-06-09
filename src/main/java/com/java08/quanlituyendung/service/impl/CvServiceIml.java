@@ -1,16 +1,16 @@
 package com.java08.quanlituyendung.service.impl;
 
 import com.java08.quanlituyendung.auth.UserAccountRetriever;
+import com.java08.quanlituyendung.converter.TestConverter;
 import com.java08.quanlituyendung.dto.ApplyJob.ApplyJobNewCVDTO;
 import com.java08.quanlituyendung.dto.ResponseObject;
+import com.java08.quanlituyendung.dto.UserCV_AppliedJob.AppliedJobDTO;
 import com.java08.quanlituyendung.entity.CVEntity;
 import com.java08.quanlituyendung.entity.JobPostingEntity;
+import com.java08.quanlituyendung.entity.Test.TestEntity;
 import com.java08.quanlituyendung.entity.UserAccountEntity;
 import com.java08.quanlituyendung.entity.notify.NotifyEntity;
-import com.java08.quanlituyendung.repository.CvRepository;
-import com.java08.quanlituyendung.repository.JobPostingRepository;
-import com.java08.quanlituyendung.repository.NotifyRepository;
-import com.java08.quanlituyendung.repository.UserInfoRepository;
+import com.java08.quanlituyendung.repository.*;
 import com.java08.quanlituyendung.service.ICvService;
 import com.java08.quanlituyendung.service.IFileUploadService;
 import com.java08.quanlituyendung.service.INotifyService;
@@ -42,6 +42,13 @@ public class CvServiceIml implements ICvService {
     IFileUploadService iFileUploadService;
     @Autowired
     INotifyService notifyService;
+    @Autowired
+    NotifyRepository notifyRepository;
+    @Autowired
+    TestRepository testRepository;
+    @Autowired
+    TestConverter testConverter;
+
 
     public ResponseEntity<ResponseObject> applyJob(long idJobPosting, Authentication authentication) {
         if (userAccountRetriever.getUserAccountEntityFromAuthentication(authentication) != null) {
@@ -58,11 +65,26 @@ public class CvServiceIml implements ICvService {
                             cvEntityCheck.setUrl(urlCv);
                             cvEntityCheck.setDateApply(LocalDate.now().toString());
                             cvRepository.save(cvEntityCheck);
+
+                            notifyService.sendNotification("Kiểm tra sàng lọc",
+                                    "Job: "+ jobPostingEntity.getName()
+                                            + " có yêu cầu thực hiện bài test sàng lọc ",
+                                    userAccountEntity.getEmail(),
+                                    "/test"
+                            );
+
                             return ResponseEntity.ok(ResponseObject.builder().status(HttpStatus.OK.toString())
                                     .message("Update CV success!")
                                     .build());
                         }
                     }
+
+                    notifyService.sendNotification("Kiểm tra sàng lọc",
+                            "Job: "+ jobPostingEntity.getName()
+                                    + " có yêu cầu thực hiện bài test sàng lọc ",
+                            userAccountEntity.getEmail(),
+                            "/test"
+                    );
 
                     CVEntity cvEntity = new CVEntity();
                     cvEntity.setState(CVEntity.State.RECEIVE_CV);
@@ -121,6 +143,14 @@ public class CvServiceIml implements ICvService {
         List<CVEntity> listCvEntity = cvRepository.findAllByJobPostingEntityId(request.getJobId());
         for (CVEntity cvEntityCheck : listCvEntity) {
             if (cvEntityCheck.getUserAccountEntity().getId().equals(user.getId())) {
+
+                notifyService.sendNotification("Kiểm tra sàng lọc",
+                        "Job: "+ jobPostingEntity.getName()
+                                + " có yêu cầu thực hiện bài test sàng lọc ",
+                        user.getEmail(),
+                        "/test"
+                );
+
                 cvEntityCheck.setUrl(request.getCv());
                 cvEntityCheck.setDateApply(LocalDate.now().toString());
                 cvRepository.save(cvEntityCheck);
@@ -129,6 +159,12 @@ public class CvServiceIml implements ICvService {
                         .build());
             }
         }
+        notifyService.sendNotification("Kiểm tra sàng lọc",
+                "Job: "+ jobPostingEntity.getName()
+                        + " có yêu cầu thực hiện bài test sàng lọc ",
+                user.getEmail(),
+                "/test"
+        );
         CVEntity cvEntity = new CVEntity();
         cvEntity.setState(CVEntity.State.RECEIVE_CV);
         cvEntity.setView(false);
@@ -238,6 +274,49 @@ public class CvServiceIml implements ICvService {
                 .status(HttpStatus.OK.toString())
                 .message("Update view success!")
                 .build());
+    }
+
+    @Override
+    public ResponseEntity<ResponseObject> getAllMyAppliedJob(Authentication authentication) {
+        try {
+            UserAccountEntity user = userAccountRetriever.getUserAccountEntityFromAuthentication(authentication);
+            List<CVEntity> cvEntities = cvRepository.findAll().stream()
+                    .filter(cvEntity -> cvEntity.getUserAccountEntity().equals(user)).collect(Collectors.toList());
+            return ResponseEntity.ok(ResponseObject.builder()
+                    .status(HttpStatus.OK.toString())
+                    .message("Success!")
+                    .data(cvEntities.stream().map(this::CVToAppliedJobDTO).collect(Collectors.toList()))
+                    .build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    ResponseObject.builder()
+                            .status(HttpStatus.NOT_FOUND.toString())
+                            .message("Internal error")
+                            .build());
+        }
+    }
+
+    public AppliedJobDTO CVToAppliedJobDTO(CVEntity cv) {
+        List<NotifyEntity> notifyEntities = notifyRepository.findAll()
+                .stream().filter(notifyEntity ->
+                     notifyEntity.getMessage().contains(cv.getJobPostingEntity().getName())
+                             && notifyEntity.getRecipient().contains(cv.getUserAccountEntity().getEmail())
+                ).collect(Collectors.toList());
+        List<TestEntity> testEntities = testRepository.findAll()
+                .stream().filter(test -> test.getJobPostingEntity().equals(cv.getJobPostingEntity()))
+                .collect(Collectors.toList());
+        return AppliedJobDTO.builder()
+                .CVid(cv.getId())
+                .CVurl(cv.getUrl())
+                .dateApply(cv.getDateApply())
+                .state(cv.getState().toString())
+                .view(cv.isView())
+                .jobPostingId(cv.getJobPostingEntity().getId())
+                .relatedNotify(notifyEntities)
+                .testList(testEntities.stream()
+                        .map(testEntity -> testConverter.toDTO_AppliedPage(testEntity, cv.getUserAccountEntity()))
+                        .collect(Collectors.toList()))
+                .build();
     }
 
 
