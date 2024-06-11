@@ -15,15 +15,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Entity
-public class WorkingExperience {
+public class ResumeEducation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String companyName;
-    private String startWorkingTime;
-    private String endWorkingTime;
-    private String position;
-    private String jobDetail;
-    private String technology;
+    private String school;
+    private String degree;
+    private String startEducationTime;
+    private String endEducationTime;
+    private String major;
+    private String others;
+
 }

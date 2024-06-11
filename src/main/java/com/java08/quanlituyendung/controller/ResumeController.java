@@ -27,11 +27,11 @@ public class ResumeController {
         return iResumeService.getMyResume(authentication);
     }
 
-    @Operation(summary = "create resume (tam khong dung)")
-    @PostMapping("")
-    public ResponseEntity<ResponseObject> createResume(@RequestBody ResumeDTO request, Authentication authentication) {
-        return iResumeService.createResume(request, authentication);
-    }
+//    @Operation(summary = "create resume (tam khong dung)")
+//    @PostMapping("")
+//    public ResponseEntity<ResponseObject> createResume(@RequestBody ResumeDTO request, Authentication authentication) {
+//        return iResumeService.createResume(request, authentication);
+//    }
 
     @Operation(summary = "update resume")
     @PutMapping("")

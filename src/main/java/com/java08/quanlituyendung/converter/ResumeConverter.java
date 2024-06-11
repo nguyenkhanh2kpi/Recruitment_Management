@@ -1,12 +1,10 @@
 package com.java08.quanlituyendung.converter;
 
 
-import com.java08.quanlituyendung.dto.Resume.ResumeDTO;
-import com.java08.quanlituyendung.dto.Resume.UpdateResumeDTO;
-import com.java08.quanlituyendung.dto.Resume.WorkExpDTO;
-import com.java08.quanlituyendung.dto.Resume.WorkProjectDTO;
+import com.java08.quanlituyendung.dto.Resume.*;
 import com.java08.quanlituyendung.entity.ResumeEntity;
 import com.java08.quanlituyendung.entity.UserAccountEntity;
+import com.java08.quanlituyendung.entity.sample.ResumeJsonEntity;
 import com.java08.quanlituyendung.entity.sample.WorkingExperience;
 import com.java08.quanlituyendung.entity.sample.WorkingProject;
 import org.springframework.stereotype.Component;
@@ -42,6 +40,32 @@ public class ResumeConverter {
                         .build();
         return entity;
     }
+
+    public ResumeJsonEntity toEntity(UserAccountEntity user, ResumeJsonDTO resumeJsonDTO) {
+        return ResumeJsonEntity.builder()
+                .userAccountEntity(user)
+                .fullName(resumeJsonDTO.getFullName())
+                .applicationPosition(resumeJsonDTO.getApplicationPosition())
+                .jsonResume(resumeJsonDTO.getResumeJson())
+                .build();
+    }
+
+    public ResumeJsonEntity newResumeEntity(UserAccountEntity user) {
+        return ResumeJsonEntity.builder()
+                .userAccountEntity(user)
+                .fullName("")
+                .applicationPosition("")
+                .build();
+    }
+
+    public ResumeJsonDTO toDto(ResumeJsonEntity resumeJsonEntity) {
+        return ResumeJsonDTO.builder()
+                .fullName(resumeJsonEntity.getFullName())
+                .applicationPosition(resumeJsonEntity.getApplicationPosition())
+                .resumeJson(resumeJsonEntity.getJsonResume())
+                .build();
+    }
+
 
     public ResumeDTO toDTO(ResumeEntity resumeEntity) {
         return ResumeDTO.builder()

@@ -2,6 +2,7 @@ package com.java08.quanlituyendung.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.java08.quanlituyendung.entity.sample.ResumeEducation;
 import com.java08.quanlituyendung.entity.sample.WorkingExperience;
 import com.java08.quanlituyendung.entity.sample.WorkingProject;
 import jakarta.persistence.*;
@@ -20,17 +21,16 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class ResumeEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "userAccountId")
     private UserAccountEntity userAccountEntity;
 
-//    personal infomation
-
+    //    personal infomation
     private String fullName;
     private String applicationPosition;
     private String email;
@@ -46,32 +46,36 @@ public class ResumeEntity {
     @Column(name = "aboutYourself", columnDefinition = "TEXT")
     private String aboutYourself;
 
-    // workEx
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "resume_id")
-    private List<WorkingExperience> workingExperiences = new ArrayList<>();
-
     //    skill
-
     private String mainSkill;
     @ElementCollection
     @CollectionTable(name = "Resume_Skills", joinColumns = @JoinColumn(name = "resume_id"))
     @Column(name = "skill")
     private List<String> skills = new ArrayList<>();
 
-//  education
+
+    //Những thông tin danh sách này không thể cập nhật trưc tiếp mà phải gọi api riêng
+    // workEx
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "resume_id")
+    private List<WorkingExperience> workingExperiences = new ArrayList<>();
+
+    //  education
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "resume_id")
+    private List<ResumeEducation> resumeEducations = new ArrayList<>();
 
     private String school;
+    private String degree;
     private String startEducationTime;
     private String endEducationTime;
     private String major;
     private String others;
 
-//projects
+    //projects
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "resume_id")
     private List<WorkingProject> workingProjects = new ArrayList<>();
-
 
 
 }
