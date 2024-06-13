@@ -16,25 +16,15 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name = "JobPosting")
 public class JobPostingEntity extends BaseEntity{
-    @Column(name = "name")
     private String name;
-    @Column(name = "position")
     private String position;
-    @Column(name = "language")
     private String language;
-    @Column(name = "location")
     private String location;
-    @Column(name = "salary")
     private String salary;
-    @Column(name = "number")
     private String number;
-    @Column(name = "workingForm")
     private String workingForm;
-    @Column(name = "sex")
     private String sex;
-    @Column(name = "experience")
     private String experience;
-    @Column(name = "detailLocation")
     private String detailLocation;
     @Column(name = "detailJob", columnDefinition = "text")
     private String detailJob;
@@ -44,39 +34,23 @@ public class JobPostingEntity extends BaseEntity{
     private String interest;
     @Column(name = "image", columnDefinition = "text")
     private String image;
-    @Column(name = "createDate")
     private String createDate;
-    @Column(name = "updateDate")
     private String updateDate;
-    @Column(name = "expriredDate")
     private String expriredDate;
-    @Column(name = "status")
     private Boolean status;
 
     // danh sach ung vien
     @OneToMany(mappedBy = "jobPostingEntity")
     private List<CVEntity> cvEntities;
 
-    // thuoc ve skill
-//    @ManyToMany
-//    @JoinTable(
-//            name = "Skills_JobPosting",
-//            joinColumns = @JoinColumn(name = "jobPostingId"),
-//            inverseJoinColumns = @JoinColumn(name = "skillId")
-//    )
-//    private List<SkillEntity> skillsEntities = new ArrayList<>();
-
     // danh sach nguoi phong van ?
     @OneToMany(mappedBy = "jobPostingEntity")
     private List<InterviewEntity> interviewEntity;
 
-    // co the la nguoi tao
     @ManyToOne
     @JoinColumn(name = "userAccountId")
     private UserAccountEntity userAccountEntity;
 
-
-// những trường mới
     private Boolean requireTest;
 
     @Enumerated(EnumType.STRING)
@@ -87,13 +61,8 @@ public class JobPostingEntity extends BaseEntity{
         PAUSE,
         END
     }
-//nganh nghe
-    @Column(name = "industry")
     private String industry;
-
-    @Column(name = "industry2")
     private String industry2;
-
     private Boolean isVip;
 
 }

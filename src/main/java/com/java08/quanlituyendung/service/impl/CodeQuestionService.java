@@ -2,13 +2,14 @@ package com.java08.quanlituyendung.service.impl;
 
 import com.java08.quanlituyendung.auth.UserAccountRetriever;
 import com.java08.quanlituyendung.converter.TestConverter;
+import com.java08.quanlituyendung.dto.CvDTO;
 import com.java08.quanlituyendung.dto.ResponseObject;
+import com.java08.quanlituyendung.dto.TestResultDTO.CodeTestResultResponseDTO;
+import com.java08.quanlituyendung.dto.UserAccountPayload.UserAccountCustomResponseDTO;
 import com.java08.quanlituyendung.dto.test.AddCodeQuestion;
 import com.java08.quanlituyendung.dto.test.AddQuestionDTO;
-import com.java08.quanlituyendung.entity.Test.CodeQuestionEntity;
-import com.java08.quanlituyendung.entity.Test.MulQuestionEntity;
-import com.java08.quanlituyendung.entity.Test.MulQuestionOptionEntity;
-import com.java08.quanlituyendung.entity.Test.TestEntity;
+import com.java08.quanlituyendung.entity.CVEntity;
+import com.java08.quanlituyendung.entity.Test.*;
 import com.java08.quanlituyendung.entity.UserAccountEntity;
 import com.java08.quanlituyendung.repository.*;
 import com.java08.quanlituyendung.utils.Constant;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -73,6 +75,7 @@ public class CodeQuestionService {
                     .value(request.getValue())
                     .language(request.getLanguage())
                     .testCase(request.getTestCase())
+                    .testFunction(request.getTestFunction())
                     .build();
 
             TestEntity test = optionalTest.get();
@@ -123,4 +126,71 @@ public class CodeQuestionService {
         }
 
     }
+
+    public ResponseEntity<ResponseObject> getAllResultCodeByTest(Long testId, Authentication authentication) {
+        UserAccountEntity user = userAccountRetriever.getUserAccountEntityFromAuthentication(authentication);
+        Optional<TestEntity> testEntity = testRepository.findById(testId);
+        if(testEntity.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ResponseObject.builder()
+                            .status(Constant.FAIL)
+                            .message("Không thể tìm thấy bài test")
+                            .build());
+        }else {
+            List<CodeTestResultResponseDTO> testRecordEntities = recordRepository.findAll()
+                    .stream().filter(testRecordEntity -> testRecordEntity.getTestEntity().equals(testEntity.get()))
+                    .map(this::convertRecordToDTO)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(ResponseObject.builder()
+                    .status(HttpStatus.OK.toString())
+                    .data(testRecordEntities)
+                    .message("Success!")
+                    .build());
+        }
+    }
+
+
+    // duoi day la cac ham convert cho ham tren
+    public CodeTestResultResponseDTO convertRecordToDTO(TestRecordEntity testRecordEntity) {
+        return CodeTestResultResponseDTO.builder()
+                .id(testRecordEntity.getId())
+                .isDone(testRecordEntity.getIsDone())
+                .startTime(testRecordEntity.getStartTime())
+                .score(testRecordEntity.getScore())
+                .record(testRecordEntity.getRecord())
+                .user(getUserFromTestEntity(testRecordEntity))
+                .cvDTO(getCVFromTestRecordEntity(testRecordEntity))
+                .build();
+    }
+
+    public UserAccountCustomResponseDTO getUserFromTestEntity(TestRecordEntity testRecordEntity) {
+        return UserAccountCustomResponseDTO.builder()
+                .username(testRecordEntity.getUserAccountEntity().getUsernameReal())
+                .avatar(testRecordEntity.getUserAccountEntity().getUserInfo().getAvatar())
+                .email(testRecordEntity.getUserAccountEntity().getEmail())
+                .fullName(testRecordEntity.getUserAccountEntity().getUserInfo().getFullName())
+                .status(testRecordEntity.getUserAccountEntity().getStatus().toString())
+                .build();
+    }
+
+    public CvDTO getCVFromTestRecordEntity(TestRecordEntity testRecordEntity) {
+        Optional<CVEntity> cvEntity = cvRepository.findByUserAccountEntityAndJobPostingEntity(testRecordEntity.getUserAccountEntity(), testRecordEntity.getTestEntity().getJobPostingEntity());
+        if(cvEntity.isPresent()) {
+            return CvDTO.builder()
+                    .id(cvEntity.get().getId())
+                    .idJobPosting(cvEntity.get().getJobPostingEntity().getId())
+                    .url(cvEntity.get().getUrl())
+                    .jobPostingEntity(null)
+                    .state(cvEntity.get().getState())
+                    .view(cvEntity.get().isView())
+                    .labels(cvEntity.get().getLabels())
+                    .userAccountEntity(null)
+                    .build();
+        } else {
+            return CvDTO.builder()
+                    .build();
+        }
+
+    }
+
 }

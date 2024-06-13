@@ -19,4 +19,6 @@ public class CvDTO {
     private CVEntity.State state;
     private UserAccountEntity userAccountEntity;
     private JobPostingEntity jobPostingEntity;
+    private Boolean view;
+    private String labels;
 }

@@ -9,10 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CvRepository extends JpaRepository<CVEntity, Long> {
-
-
     List<CVEntity> findAllByJobPostingEntityId(long id);
-
     List<CVEntity> findAllByUserAccountEntityId(long id);
+    Optional<CVEntity> findByUserAccountEntityAndJobPostingEntity(UserAccountEntity userAccountEntity, JobPostingEntity jobPostingEntity);
 
 }

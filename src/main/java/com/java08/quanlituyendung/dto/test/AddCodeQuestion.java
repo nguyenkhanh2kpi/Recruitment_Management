@@ -16,4 +16,5 @@ public class AddCodeQuestion {
     private String value;
     private String language;
     private String testCase;
+    private String testFunction;
 }

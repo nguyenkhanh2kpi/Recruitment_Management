@@ -3,6 +3,8 @@ package com.java08.quanlituyendung.controller;
 import com.java08.quanlituyendung.dto.ResponseObject;
 import com.java08.quanlituyendung.dto.test.AddCodeQuestion;
 import com.java08.quanlituyendung.dto.test.AddQuestionDTO;
+import com.java08.quanlituyendung.entity.Test.TestRecordEntity;
+import com.java08.quanlituyendung.repository.RecordRepository;
 import com.java08.quanlituyendung.service.impl.CodeQuestionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,6 +20,8 @@ public class CodeQuestionController {
 
     @Autowired
     private CodeQuestionService codeQuestionService;
+
+
     @Operation(summary = "thêm câu hỏi")
     @PostMapping("/add-question")
     public ResponseEntity<ResponseObject> addQuestion(Authentication authentication, @RequestBody AddCodeQuestion questionText) {
@@ -34,6 +38,14 @@ public class CodeQuestionController {
     public ResponseEntity<ResponseObject> deleteCodeQuestion(@PathVariable Long codeQuestionId, Authentication authentication) {
         return codeQuestionService.deleteCodeQuestion(codeQuestionId, authentication);
     }
+
+
+    @Operation(summary = "Lấy tâts cả bản record theo test id")
+    @GetMapping("/result/{testId}")
+    public ResponseEntity<ResponseObject> getAllResultCodeByTest(@PathVariable Long testId, Authentication authentication) {
+        return  codeQuestionService.getAllResultCodeByTest(testId, authentication);
+    }
+
 
 
 }

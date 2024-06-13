@@ -29,6 +29,8 @@ public class CodeQuestionEntity {
 
     @Column(name = "testCase", columnDefinition = "TEXT")
     private String testCase;
+    @Column(name = "testFunction", columnDefinition = "TEXT")
+    private String testFunction;
 
     @JsonIgnore
     @ManyToOne
