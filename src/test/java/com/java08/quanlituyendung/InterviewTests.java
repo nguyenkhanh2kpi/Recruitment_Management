@@ -82,7 +82,7 @@ class InterviewTests {
 
 	@Test
 	void getInterviewFail() throws Exception {
-		String token = login(mockMvc,"candidate@gmail.com","1234");
+		String token = login(mockMvc,"johndoe@gmail.com","123456789");
 		MvcResult result = mockMvc.perform(get("/interview")
 						.header("Authorization", "Bearer " + token)
 						.contentType(MediaType.APPLICATION_JSON))
@@ -134,7 +134,7 @@ class InterviewTests {
 	}
 	@Test
 	void addInterviewForbidden() throws Exception {
-		String token = login(mockMvc, "interviewer1@gmail.com", "1234");
+		String token = login(mockMvc, "johndoe@gmail.com", "123456789");
 		InterviewCreateDTO requestDTO = new InterviewCreateDTO();
 		requestDTO.setJobPostId("2");
 		requestDTO.setRoomName("phong x jd 2");

@@ -20,7 +20,7 @@ import java.util.function.Function;
 @Slf4j
 public class JwtService {
     private static final String SECRET_KEY = "2414d7e0a684869e0b0c678f94329409ce553d9d3a27b5c2da2068db604c1a40";
-    private static final Long TOKEN_EXPIRATION_TIME = (long) (1000*60*30*24);
+    private static final Long TOKEN_EXPIRATION_TIME = (long) (1000*60*60*24);
     private static final Long REFRESH_EXPIRATION_TIME = (long) (1000*60*60*24*7);
     private static final Long RESET_PASSWORD_EXPIRATION_TIME = (long) (1000*60*60*60);
     private AccessRefresh accessRefresh;

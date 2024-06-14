@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Data
@@ -64,5 +65,20 @@ public class JobPostingEntity extends BaseEntity{
     private String industry;
     private String industry2;
     private Boolean isVip;
+
+    @Override
+    public int hashCode() {
+        // Implement hashCode excluding cyclic references
+        return Objects.hash(getId(), getName());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JobPostingEntity that = (JobPostingEntity) o;
+        return Objects.equals(getId(), that.getId());
+    }
+
 
 }
