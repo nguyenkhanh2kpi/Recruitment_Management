@@ -1,5 +1,6 @@
 package com.java08.quanlituyendung.controller;
 
+import com.java08.quanlituyendung.dto.JobPostingDTO;
 import com.java08.quanlituyendung.dto.ResponseObject;
 import com.java08.quanlituyendung.entity.JobPostingEntity;
 import com.java08.quanlituyendung.repository.JobPostingRepository;
@@ -34,9 +35,9 @@ public class FindRelatedController {
     @PostMapping("/find-related-job")
     public ResponseEntity<ResponseObject> findRelatedJob(@RequestBody Map<String, String> request) {
         String keyword = request.get("keyword");
-
+        List<JobPostingEntity> jobPostingEntityList = jobPostingRepository.findAll();
         try {
-            List<JobPostingEntity> jobPostingEntityList = jobPostingRepository.findAll();
+
             Directory directory = new RAMDirectory();
             StandardAnalyzer analyzer = new StandardAnalyzer();
             IndexWriterConfig config = new IndexWriterConfig(analyzer);
@@ -92,7 +93,12 @@ public class FindRelatedController {
 
             return ResponseEntity.ok(responseObject);
         } catch (Exception e) {
-            return ResponseEntity.status(400).body(new ResponseObject("error", e.getMessage(), null));
+            List<JobPostingEntity> fallbackJobList = jobPostingEntityList
+                    .stream().limit(12).collect(Collectors.toList());
+            List<JobPostingDTO> fallbackJobDTOs = fallbackJobList
+                    .stream().map(jobPostingConverter::toDTO).collect(Collectors.toList());
+            ResponseObject responseObject = new ResponseObject("error", e.getMessage(), fallbackJobDTOs);
+            return ResponseEntity.ok(responseObject);
         }
     }
 

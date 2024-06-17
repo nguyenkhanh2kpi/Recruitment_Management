@@ -2,6 +2,7 @@ package com.java08.quanlituyendung.controller;
 
 import com.java08.quanlituyendung.dto.JobPostingDTO;
 import com.java08.quanlituyendung.dto.ResponseObject;
+import com.java08.quanlituyendung.dto.jobposting.ChangeStateDTO;
 import com.java08.quanlituyendung.service.IJobPostingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -53,8 +54,8 @@ public class JobPostingController {
 
 
     @PutMapping("/{id}/state")
-    public ResponseEntity<ResponseObject> updateJobState(@PathVariable long id, @RequestBody String state) {
-        return jobPostingService.updateJobState(id, state);
+    public ResponseEntity<ResponseObject> updateJobState(@PathVariable long id, @RequestBody ChangeStateDTO state) {
+        return jobPostingService.updateJobState(id, state.getState());
     }
     @PutMapping("/{id}/vip/{vipStatus}")
     public ResponseEntity<ResponseObject> setJobVIPStatus(@PathVariable long id, @PathVariable boolean vipStatus,Authentication authentication) {
