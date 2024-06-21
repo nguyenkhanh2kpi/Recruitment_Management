@@ -1,6 +1,8 @@
 package com.java08.quanlituyendung.dto.InterviewPayload;
 
+import com.java08.quanlituyendung.dto.JobPostingDTO;
 import com.java08.quanlituyendung.entity.CVEntity;
+import com.java08.quanlituyendung.entity.JobPostingEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,4 +25,5 @@ public class InterviewDetailResponseDTO {
     private String technicalQuestion;
     private String softSkillQuestion;
     private String interviewer;
+    private JobPostingDTO jobPosting;
 }

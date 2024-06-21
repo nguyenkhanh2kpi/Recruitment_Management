@@ -25,6 +25,9 @@ public class InterviewDetailConverter {
     @Autowired
     InterviewHelper interviewHelper;
 
+    @Autowired
+    JobPostingConverter jobPostingConverter;
+
 
     public InterviewDetailResponseDTO detailToResponse(InterviewDetailEntity interviewDetail) {
         Optional<UserAccountEntity> candidate = userAccountRepository.findById(interviewDetail.getCandidateId());
@@ -44,6 +47,7 @@ public class InterviewDetailConverter {
                 .englishQuestion(interviewDetail.getEnglishQuestions())
                 .softSkillQuestion(interviewDetail.getSoftSkillQuestions())
                 .technicalQuestion(interviewDetail.getTechnicalQuestions())
+                .jobPosting(jobPostingConverter.toDTO(interviewDetail.getInterview().getJobPostingEntity()))
                 .interviewer(interviewDetail.getInterviewer() != null ? interviewDetail.getInterviewer()
                         : interviewDetail.getInterviewerEmail())
                 .build();

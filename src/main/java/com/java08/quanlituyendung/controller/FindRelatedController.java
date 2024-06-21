@@ -194,6 +194,15 @@ public class FindRelatedController {
                     .map(Map.Entry::getKey)
                     .collect(Collectors.toList());
 
+            while (relatedJobs.size() < 4) {
+                JobPostingEntity additionalJob = findAdditionalJob(jobScores, relatedJobs);
+                if (additionalJob != null) {
+                    relatedJobs.add(additionalJob);
+                } else {
+                    break;
+                }
+            }
+
         } catch (Exception e) {
             relatedJobs = jobPostingEntityList.stream().limit(4).collect(Collectors.toList());
         }
