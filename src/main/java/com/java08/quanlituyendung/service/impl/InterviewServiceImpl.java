@@ -292,10 +292,10 @@ public class InterviewServiceImpl implements IInterviewService {
         Optional<UserAccountEntity> candidate = userAccountRepository.findById(interviewDetailDTO.getCandidateId());
         Optional<InterviewEntity> interview = interviewRepository.findById(interviewDetailDTO.getInterviewId());
         if (candidate.isPresent() && interview.isPresent()) {
-            if (interviewHelper.isCandidateJoinJobRooms(candidate.get(), interview.get())) {
+            if (interviewHelper.isCandidateJoinInterview(candidate.get(), interview.get())) {
                 return ResponseEntity.ok(ResponseObject.builder()
                         .status(HttpStatus.NOT_IMPLEMENTED.toString())
-                        .message("Ứng viên đã tồn tại trong phòng ")
+                        .message("Ứng viên đã tồn tại trong phòng cặc cặc")
                         .build());
             } else {
                 interviewDetailRepository.save(interviewHelper

@@ -86,4 +86,12 @@ public class MulQuestionController {
         return iMulQuestionService.getRecordByJobID(jobId );
     }
 
+
+//    lay tat ca ban record tu luan theo test id khong can
+//    @Operation(summary = "get all essay record by test id")
+//    @GetMapping("/essay-record/{testId}")
+//    public ResponseEntity<ResponseObject> getRecordByUserAndTest(@PathVariable Long testId) {
+//        return iMulQuestionService.getEssayRecordsByTestId(testId);
+//    }
+
 }

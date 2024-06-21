@@ -28,11 +28,10 @@ public class InterviewHelper {
 
 
     public boolean isCandidateJoinInterview(UserAccountEntity candidate, InterviewEntity interview) {
-         return interview.getInterviewDetailEntities().stream()
-                 .map(InterviewDetailEntity::getCandidateId)
-                 .toList()
-                 .contains(candidate.getId());
+        return interview.getInterviewDetailEntities().stream()
+                .anyMatch(detail -> detail.getCandidateId().equals(candidate.getId()));
     }
+
 
     public boolean isCandidateJoinJobRooms(UserAccountEntity candidate, InterviewEntity interview) {
         JobPostingEntity jd = interview.getJobPostingEntity();

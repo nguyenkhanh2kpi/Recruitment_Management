@@ -30,4 +30,6 @@ public interface IMulQuestionService {
     ResponseEntity<ResponseObject> startRecord(Authentication authentication, StartRecordRequestDTO request);
 
     ResponseEntity<ResponseObject> newCodeTest(Authentication authentication, NewTestDTO request);
+
+    ResponseEntity<ResponseObject> getEssayRecordsByTestId(Long testId);
 }
