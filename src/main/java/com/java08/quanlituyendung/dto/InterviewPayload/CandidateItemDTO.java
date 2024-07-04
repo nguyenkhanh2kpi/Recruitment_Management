@@ -22,6 +22,7 @@ public class CandidateItemDTO {
     private String cvStatus;
     private String labels;
 
+    private String jobName;
 
     private Boolean view;
     private String phone;

@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class InterviewServiceImpl implements IInterviewService {
+    private final CvRepository cvRepository;
     private InterviewRepository interviewRepository;
     private InterviewConverter interviewConverter;
     private UserAccountRepository userAccountRepository;
@@ -61,7 +62,7 @@ public class InterviewServiceImpl implements IInterviewService {
                                 UserAccountRetriever userAccountRetriever,
                                 UserAccountConverter userAccountConverter,
                                 PasswordEncoder passwordEncoder,
-                                UserInfoRepository userInfoRepository) {
+                                UserInfoRepository userInfoRepository, CvRepository cvRepository) {
         this.interviewRepository = interviewRepository;
         this.interviewConverter = interviewConverter;
         this.userAccountRepository = userAccountRepository;
@@ -73,6 +74,7 @@ public class InterviewServiceImpl implements IInterviewService {
         this.userAccountConverter = userAccountConverter;
         this.passwordEncoder = passwordEncoder;
         this.userInfoRepository = userInfoRepository;
+        this.cvRepository = cvRepository;
     }
 
     @Override
@@ -141,6 +143,8 @@ public class InterviewServiceImpl implements IInterviewService {
                 .data(list)
                 .message(Constant.SUCCESS).build());
     }
+
+
 
 
     // tao tai khoan interview
@@ -233,7 +237,21 @@ public class InterviewServiceImpl implements IInterviewService {
                     .build());
         }
     }
-
+    @Override
+    public ResponseEntity<ResponseObject> getAllCandidates(Authentication authentication) {
+        var user = userAccountRetriever.getUserAccountEntityFromAuthentication(authentication);
+        var listCV = cvRepository.findAll().stream()
+                .filter(cvEntity -> cvEntity.getJobPostingEntity().getUserAccountEntity().equals(user))
+                .collect(Collectors.toList());
+        List<CandidateItemDTO> listCandidate = listCV.stream()
+                .map(c -> interviewConverter.UserAccountToCandidateItem(c.getUserAccountEntity(), c.getJobPostingEntity().getId(), c))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(ResponseObject.builder()
+                .status(HttpStatus.OK.toString())
+                .data(listCandidate)
+                .message("Success!")
+                .build());
+    }
 
     /// tao interview|| tao room
     @Override
@@ -295,7 +313,7 @@ public class InterviewServiceImpl implements IInterviewService {
             if (interviewHelper.isCandidateJoinInterview(candidate.get(), interview.get())) {
                 return ResponseEntity.ok(ResponseObject.builder()
                         .status(HttpStatus.NOT_IMPLEMENTED.toString())
-                        .message("Ứng viên đã tồn tại trong phòng cặc cặc")
+                        .message("Ứng viên đã tồn tại trong phòng")
                         .build());
             } else {
                 interviewDetailRepository.save(interviewHelper

@@ -42,7 +42,17 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeRequests()
-                .requestMatchers("/auth/**", "/v3/**", "/swagger-ui/**", "/recover/**", "/payment/**", "/industries/**","/ws/**", "/find-related/**")
+                .requestMatchers("/auth/**"
+                        , "/v3/**"
+                        , "/swagger-ui/**"
+                        , "/recover/**"
+                        , "/payment/**"
+                        , "/industries/**"
+                        ,"/ws/**"
+                        , "/find-related/**"
+                        ,"/feedback/**"
+                        ,"/banners/**"
+                )
                 .permitAll()
                 .requestMatchers(HttpMethod.GET,
                         "/event/**",

@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 public class InterviewDetailResponseDTO {
     private Long id;
     private Long roomId;
+    private String roomName;
+    private String interviewTime;
     private CandidateRoomItemDTO candidate;
     private CVEntity cv;
     private String description;
@@ -26,4 +28,6 @@ public class InterviewDetailResponseDTO {
     private String softSkillQuestion;
     private String interviewer;
     private JobPostingDTO jobPosting;
+
+
 }

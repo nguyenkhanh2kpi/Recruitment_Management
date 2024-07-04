@@ -37,12 +37,14 @@ public class InterviewDetailServiceImpl implements IInterviewDetailService {
     UserAccountRetriever userAccountRetriever;
 
     @Override
-    public ResponseEntity<ResponseObject> getAll() {
+    public ResponseEntity<ResponseObject> getAll(Authentication authentication) {
+        var user = userAccountRetriever.getUserAccountEntityFromAuthentication(authentication);
         return ResponseEntity.ok(ResponseObject.builder()
                 .status(HttpStatus.OK.toString())
                 .message("SUCCESS !")
                 .data(interviewDetailRepository.findAll()
                         .stream()
+                        .filter(interviewDetailEntity -> interviewDetailEntity.getInterview().getUserAccountEntity().equals(user))
                         .map(interviewDetailConverter::detailToResponse)
                         .collect(Collectors.toList()))
                 .build());

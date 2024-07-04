@@ -11,7 +11,7 @@ public interface IInterviewDetailService {
 
     ResponseEntity<ResponseObject> getInterviewDetailByRoomId(Long roomId);
 
-    ResponseEntity<ResponseObject> getAll();
+    ResponseEntity<ResponseObject> getAll(Authentication authentication);
 
     ResponseEntity<ResponseObject> getOne(Long roomDetailId);
 

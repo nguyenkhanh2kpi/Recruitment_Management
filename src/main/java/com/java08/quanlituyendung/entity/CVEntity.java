@@ -45,4 +45,9 @@ public class CVEntity extends BaseEntity {
 
     private boolean view;
     private String labels;
+
+
+    public void ChangeState(State state) {
+        this.state = state;
+    }
 }

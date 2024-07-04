@@ -50,4 +50,9 @@ public class InterviewEntity extends BaseEntity{
     @JsonIgnore
     @JoinColumn(name = "jobPostId")
     private JobPostingEntity jobPostingEntity;
+
+
+    public void ChangeStatus(String status) {
+        this.status = status;
+    }
 }

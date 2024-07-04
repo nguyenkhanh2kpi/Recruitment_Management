@@ -39,6 +39,8 @@ public class InterviewDetailConverter {
         return InterviewDetailResponseDTO.builder()
                 .id(interviewDetail.getId())
                 .roomId(interviewDetail.getInterview().getId())
+                .roomName(interviewDetail.getInterview().getRoomName())
+                .interviewTime(interviewDetail.getInterview().getStartDate())
                 .candidate(interviewConverter.InterviewDetailToCandidateItem(interviewDetail))
                 .cv(cvEntity)
                 .description(interviewDetail.getDescription())

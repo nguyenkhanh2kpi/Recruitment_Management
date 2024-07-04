@@ -22,8 +22,8 @@ public class InterviewDetailController {
 
     @Operation(summary = "Sử dụng phương thức này để lấy tất cả các detail candidate trong các phòng phỏng vấn, admin dùng")
     @GetMapping
-    public ResponseEntity<ResponseObject> getAll() {
-        return iInterviewDetailService.getAll();
+    public ResponseEntity<ResponseObject> getAll(Authentication authentication) {
+        return iInterviewDetailService.getAll(authentication);
     }
 
     @Operation(summary = "Dùng để lấy danh sách chi tiết candidate theo phòng gọi interview-detail/room/{idRoom}")

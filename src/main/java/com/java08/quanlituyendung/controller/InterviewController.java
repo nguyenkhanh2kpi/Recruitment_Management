@@ -65,6 +65,12 @@ public class InterviewController {
         return service.getMyInterviewer(authentication);
     }
 
+    @Operation(summary = "Lấy danh sách candidate all")
+    @GetMapping("/candidates")
+    public ResponseEntity<ResponseObject> getAllCandidates(Authentication authentication) {
+        return service.getAllCandidates(authentication);
+    }
+
     @Operation(summary = "Lấy danh sách candidate theo Jobpost để assign vào các phòng phỏng vấn")
     @GetMapping("/candidates/{jobPostId}")
     public ResponseEntity<ResponseObject> getAllCandidateByJd(@PathVariable Long jobPostId) {

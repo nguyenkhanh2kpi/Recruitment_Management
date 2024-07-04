@@ -44,6 +44,10 @@ public class InterviewHelper {
     }
 
     public InterviewDetailEntity buildFirstTimeInterviewDetail(UserAccountEntity candidate, InterviewEntity interview, AssignCandidateToInterviewDTO dto) {
+        Optional<CVEntity> cv = candidate.getCvEntities().stream().filter(cvEntity -> cvEntity.getJobPostingEntity().equals(interview.getJobPostingEntity())).findFirst();
+        if(cv.isPresent()) {
+            cv.get().ChangeState(CVEntity.State.SCHEDULE_INTERVIEW);
+        }
         return InterviewDetailEntity.builder()
                 .candidateId(candidate.getId())
                 .interview(interview)

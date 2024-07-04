@@ -68,6 +68,7 @@ public class CalendarController {
             Optional<InterviewEntity> interview = interviewRepository.findById(requestDTO.getRoomId());
             if(interview.isPresent()) {
                 interview.get().setLinkmeet(event.getHangoutLink());
+                interview.get().ChangeStatus("Processing");
                 interviewRepository.save(interview.get());
             }
             return ResponseEntity.ok(ResponseObject.builder()

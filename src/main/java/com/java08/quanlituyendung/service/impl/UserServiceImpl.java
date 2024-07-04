@@ -418,12 +418,12 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ResponseEntity<ResponseObject> acceptCandidate(long id) {
         UserAccountEntity userAccountEntity = userAccountRepository.findOneById(id);
-        userAccountEntity.setStatus(Status.ACCEPT);
+        userAccountEntity.setState(UserAccountEntity.State.ACTIVE);
         userAccountRepository.save(userAccountEntity);
         return ResponseEntity.status(HttpStatus.OK).body(
                 ResponseObject.builder()
                         .status(HttpStatus.OK.toString())
-                        .message("Accepted candidate")
+                        .message("Active tài khoản")
                         .build());
     }
 
@@ -431,13 +431,14 @@ public class UserServiceImpl implements IUserService {
     public ResponseEntity<ResponseObject> banAccount(long id) {
         UserAccountEntity userAccountEntity = userAccountRepository.findOneById(id);
         String message;
-        if (userAccountEntity.getState() == UserAccountEntity.State.BANNED) {
-            userAccountEntity.setState(UserAccountEntity.State.ACTIVE);
-            message = "Removed ban account success!";
-        } else {
-            userAccountEntity.setState(UserAccountEntity.State.BANNED);
-            message = "Banned account success!";
-        }
+//        if (userAccountEntity.getState() == UserAccountEntity.State.BANNED) {
+//            userAccountEntity.setState(UserAccountEntity.State.ACTIVE);
+//            message = "Removed ban account success!";
+//        } else {
+//
+//        }
+        userAccountEntity.setState(UserAccountEntity.State.BANNED);
+        message = "Banned account success!";
 
         userAccountRepository.save(userAccountEntity);
         return ResponseEntity.status(HttpStatus.OK).body(

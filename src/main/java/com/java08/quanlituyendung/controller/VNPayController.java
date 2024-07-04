@@ -49,6 +49,7 @@ public class VNPayController {
                 String vnp_Version = "2.1.0";
                 String vnp_Command = "pay";
                 String orderType = "other";
+
                 long amount = buyRequest.getPrice() * 100;
                 String bankCode = "VNBANK";
 

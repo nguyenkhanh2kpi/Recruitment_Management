@@ -35,16 +35,6 @@ public class FavoriteController {
         }
     }
 
-//    @DeleteMapping("/delete")
-//    public ResponseEntity<ResponseObject> deleteFavorite(Authentication authentication, @RequestParam Long jobPostingId) {
-//        favoriteService.deleteFavorite(authentication, jobPostingId);
-//        return ResponseEntity.ok(ResponseObject.builder()
-//                .status(HttpStatus.OK.toString())
-//                .message("Favorite deleted successfully")
-//                .data(null)
-//                .build());
-//    }
-
     @GetMapping("/my-wishlist")
     public ResponseEntity<ResponseObject> getMyWishlist(Authentication authentication) {
         var favorites = favoriteService.getUserFavorites(authentication);

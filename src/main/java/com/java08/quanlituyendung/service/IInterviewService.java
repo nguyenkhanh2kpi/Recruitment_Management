@@ -40,6 +40,8 @@ public interface IInterviewService {
     ResponseEntity<ResponseObjectT<RoomResponseDTO>> getById(Long interviewId);
 
     ResponseEntity<ResponseObject> getMyInterviewer(Authentication authentication);
+
+    ResponseEntity<ResponseObject> getAllCandidates(Authentication authentication);
 }
 
 

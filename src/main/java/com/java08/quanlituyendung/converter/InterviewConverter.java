@@ -119,6 +119,7 @@ public class InterviewConverter {
         candidateItemDTO.setPhone(c.getUserAccountEntity().getUserInfo().getPhone());
         candidateItemDTO.setView(c.isView());
         candidateItemDTO.setLabels(c.getLabels());
+        candidateItemDTO.setJobName(jobPosting.getName());
         boolean hasInterviewDetail = false;
         for (InterviewEntity interview : jobPosting.getInterviewEntity()) {
             for (InterviewDetailEntity interviewDetail : interview.getInterviewDetailEntities()) {
