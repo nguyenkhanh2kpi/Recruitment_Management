@@ -54,7 +54,6 @@ public class EventTests {
         requestDTO.setPassword("1234");
         requestDTO.setEmail("admin@gmail.com");
 
-
         MvcResult resultCreate = mockMvc.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO)))
@@ -65,8 +64,6 @@ public class EventTests {
         UserAccountEntity user = userAccountRepository.findByEmail("testmail@gmail.com").orElseThrow();
         user.setRole(Role.RECRUITER);
         userAccountRepository.save(user);
-
-
     }
 
 
