@@ -127,6 +127,20 @@ public class InterviewServiceImpl implements IInterviewService {
     }
 
     @Override
+    public ResponseEntity<ResponseObject> endInterview(Long roomId) {
+        var data = interviewRepository.findById(roomId);
+        if (data.isPresent()) {
+            data.get().setStatus("Ended");
+            interviewRepository.save(data.get());
+            return ResponseEntity.ok(
+                    new ResponseObject(HttpStatus.OK.toString(), Constant.SUCCESS, interviewConverter.toDto(data.get()))
+            );
+        }
+        return ResponseEntity.ok(
+                new ResponseObject(HttpStatus.FORBIDDEN.toString(), Constant.YOU_DONT_HAVE_PERMISION, null));
+    }
+
+    @Override
     public ResponseEntity<ResponseObject> getMyInterviewer(Authentication authentication) {
         var me = userAccountRetriever.getUserAccountEntityFromAuthentication(authentication);
         var list = userAccountRepository.findAll().stream()
@@ -253,6 +267,7 @@ public class InterviewServiceImpl implements IInterviewService {
                 .build());
     }
 
+
     /// tao interview|| tao room
     @Override
     public ResponseEntity<ResponseObject> addInterview(InterviewCreateDTO interview, Authentication authentication) {
@@ -303,6 +318,29 @@ public class InterviewServiceImpl implements IInterviewService {
                 .data(interviewConverter.toDto(room))
                 .build());
     }
+    @Override
+    public ResponseEntity<ResponseObject> deleteOneInterviewer(String email, Long interviewId) {
+        Optional<UserAccountEntity> interviewerOpt = userAccountRepository.findByEmail(email);
+        Optional<InterviewEntity> roomOpt = interviewRepository.findById(interviewId);
+        if (interviewerOpt.isEmpty() || roomOpt.isEmpty()) {
+            return ResponseEntity.ok(ResponseObject.builder()
+                    .status(HttpStatus.OK.toString())
+                    .message("Can't find INTERVIEWER or ROOM")
+                    .build());
+        }
+        UserAccountEntity interviewer = interviewerOpt.get();
+        InterviewEntity room = roomOpt.get();
+        room.getInterviewers().remove(interviewer);
+        interviewRepository.save(room);
+        return ResponseEntity.ok(ResponseObject.builder()
+                .status(HttpStatus.OK.toString())
+                .message("Delete success!")
+                .data(interviewConverter.toDto(room))
+                .build());
+    }
+
+
+
 
     // đăng kí candidate voi room phong van
     @Override

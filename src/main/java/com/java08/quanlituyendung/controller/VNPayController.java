@@ -198,10 +198,12 @@ public class VNPayController {
                 BillEntity bill = billService.getBillById(Long.valueOf(billId));
                 billService.payed(bill);
                 response.sendRedirect("https://resume.workon.space");
+//                response.sendRedirect("http://localhost:3000");
             } else {
                 BillEntity bill = billService.getBillById(Long.valueOf(billId));
                 billService.payFail(bill);
                 response.sendRedirect("https://resume.workon.space");
+//                response.sendRedirect("http://localhost:3000");
             }
         }
     }

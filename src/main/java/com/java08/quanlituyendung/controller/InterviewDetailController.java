@@ -26,6 +26,12 @@ public class InterviewDetailController {
         return iInterviewDetailService.getAll(authentication);
     }
 
+    @Operation(summary = "Getall ended ")
+    @GetMapping("/ended")
+    public ResponseEntity<ResponseObject> getAllEnded(Authentication authentication) {
+        return iInterviewDetailService.getAllEnded(authentication);
+    }
+
     @Operation(summary = "Dùng để lấy danh sách chi tiết candidate theo phòng gọi interview-detail/room/{idRoom}")
     @GetMapping("/room/{roomId}")
     public ResponseEntity<ResponseObject> getInterviewDetailByRoomId(@PathVariable Long roomId) {

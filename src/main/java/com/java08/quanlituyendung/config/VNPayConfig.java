@@ -18,6 +18,7 @@ import java.util.*;
 public class VNPayConfig {
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
     public static String vnp_ReturnUrl = "https://resume.workon.space/api/payment/payment-callback";
+//    public static String vnp_ReturnUrl = "http://localhost:8080/payment/payment-callback";
     public static String vnp_TmnCode = "0K9AYS0I";
     public static String secretKey = "V84JFD7BBA40LS0GAYPV45CF08QOFD4V";
     public static String vnp_ApiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";

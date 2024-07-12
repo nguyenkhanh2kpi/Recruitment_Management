@@ -11,4 +11,5 @@ import java.util.Optional;
 @Repository
 public interface BillRepository extends JpaRepository<BillEntity, Long> {
     List<BillEntity> findByEmailAndType(String email, PackVipType type);
+    List<BillEntity> findByEmail(String email);
 }

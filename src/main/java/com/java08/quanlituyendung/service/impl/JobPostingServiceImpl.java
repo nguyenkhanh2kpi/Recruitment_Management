@@ -58,7 +58,9 @@ public class JobPostingServiceImpl implements IJobPostingService {
                 List<JobPostingDTO> listJobPostingDTO = new ArrayList<>();
                 for (JobPostingEntity jobPostingEntity : listJobPostingEntity) {
                     JobPostingDTO jobPostingDTO = jobPostingConverter.toDTO(jobPostingEntity);
-                    listJobPostingDTO.add(jobPostingDTO);
+                    if(jobPostingEntity.getState()!= JobPostingEntity.State.END) {
+                        listJobPostingDTO.add(jobPostingDTO);
+                    }
                 }
                 return ResponseEntity.status(HttpStatus.OK).body(ResponseObject.builder().status(HttpStatus.OK.toString()).message(Constant.SUCCESS).data(listJobPostingDTO).build());
             }

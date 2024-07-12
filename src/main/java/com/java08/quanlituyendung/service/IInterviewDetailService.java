@@ -18,4 +18,6 @@ public interface IInterviewDetailService {
     ResponseEntity<ResponseObject> changeStatus(Long detailId, String status, Authentication authentication);
 
     ResponseEntity<ResponseObject> deleteCandidate(Long detailId, Authentication authentication);
+
+    ResponseEntity<ResponseObject> getAllEnded(Authentication authentication);
 }

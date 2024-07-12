@@ -1,5 +1,6 @@
 package com.java08.quanlituyendung.service;
 
+import com.java08.quanlituyendung.entity.UserAccountEntity;
 import com.java08.quanlituyendung.entity.vip.VipPackReccerEntity;
 
 import java.util.List;
@@ -11,4 +12,5 @@ public interface IVipPackService {
     VipPackReccerEntity save(VipPackReccerEntity vipPackReccerEntity);
     VipPackReccerEntity update(Long id, VipPackReccerEntity vipPackReccerEntity);
     void deleteById(Long id);
+    boolean isUserVip(UserAccountEntity userAccountEntity);
 }

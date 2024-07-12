@@ -83,10 +83,23 @@ public class InterviewController {
         return service.addInterview(interview, authentication);
     }
 
+    @Operation(summary = "Kết thúc phòng phỏng vấn")
+    @GetMapping("/end-interview/{roomId}")
+    public ResponseEntity<ResponseObject> endInterview(@PathVariable Long roomId) {
+        return service.endInterview(roomId);
+    }
+
+
     @Operation(summary = "Assign 1 người phỏng vấn với 1 phòng")
     @PostMapping("/interviewerAssign")
     public ResponseEntity<ResponseObject> addOneInterviewer(@RequestBody InterviewerToInterviewDTO interviewerToInterview) {
         return service.addOneInterviewer(interviewerToInterview);
+    }
+
+    @Operation(summary = "Xóa 1 người phỏng vấn với 1 phòng")
+    @DeleteMapping("/interviewerAssign/{interviewId}/{email}")
+    public ResponseEntity<ResponseObject> deleteOneInterviewer(@PathVariable String email, @PathVariable Long interviewId) {
+        return service.deleteOneInterviewer(email, interviewId);
     }
 
     @Operation(summary = "Đăng kí 1 candidate với 1 phòng phỏng vấn")

@@ -51,6 +51,21 @@ public class InterviewDetailServiceImpl implements IInterviewDetailService {
     }
 
     @Override
+    public ResponseEntity<ResponseObject> getAllEnded(Authentication authentication) {
+        var user = userAccountRetriever.getUserAccountEntityFromAuthentication(authentication);
+        return ResponseEntity.ok(ResponseObject.builder()
+                .status(HttpStatus.OK.toString())
+                .message("SUCCESS !")
+                .data(interviewDetailRepository.findAll()
+                        .stream()
+                        .filter(interviewDetailEntity -> interviewDetailEntity.getInterview().getUserAccountEntity().equals(user)
+                        && interviewDetailEntity.getInterview().getStatus().contains("Ended"))
+                        .map(interviewDetailConverter::detailToResponse)
+                        .collect(Collectors.toList()))
+                .build());
+    }
+
+    @Override
     public ResponseEntity<ResponseObject> getOne(Long roomDetailId) {
         Optional<InterviewDetailEntity> detail = interviewDetailRepository.findById(roomDetailId);
         return detail.map(interviewDetail -> ResponseEntity.ok(ResponseObject.builder()
@@ -98,6 +113,8 @@ public class InterviewDetailServiceImpl implements IInterviewDetailService {
                 .message("Can't find interview detail")
                 .build());
     }
+
+
 
 
     @Override

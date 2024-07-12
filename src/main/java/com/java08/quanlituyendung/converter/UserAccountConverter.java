@@ -14,6 +14,7 @@ import com.java08.quanlituyendung.dto.google.GoogleTransferDTO;
 import com.java08.quanlituyendung.entity.*;
 import com.java08.quanlituyendung.repository.UserAccountRepository;
 import com.java08.quanlituyendung.repository.UserInfoRepository;
+import com.java08.quanlituyendung.service.IVipPackService;
 import com.java08.quanlituyendung.utils.RandomNumberGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,9 @@ public class UserAccountConverter {
 
     @Autowired
     LoginGoogleService loginGoogleService;
+
+    @Autowired
+    IVipPackService iVipPackService;
 
     public UserAccountEntity toEntity(RegisterRequestDTO registerRequestDTO) {
         UserAccountEntity entity = new UserAccountEntity();
@@ -214,6 +218,7 @@ public class UserAccountConverter {
         authDataResponseDTO.setUserInfo(userAccountEntity.getUserInfo());
         authDataResponseDTO.setState(userAccountEntity.getState().toString());
         authDataResponseDTO.setRole(userAccountEntity.getRole().toString());
+        authDataResponseDTO.setIsVip(iVipPackService.isUserVip(userAccountEntity));
         return authDataResponseDTO;
     }
 

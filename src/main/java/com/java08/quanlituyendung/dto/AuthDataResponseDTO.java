@@ -17,4 +17,5 @@ public class AuthDataResponseDTO {
     private String state;
     private String role;
     private UserInfoEntity userInfo;
+    private Boolean isVip;
 }

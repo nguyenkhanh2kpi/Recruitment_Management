@@ -42,6 +42,10 @@ public interface IInterviewService {
     ResponseEntity<ResponseObject> getMyInterviewer(Authentication authentication);
 
     ResponseEntity<ResponseObject> getAllCandidates(Authentication authentication);
+
+    ResponseEntity<ResponseObject> deleteOneInterviewer(String email, Long interviewerId);
+
+    ResponseEntity<ResponseObject> endInterview(Long roomId);
 }
 
 
