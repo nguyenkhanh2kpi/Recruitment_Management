@@ -31,6 +31,12 @@ public class VipPackController {
         return ResponseEntity.ok(billService.getMyBills(authentication));
     }
 
+
+    @GetMapping("/all-bills")
+    public ResponseEntity<List<BillEntity>> getAllBills(Authentication authentication) {
+        return ResponseEntity.ok(billService.getAllBills());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<VipPackReccerEntity> getVipPackById(@PathVariable Long id) {
         Optional<VipPackReccerEntity> vipPack = vipPackService.findById(id);

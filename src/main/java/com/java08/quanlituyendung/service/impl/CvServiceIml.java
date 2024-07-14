@@ -65,12 +65,25 @@ public class CvServiceIml implements ICvService {
                             cvEntityCheck.setUrl(urlCv);
                             cvEntityCheck.setDateApply(LocalDate.now().toString());
                             cvRepository.save(cvEntityCheck);
+                            if(jobPostingEntity.getRequireTest()==true) {
+                                notifyService.sendNotification("Kiểm tra sàng lọc",
+                                        "Job: "+ jobPostingEntity.getName()
+                                                + " có yêu cầu thực hiện bài test sàng lọc ",
+                                        userAccountEntity.getEmail().toString(),
+                                        "/test"
+                                );
+                            }
 
-                            notifyService.sendNotification("Kiểm tra sàng lọc",
-                                    "Job: "+ jobPostingEntity.getName()
-                                            + " có yêu cầu thực hiện bài test sàng lọc ",
-                                    userAccountEntity.getEmail(),
-                                    "/test"
+                            notifyService.sendNotification("Bạn vừa cập nhật CV 1 công việc",
+                                    "Job: "+ jobPostingEntity.getName(),
+                                    userAccountEntity.getEmail().toString(),
+                                    "/jobpage/applied"
+                            );
+
+                            notifyService.sendNotification("Ứng viên vừa cập nhật CV",
+                                    "Job: "+ jobPostingEntity.getName(),
+                                    jobPostingEntity.getUserAccountEntity().getEmail().toString(),
+                                    "process/item/" + jobPostingEntity.getId()
                             );
 
                             return ResponseEntity.ok(ResponseObject.builder().status(HttpStatus.OK.toString())
@@ -79,12 +92,21 @@ public class CvServiceIml implements ICvService {
                         }
                     }
 
-                    notifyService.sendNotification("Kiểm tra sàng lọc",
-                            "Job: "+ jobPostingEntity.getName()
-                                    + " có yêu cầu thực hiện bài test sàng lọc ",
-                            userAccountEntity.getEmail(),
-                            "/test"
+                    if(jobPostingEntity.getRequireTest()==true) {
+                        notifyService.sendNotification("Kiểm tra sàng lọc",
+                                "Job: "+ jobPostingEntity.getName()
+                                        + " có yêu cầu thực hiện bài test sàng lọc ",
+                                userAccountEntity.getEmail(),
+                                "/test"
+                        );
+                    }
+
+                    notifyService.sendNotification("Bạn đã ứng tuyển 1 công việc",
+                            "Job: "+ jobPostingEntity.getName(),
+                            userAccountEntity.getEmail().toString(),
+                            "/jobpage/applied"
                     );
+
 
                     CVEntity cvEntity = new CVEntity();
                     cvEntity.setState(CVEntity.State.RECEIVE_CV);
@@ -95,6 +117,12 @@ public class CvServiceIml implements ICvService {
                     cvEntity.setLabels("{}");
                     cvEntity.setDateApply(LocalDate.now().toString());
                     cvRepository.save(cvEntity);
+
+                    notifyService.sendNotification("Ứng viên vừa ứng tuyển",
+                            "Job: "+ jobPostingEntity.getName(),
+                            jobPostingEntity.getUserAccountEntity().getEmail().toString(),
+                            "process/item/" + jobPostingEntity.getId()
+                    );
 
                     return ResponseEntity.ok(ResponseObject.builder()
                             .status(HttpStatus.CREATED.toString())
@@ -130,7 +158,7 @@ public class CvServiceIml implements ICvService {
                 .data(CVS)
                 .build());
     }
-// bugg
+// ??
     @Override
     public ResponseEntity<ResponseObject> applyJobNewCV(ApplyJobNewCVDTO request, Authentication authentication) throws IOException {
         if(request.getCv()=="" || request.getCv()==null) {
@@ -144,27 +172,43 @@ public class CvServiceIml implements ICvService {
         for (CVEntity cvEntityCheck : listCvEntity) {
             if (cvEntityCheck.getUserAccountEntity().getId().equals(user.getId())) {
 
-                notifyService.sendNotification("Kiểm tra sàng lọc",
-                        "Job: "+ jobPostingEntity.getName()
-                                + " có yêu cầu thực hiện bài test sàng lọc ",
-                        user.getEmail(),
-                        "/test"
-                );
+                if(jobPostingEntity.getRequireTest()==true) {
+                    notifyService.sendNotification("Kiểm tra sàng lọc",
+                            "Job: "+ jobPostingEntity.getName()
+                                    + " có yêu cầu thực hiện bài test sàng lọc ",
+                            user.getEmail(),
+                            "/test"
+                    );
+                }
 
                 cvEntityCheck.setUrl(request.getCv());
                 cvEntityCheck.setDateApply(LocalDate.now().toString());
                 cvRepository.save(cvEntityCheck);
+
+                notifyService.sendNotification("Bạn đã ứng tuyển 1 công việc",
+                        "Job: "+ jobPostingEntity.getName(),
+                        user.getEmail().toString(),
+                        "/jobpage/applied"
+                );
+                notifyService.sendNotification("Ứng viên vừa ứng tuyển",
+                        "Job: "+ jobPostingEntity.getName(),
+                        jobPostingEntity.getUserAccountEntity().getEmail().toString(),
+                        "process/item/" + jobPostingEntity.getId()
+                );
                 return ResponseEntity.ok(ResponseObject.builder().status(HttpStatus.OK.toString())
                         .message("Update CV success!")
                         .build());
             }
         }
-        notifyService.sendNotification("Kiểm tra sàng lọc",
-                "Job: "+ jobPostingEntity.getName()
-                        + " có yêu cầu thực hiện bài test sàng lọc ",
-                user.getEmail(),
-                "/test"
-        );
+        if(jobPostingEntity.getRequireTest()==true) {
+            notifyService.sendNotification("Kiểm tra sàng lọc",
+                    "Job: "+ jobPostingEntity.getName()
+                            + " có yêu cầu thực hiện bài test sàng lọc ",
+                    user.getEmail(),
+                    "/test"
+            );
+        }
+
         CVEntity cvEntity = new CVEntity();
         cvEntity.setState(CVEntity.State.RECEIVE_CV);
         cvEntity.setView(false);
@@ -174,6 +218,17 @@ public class CvServiceIml implements ICvService {
         cvEntity.setUrl(request.getCv());
         cvEntity.setDateApply(LocalDate.now().toString());
         cvRepository.save(cvEntity);
+
+        notifyService.sendNotification("Bạn đã ứng tuyển 1 công việc",
+                "Job: "+ jobPostingEntity.getName(),
+                user.getEmail().toString(),
+                "/jobpage/applied"
+        );
+        notifyService.sendNotification("Ứng viên vừa ứng tuyển",
+                "Job: "+ jobPostingEntity.getName(),
+                jobPostingEntity.getUserAccountEntity().getEmail().toString(),
+                "process/item/" + jobPostingEntity.getId()
+        );
         return ResponseEntity.ok(ResponseObject.builder()
                 .status(HttpStatus.CREATED.toString())
                 .message("Apply CV success!")
@@ -195,8 +250,8 @@ public class CvServiceIml implements ICvService {
         notifyService.sendNotification("Nhà tuyển dụng cập nhật CV",
                 "Job: "+ optionalCvEntity.get().getJobPostingEntity().getName()
                 + " bạn đã được nhà tuyển dụng cập nhật trạng thái CV thành: " + status,
-                "johndoe@gmail.com",
-                "/jobDetail/"+optionalCvEntity.get().getJobPostingEntity().getId()
+                optionalCvEntity.get().getUserAccountEntity().getEmail(),
+                "/jobpage/applied"
                 );
         CVEntity cvEntity = optionalCvEntity.get();
         cvEntity.setState(getState(status));

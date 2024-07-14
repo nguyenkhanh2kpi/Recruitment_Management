@@ -46,6 +46,12 @@ public class CVEntity extends BaseEntity {
     private boolean view;
     private String labels;
 
+    @PrePersist
+    protected void onCreate() {
+        if(labels == null) {
+            labels = "{}";
+        }
+    }
 
     public void ChangeState(State state) {
         this.state = state;

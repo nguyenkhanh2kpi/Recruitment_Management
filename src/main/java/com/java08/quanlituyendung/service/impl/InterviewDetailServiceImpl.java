@@ -59,7 +59,8 @@ public class InterviewDetailServiceImpl implements IInterviewDetailService {
                 .data(interviewDetailRepository.findAll()
                         .stream()
                         .filter(interviewDetailEntity -> interviewDetailEntity.getInterview().getUserAccountEntity().equals(user)
-                        && interviewDetailEntity.getInterview().getStatus().contains("Ended"))
+                        && interviewDetailEntity.getInterview().getStatus().contains("Ended")
+                                && interviewDetailEntity.getStatus().contains("Đã chấm") )
                         .map(interviewDetailConverter::detailToResponse)
                         .collect(Collectors.toList()))
                 .build());
@@ -138,12 +139,12 @@ public class InterviewDetailServiceImpl implements IInterviewDetailService {
         Optional<InterviewDetailEntity> interviewDetailEntity = interviewDetailRepository.findById(request.getInterviewDetailId());
         if(interviewDetailEntity.isPresent()){
             var detail = interviewDetailEntity.get();
-            if(!detail.getInterview().getInterviewers().contains(interviewer)) {
-                return ResponseEntity.ok(ResponseObject.builder()
-                                .status(HttpStatus.NOT_ACCEPTABLE.toString())
-                        .message("Just interviewer who assigned can do this method!!")
-                        .build());
-            }
+//            if(!detail.getInterview().getInterviewers().contains(interviewer)) {
+//                return ResponseEntity.ok(ResponseObject.builder()
+//                                .status(HttpStatus.NOT_ACCEPTABLE.toString())
+//                        .message("Just interviewer who assigned can do this method!!")
+//                        .build());
+//            }
             detail.setAverageScore(request.getAverageMark());
             detail.setComment(request.getComment());
             detail.setEnglishQuestions(request.getEnglishQuestion());
