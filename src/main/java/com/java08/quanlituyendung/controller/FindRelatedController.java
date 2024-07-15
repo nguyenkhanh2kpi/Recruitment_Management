@@ -49,7 +49,7 @@ public class FindRelatedController {
     @PostMapping("/find-related-job")
     public ResponseEntity<ResponseObject> findRelatedJob(@RequestBody Map<String, String> request) {
         String keyword = request.get("keyword");
-        List<JobPostingEntity> jobPostingEntityList = jobPostingRepository.findAll();
+        List<JobPostingEntity> jobPostingEntityList = getVipJob();
         try {
             Directory directory = new RAMDirectory();
             StandardAnalyzer analyzer = new StandardAnalyzer();
@@ -145,7 +145,7 @@ public class FindRelatedController {
     }
 
     private JobPostingEntity findAdditionalJob(Map<JobPostingEntity, Double> jobScores, List<JobPostingEntity> sortedRelatedJobs) {
-        for (JobPostingEntity job : jobPostingRepository.findAll()) {
+        for (JobPostingEntity job : getVipJob()) {
             if (!sortedRelatedJobs.contains(job)) {
                 return job;
             }
@@ -154,7 +154,7 @@ public class FindRelatedController {
     }
 
     public List<JobPostingEntity> findRelatedJobs(String keyword) {
-        List<JobPostingEntity> jobPostingEntityList = jobPostingRepository.findAll();
+        List<JobPostingEntity> jobPostingEntityList = getVipJob();
         List<JobPostingEntity> relatedJobs = new ArrayList<>();
         try {
             Directory directory = new RAMDirectory();
@@ -207,5 +207,18 @@ public class FindRelatedController {
             relatedJobs = jobPostingEntityList.stream().limit(4).collect(Collectors.toList());
         }
         return relatedJobs;
+    }
+
+    public List<JobPostingEntity> getVipJob() {
+        try {
+            return jobPostingRepository.findAll()
+                    .stream()
+                    .filter(jobPostingEntity -> Boolean.TRUE.equals(jobPostingEntity.getIsVip()))
+                    .toList();
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            return List.of();
+        }
     }
 }
