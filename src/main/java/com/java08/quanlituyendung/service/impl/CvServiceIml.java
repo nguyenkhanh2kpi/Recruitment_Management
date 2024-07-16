@@ -358,7 +358,7 @@ public class CvServiceIml implements ICvService {
                              && notifyEntity.getRecipient().contains(cv.getUserAccountEntity().getEmail())
                 ).collect(Collectors.toList());
         List<TestEntity> testEntities = testRepository.findAll()
-                .stream().filter(test -> test.getJobPostingEntity().equals(cv.getJobPostingEntity()))
+                .stream().filter(test -> test.getJobPostingEntity().equals(cv.getJobPostingEntity()) && test.getIsDelete()==false)
                 .collect(Collectors.toList());
         return AppliedJobDTO.builder()
                 .CVid(cv.getId())

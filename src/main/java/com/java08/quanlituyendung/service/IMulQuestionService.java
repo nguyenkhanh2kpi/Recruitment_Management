@@ -32,4 +32,6 @@ public interface IMulQuestionService {
     ResponseEntity<ResponseObject> newCodeTest(Authentication authentication, NewTestDTO request);
 
     ResponseEntity<ResponseObject> getEssayRecordsByTestId(Long testId);
+
+    ResponseEntity<ResponseObject> deleteTest(Long testId);
 }

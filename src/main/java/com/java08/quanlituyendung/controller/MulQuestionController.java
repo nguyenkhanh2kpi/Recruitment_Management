@@ -86,6 +86,11 @@ public class MulQuestionController {
         return iMulQuestionService.getRecordByJobID(jobId );
     }
 
+    @DeleteMapping("/{testId}")
+    public ResponseEntity<ResponseObject> deleteTest(@PathVariable Long testId) {
+        return iMulQuestionService.deleteTest(testId);
+    }
+
 
 //    lay tat ca ban record tu luan theo test id khong can
 //    @Operation(summary = "get all essay record by test id")

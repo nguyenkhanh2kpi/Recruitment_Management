@@ -70,8 +70,9 @@ public class MulQuestionServiceImpl implements IMulQuestionService {
         List<TestEntity> tests = testRepository.findAllByJobPostingEntityId(jdId);
 
         List<TestResponseDTO> testDTOs = tests.stream()
+                .filter(testEntity -> testEntity.getIsDelete().equals(false))
                 .map(testEntity -> testConverter.toDTO(testEntity))
-                .collect(Collectors.toList());
+                .toList();
 
         return ResponseEntity.ok(ResponseObject.builder()
                 .status(HttpStatus.OK.toString())
@@ -130,7 +131,8 @@ public class MulQuestionServiceImpl implements IMulQuestionService {
         UserAccountEntity user = userAccountRetriever.getUserAccountEntityFromAuthentication(authentication);
         List<CVEntity> cvEntityList = cvRepository.findAll().stream()
                 .filter(cvEntity -> cvEntity.getUserAccountEntity().equals(user)).collect(Collectors.toList());
-        List<TestEntity> allTest = testRepository.findAll();
+        List<TestEntity> allTest = testRepository.findAll().stream()
+                .filter(testEntity -> testEntity.getIsDelete().equals(false)).toList();
         List<TestResponseDTO> result = allTest.stream()
                 .filter(test -> cvEntityList.stream()
                         .anyMatch(cvEntity -> cvEntity.getJobPostingEntity().equals(test.getJobPostingEntity())))
@@ -216,6 +218,27 @@ public class MulQuestionServiceImpl implements IMulQuestionService {
                         .message("You are not allow to create test")
                         .build());
     }
+
+    @Override
+    public ResponseEntity<ResponseObject> deleteTest(Long testId) {
+        Optional<TestEntity> optionalTest = testRepository.findById(testId);
+        if (optionalTest.isPresent()) {
+            TestEntity testEntity = optionalTest.get();
+            testEntity.setIsDelete(true);
+            testRepository.save(testEntity);
+            return ResponseEntity.ok(ResponseObject.builder()
+                    .status(HttpStatus.OK.toString())
+                    .data("")
+                    .message("Successfully deleted")
+                    .build());
+        }
+        return ResponseEntity.ok(ResponseObject.builder()
+                .status(HttpStatus.OK.toString())
+                .data("")
+                .message("Something went wrong")
+                .build());
+    }
+
 
 
     @Override
@@ -330,6 +353,7 @@ public class MulQuestionServiceImpl implements IMulQuestionService {
                     .build());
         }
     }
+
 
     // duoi day la cac ham convert cho ham tren
     public CodeTestResultResponseDTO convertRecordToDTO(TestRecordEntity testRecordEntity) {
