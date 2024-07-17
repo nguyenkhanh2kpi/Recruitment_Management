@@ -148,7 +148,7 @@ class CompanyControllerTest {
                 .website("cty")
                 .avatar("cty")
                 .build();
-        String token = login("reccer1@gmail.com", "1234");
+        String token = login("reccer1@gmail.com", "123456789");
         MvcResult result = mockMvc.perform(post("/company")
                         .header("authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)

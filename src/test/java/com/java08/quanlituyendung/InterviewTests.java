@@ -93,7 +93,7 @@ class InterviewTests {
 
 	@Test
 	void addInterviewSuccess() throws Exception {
-		String token = login(mockMvc, "reccer1@gmail.com", "1234");
+		String token = login(mockMvc, "reccer1@gmail.com", "123456789");
 		InterviewCreateDTO requestDTO = new InterviewCreateDTO();
 		requestDTO.setJobPostId("1");
 		requestDTO.setRoomName("phong x jd 2");

@@ -83,7 +83,7 @@ class JobPostingControllerTest {
         var job = JobPostingDTO.builder()
                 .name("abc")
                 .build();
-        String token = login("reccer1@gmail.com", "1234");
+        String token = login("reccer1@gmail.com", "123456789");
         mockMvc.perform(post("/job-posting")
                         .header("authorization","Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -100,7 +100,7 @@ class JobPostingControllerTest {
                 .name("asd")
                 .user_id(2)
                 .build();
-        String token = login("reccer1@gmail.com", "1234");
+        String token = login("reccer1@gmail.com", "123456789");
         mockMvc.perform(put("/job-posting/1")
                         .header("authorization","Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -117,7 +117,7 @@ class JobPostingControllerTest {
                 .name("asd")
                 .user_id(2)
                 .build();
-        String token = login("reccer1@gmail.com", "1234");
+        String token = login("reccer1@gmail.com", "123456789");
         mockMvc.perform(put("/job-posting/0")
                         .header("authorization","Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -134,7 +134,7 @@ class JobPostingControllerTest {
                 .name("asd")
                 .user_id(2)
                 .build();
-        String token = login("reccer1@gmail.com", "1234");
+        String token = login("reccer1@gmail.com", "123456789");
         mockMvc.perform(delete("/job-posting/1")
                         .header("authorization","Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -151,7 +151,7 @@ class JobPostingControllerTest {
                 .name("asd")
                 .user_id(2)
                 .build();
-        String token = login("reccer1@gmail.com", "1234");
+        String token = login("reccer1@gmail.com", "123456789");
         mockMvc.perform(delete("/job-posting/0")
                         .header("authorization","Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)

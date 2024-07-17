@@ -45,7 +45,7 @@ class InterviewDetailControllerTest {
 
     @Test
     void getAll() throws Exception {
-        String token = login("reccer1@gmail.com", "1234");
+        String token = login("reccer1@gmail.com", "123456789");
 
         mockMvc.perform(get("/interview-detail").header("authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -57,7 +57,7 @@ class InterviewDetailControllerTest {
 
     @Test
     void getById() throws Exception {
-        String token = login("reccer1@gmail.com", "1234");
+        String token = login("reccer1@gmail.com", "123456789");
         mockMvc.perform(get("/interview-detail/3").header("authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -68,7 +68,7 @@ class InterviewDetailControllerTest {
 
     @Test
     void getInterviewDetailByRoomId() throws Exception {
-        String token = login("reccer1@gmail.com", "1234");
+        String token = login("reccer1@gmail.com", "123456789");
         mockMvc.perform(get("/interview-detail/room/1").header("authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                 )

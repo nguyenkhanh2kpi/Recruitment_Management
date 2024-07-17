@@ -67,7 +67,7 @@ class JobPostingTests {
 
     @Test
     public void testCreateJobPosting() throws Exception {
-        String tk = login(mockMvc, "reccer1@gmail.com", "1234");
+        String tk = login(mockMvc, "reccer1@gmail.com", "123456789");
         JobPostingDTO jobPostingDTO = JobPostingDTO.builder()
                 .id(1L)
                 .name("Job 1")
@@ -115,7 +115,7 @@ class JobPostingTests {
 
     @Test
     public void testGetDetailJobPosting() throws Exception {
-        String tk = login(mockMvc, "reccer1@gmail.com", "1234");
+        String tk = login(mockMvc, "reccer1@gmail.com", "123456789");
         long jobPostingId = 1L;
 
         JobPostingDTO jobPostingDTO = JobPostingDTO.builder()

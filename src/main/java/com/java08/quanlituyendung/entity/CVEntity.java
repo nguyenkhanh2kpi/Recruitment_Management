@@ -49,7 +49,7 @@ public class CVEntity extends BaseEntity {
     @PrePersist
     protected void onCreate() {
         if(labels == null) {
-            labels = "{}";
+            this.setLabels("{}");
         }
     }
 

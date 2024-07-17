@@ -33,11 +33,14 @@ public class FileUploadController {
                             .message("upload file success!")
                             .data(fileUrl).build());
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.OK).body(
+
                     ResponseObject.builder()
                             .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
+                            .data("data")
                             .message("upload file error!")
-                            .data(null).build());
+                            .build());
         }
     }
 }
